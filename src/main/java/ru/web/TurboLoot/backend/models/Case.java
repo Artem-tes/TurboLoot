@@ -35,7 +35,7 @@ public class Case {
     private byte[] image;
 
     @Column(name = "items")
-    private Integer[] weapons;
+    private List<Integer> weapons;
 
     @Column(name = "count_items")
     private Integer countItems;

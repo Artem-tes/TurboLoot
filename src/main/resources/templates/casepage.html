@@ -1,0 +1,1192 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${case.nameCase + ' | TurboLoot'}">TurboLoot</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Глобальные стили */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Хедер */
+        header {
+            background: rgba(0, 0, 0, 0.8);
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            position: relative;
+            z-index: 10;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo img {
+            height: 50px;
+            filter: drop-shadow(0 0 5px rgba(255, 204, 0, 0.5));
+        }
+
+        .logo h1 {
+            font-size: 28px;
+            background: linear-gradient(to right, #ff8a00, #ffcc00);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 800;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .user-controls {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .balance {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .balance i {
+            color: #ffcc00;
+        }
+
+        /* Основной контент */
+        main {
+            flex: 1;
+            padding: 40px 30px;
+            max-width: 1400px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        /* Улучшенный заголовок кейса */
+        .case-header {
+            text-align: center;
+            margin-bottom: 40px;
+            position: relative;
+            padding: 40px;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 204, 0, 0.2);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            background-image: radial-gradient(circle at 50% 0%, rgba(255,204,0,0.1) 0%, transparent 30%);
+        }
+
+        .case-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, #ff8a00, #ffcc00);
+            border-radius: 20px 20px 0 0;
+        }
+
+        .case-name {
+            font-size: 42px;
+            font-weight: 800;
+            background: linear-gradient(90deg, #ffcc00, #ff8a00);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 15px;
+            text-shadow: 0 2px 10px rgba(255, 140, 0, 0.3);
+            letter-spacing: 1px;
+            position: relative;
+            display: inline-block;
+            padding: 0 30px;
+        }
+
+        .case-name::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80%;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, #ffcc00, transparent);
+        }
+
+        .case-description {
+            color: rgba(255, 255, 255, 0.8);
+            max-width: 600px;
+            margin: 0 auto;
+            font-size: 16px;
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+
+        .case-stats {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            background: rgba(255, 204, 0, 0.1);
+            padding: 15px 25px;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-width: 150px;
+            border: 1px solid rgba(255, 204, 0, 0.2);
+            backdrop-filter: blur(5px);
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #ffcc00;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.7);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Рулетка */
+        .roulette-section {
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 50px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255, 204, 0, 0.2);
+        }
+
+        .roulette-container {
+            position: relative;
+            height: 250px;
+            margin: 30px 0;
+            overflow: hidden;
+        }
+
+        .roulette-track {
+            display: flex;
+            height: 100%;
+            align-items: center;
+            position: absolute;
+            left: 0;
+            top: 0;
+        }
+
+        .roulette-item {
+            flex: 0 0 220px;
+            height: 180px;
+            margin-right: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: all 0.3s;
+            border: 1px solid rgba(255, 204, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .roulette-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(255,204,0,0.1) 0%, rgba(255,204,0,0) 100%);
+            z-index: 1;
+        }
+
+        .roulette-item-image {
+            width: 140px;
+            height: 100px;
+            object-fit: contain;
+            margin-bottom: 15px;
+            z-index: 2;
+            filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.5));
+            transition: transform 0.3s;
+        }
+
+        .roulette-item:hover .roulette-item-image {
+            transform: scale(1.05);
+        }
+
+        .roulette-item-name {
+            font-size: 18px;
+            text-align: center;
+            padding: 0 15px;
+            z-index: 2;
+            font-weight: 600;
+        }
+
+        /* Улучшенный вертикальный индикатор выигрыша */
+        .win-indicator-vertical {
+            position: absolute;
+            left: 50%;
+            top: 0;
+            transform: translateX(-50%);
+            width: 6px;
+            height: 100%;
+            background: linear-gradient(to bottom,
+                transparent 0%,
+                #ffcc00 15%,
+                #ffcc00 85%,
+                transparent 100%);
+            box-shadow: 0 0 25px rgba(255, 204, 0, 0.9);
+            z-index: 5;
+        }
+
+        .win-indicator-vertical::before,
+        .win-indicator-vertical::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: rgba(255, 204, 0, 0.6);
+            z-index: 6;
+            border: 2px solid rgba(255, 204, 0, 0.8);
+            animation: pulse 2s infinite;
+        }
+
+        .win-indicator-vertical::before {
+            top: -15px;
+            box-shadow: 0 0 20px rgba(255, 204, 0, 0.8);
+        }
+
+        .win-indicator-vertical::after {
+            bottom: -15px;
+            box-shadow: 0 0 20px rgba(255, 204, 0, 0.8);
+        }
+
+        @keyframes pulse {
+            0% { transform: translateX(-50%) scale(1); opacity: 0.8; }
+            50% { transform: translateX(-50%) scale(1.1); opacity: 1; }
+            100% { transform: translateX(-50%) scale(1); opacity: 0.8; }
+        }
+
+        /* Кнопки */
+        .buttons-container {
+            text-align: center;
+            margin: 40px 0 20px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .open-button, .view-contents-button {
+            color: #222;
+            border: none;
+            padding: 18px 30px;
+            border-radius: 30px;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+            min-width: 200px;
+        }
+
+        .open-button {
+            background: linear-gradient(90deg, #ff8a00, #ffcc00);
+            box-shadow: 0 5px 20px rgba(255, 204, 0, 0.5);
+        }
+
+        .view-contents-button {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 204, 0, 0.3);
+        }
+
+        .open-button::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                to bottom right,
+                rgba(255,255,255,0) 45%,
+                rgba(255,255,255,0.3) 50%,
+                rgba(255,255,255,0) 55%
+            );
+            transform: rotate(30deg);
+            animation: shine 3s infinite;
+        }
+
+        @keyframes shine {
+            0% { transform: translateX(-100%) rotate(30deg); }
+            100% { transform: translateX(100%) rotate(30deg); }
+        }
+
+        .open-button:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(255, 204, 0, 0.7);
+        }
+
+        .view-contents-button:hover {
+            background: rgba(255, 204, 0, 0.2);
+            transform: translateY(-5px);
+        }
+
+        .open-button:disabled {
+            background: #666;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        .open-button:disabled::before {
+            display: none;
+        }
+
+        /* Модальное окно с содержимым кейса */
+        .contents-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.9);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+        }
+
+        .contents-modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .contents-modal {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            border-radius: 20px;
+            width: 90%;
+            max-width: 1200px;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 204, 0, 0.3);
+            position: relative;
+        }
+
+        .contents-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 204, 0, 0.2);
+        }
+
+        .contents-modal-title {
+            font-size: 28px;
+            background: linear-gradient(90deg, #ffcc00, #ff8a00);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 800;
+            margin: 0;
+        }
+
+        .close-contents-modal {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 30px;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .close-contents-modal:hover {
+            color: #ffcc00;
+        }
+
+        .contents-modal-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .modal-item-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 15px;
+            transition: all 0.3s;
+            border: 1px solid rgba(255, 204, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .modal-item-card:hover {
+            background: rgba(255, 204, 0, 0.1);
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(255, 204, 0, 0.2);
+        }
+
+        .modal-item-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(255,204,0,0.1) 0%, rgba(255,204,0,0) 100%);
+            z-index: 1;
+        }
+
+        .modal-item-image-container {
+            height: 100px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .modal-item-image {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.5));
+        }
+
+        .modal-item-name {
+            font-weight: 700;
+            margin-bottom: 8px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            position: relative;
+            z-index: 2;
+            font-size: 16px;
+        }
+
+        .modal-item-details {
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .modal-item-rarity {
+            font-weight: 600;
+            padding: 3px 8px;
+            border-radius: 4px;
+        }
+
+        .modal-item-price {
+            color: #ffcc00;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        /* Содержимое кейса */
+        .case-contents {
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 20px;
+            padding: 30px;
+            margin-top: 50px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 204, 0, 0.1);
+        }
+
+        .contents-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .contents-title {
+            font-size: 28px;
+            background: linear-gradient(90deg, #ffcc00, #ff8a00);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 800;
+            margin: 0;
+        }
+
+        .items-count {
+            background: rgba(255, 204, 0, 0.2);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+
+        .items-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 20px;
+        }
+
+        .item-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 20px;
+            transition: all 0.3s;
+            border: 1px solid rgba(255, 204, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .item-card:hover {
+            background: rgba(255, 204, 0, 0.1);
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(255, 204, 0, 0.2);
+        }
+
+        .item-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(255,204,0,0.1) 0%, rgba(255,204,0,0) 100%);
+            z-index: 1;
+        }
+
+        .item-image-container {
+            height: 120px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 15px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .item-image {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.5));
+        }
+
+        .item-name {
+            font-weight: 700;
+            margin-bottom: 10px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            position: relative;
+            z-index: 2;
+        }
+
+        .item-details {
+            display: flex;
+            justify-content: space-between;
+            font-size: 15px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .item-rarity {
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 4px;
+        }
+
+        .item-price {
+            color: #ffcc00;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        /* Футер */
+        footer {
+            background: rgba(0, 0, 0, 0.9);
+            padding: 40px 30px;
+            text-align: center;
+            border-top: 1px solid rgba(255, 204, 0, 0.1);
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            text-align: left;
+        }
+
+        .footer-column h3 {
+            color: #ffcc00;
+            margin-bottom: 20px;
+            font-size: 18px;
+        }
+
+        .footer-links {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .footer-links a {
+            color: #ccc;
+            text-decoration: none;
+            transition: color 0.3s;
+            font-size: 15px;
+        }
+
+        .footer-links a:hover {
+            color: #ffcc00;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .social-links a {
+            color: white;
+            font-size: 20px;
+            transition: color 0.3s;
+        }
+
+        .social-links a:hover {
+            color: #ffcc00;
+        }
+
+        .copyright {
+            margin-top: 40px;
+            color: #999;
+            font-size: 14px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 20px;
+        }
+
+        /* Анимация рулетки */
+        @keyframes spin {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(calc(-100% + 100vw)); }
+        }
+
+        /* Адаптивность */
+        @media (max-width: 1024px) {
+            .roulette-item {
+                flex: 0 0 180px;
+                height: 150px;
+            }
+
+            .items-grid {
+                grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            }
+
+            .contents-modal-grid {
+                grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            }
+        }
+
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                gap: 15px;
+                padding: 15px;
+            }
+
+            .user-controls {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .case-name {
+                font-size: 32px;
+            }
+
+            .case-header {
+                padding: 30px 20px;
+            }
+
+            .stat-item {
+                min-width: 120px;
+                padding: 10px 15px;
+            }
+
+            .stat-value {
+                font-size: 20px;
+            }
+
+            .roulette-item {
+                flex: 0 0 150px;
+                height: 130px;
+            }
+
+            .roulette-item-image {
+                width: 100px;
+                height: 70px;
+            }
+
+            .items-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+                gap: 15px;
+            }
+
+            .buttons-container {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .open-button, .view-contents-button {
+                width: 100%;
+                max-width: 300px;
+            }
+
+            .footer-content {
+                grid-template-columns: 1fr;
+                gap: 25px;
+            }
+
+            .contents-modal-grid {
+                grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            }
+        }
+
+        @media (max-width: 480px) {
+            main {
+                padding: 30px 15px;
+            }
+
+            .case-name {
+                font-size: 26px;
+                padding: 0 15px;
+            }
+
+            .case-header {
+                padding: 25px 15px;
+            }
+
+            .stat-item {
+                min-width: 100px;
+                padding: 8px 10px;
+            }
+
+            .stat-value {
+                font-size: 18px;
+            }
+
+            .stat-label {
+                font-size: 12px;
+            }
+
+            .roulette-section, .case-contents {
+                padding: 20px;
+            }
+
+            .roulette-item {
+                flex: 0 0 120px;
+                height: 110px;
+                margin-right: 10px;
+            }
+
+            .roulette-item-image {
+                width: 80px;
+                height: 50px;
+                margin-bottom: 8px;
+            }
+
+            .roulette-item-name {
+                font-size: 14px;
+                padding: 0 5px;
+            }
+
+            .open-button {
+                padding: 15px 30px;
+                font-size: 18px;
+                min-width: 200px;
+            }
+
+            .contents-modal {
+                padding: 20px;
+                width: 95%;
+            }
+
+            .contents-modal-title {
+                font-size: 22px;
+            }
+
+            .contents-modal-grid {
+                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+                gap: 15px;
+            }
+
+            .modal-item-name {
+                font-size: 14px;
+            }
+
+            .modal-item-details {
+                font-size: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+<!-- Хедер -->
+<header>
+    <div class="logo">
+        <img src="https://i.imgur.com/JQlE5gX.jpg" alt="TurboLoot Logo">
+        <h1>TurboLoot</h1>
+    </div>
+
+    <div class="user-controls">
+        <div class="balance">
+            <i class="fas fa-coins"></i>
+            <span th:text="${user != null ? user.balance + ' ₽' : '0 ₽'}">1000 ₽</span>
+        </div>
+    </div>
+</header>
+
+<!-- Основной контент -->
+<main>
+    <!-- Улучшенный заголовок кейса -->
+    <div class="case-header">
+        <h1 class="case-name" th:text="${case.nameCase}">Operation Broken Fang Case</h1>
+        <p class="case-description">Откройте кейс и получите эксклюзивные скины из этой коллекции</p>
+
+        <div class="case-stats">
+            <div class="stat-item">
+                <div class="stat-value" th:text="${items.size()}">24</div>
+                <div class="stat-label">Предметов</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" th:text="${case.price} + ' ₽'">500 ₽</div>
+                <div class="stat-label">Цена открытия</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">1/24</div>
+                <div class="stat-label">Шанс на редкий</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">3.5%</div>
+                <div class="stat-label">Шанс на мифический</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Рулетка -->
+    <section class="roulette-section">
+        <div class="roulette-container">
+            <!-- Улучшенный вертикальный индикатор выигрыша -->
+            <div class="win-indicator-vertical"></div>
+
+            <div class="roulette-track" id="rouletteTrack">
+                <!-- Элементы рулетки -->
+                <div class="roulette-item" th:each="item : ${items}">
+                    <img th:src="${item.image}" class="roulette-item-image" alt="Item image">
+                    <div class="roulette-item-name" th:text="${item.nameWeapon}">AK-47 | Asiimov</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Кнопки -->
+        <div class="buttons-container">
+            <button class="open-button" id="openButton">
+                <span th:if="${user != null}">Открыть за <span th:text="${case.price} + ' ₽'">500 ₽</span></span>
+                <span th:if="${user == null}" onclick="window.location.href='/login'">Войдите, чтобы открыть</span>
+            </button>
+        </div>
+    </section>
+
+    <!-- Содержимое кейса -->
+    <section class="case-contents">
+        <div class="contents-header">
+            <h2 class="contents-title">Содержимое кейса</h2>
+            <div class="items-count" th:text="${items.size() + ' предметов'}">24 предмета</div>
+        </div>
+
+        <div class="items-grid">
+            <!-- Все предметы в кейсе -->
+            <div class="item-card" th:each="item : ${items}" th:style="'border-color'">
+                <div class="item-name" th:text="${item.nameWeapon}"></div>
+                <div class="item-details">
+                    <span class="item-rarity" th:text="${item.rarity}"></span>
+                    <span class="item-price">
+                        <i class="fas fa-coins"></i>
+                        <span th:text="${item.price + ' ₽'}"></span>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<!-- Модальное окно с содержимым кейса -->
+<div class="contents-modal-overlay" id="contentsModal">
+    <div class="contents-modal">
+        <div class="contents-modal-header">
+            <h2 class="contents-modal-title">Что может выпасть</h2>
+            <button class="close-contents-modal" id="closeContentsModal">&times;</button>
+        </div>
+        <div class="contents-modal-grid" id="contentsModalGrid">
+        </div>
+    </div>
+</div>
+
+<!-- Футер -->
+<footer>
+    <div class="footer-content">
+        <div class="footer-column">
+            <h3>TurboLoot</h3>
+            <div class="footer-links">
+                <a href="/about">О нас</a>
+                <a href="/faq">FAQ</a>
+                <a href="/blog">Блог</a>
+                <a href="/careers">Карьера</a>
+            </div>
+        </div>
+
+        <div class="footer-column">
+            <h3>Помощь</h3>
+            <div class="footer-links">
+                <a href="/support">Поддержка</a>
+                <a href="/rules">Правила</a>
+                <a href="/safety">Безопасность</a>
+                <a href="/refund">Возврат средств</a>
+            </div>
+        </div>
+
+        <div class="footer-column">
+            <h3>Правовая информация</h3>
+            <div class="footer-links">
+                <a href="/terms">Условия использования</a>
+                <a href="/privacy">Политика конфиденциальности</a>
+                <a href="/cookies">Cookie-файлы</a>
+                <a href="/aml">AML политика</a>
+            </div>
+        </div>
+
+        <div class="footer-column">
+            <h3>Социальные сети</h3>
+            <div class="social-links">
+                <a href="#"><i class="fab fa-vk"></i></a>
+                <a href="#"><i class="fab fa-telegram"></i></a>
+                <a href="#"><i class="fab fa-youtube"></i></a>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+            </div>
+        </div>
+    </div>
+
+    <div class="copyright">
+        &copy; 2025 TurboLoot. Все права защищены. TurboLoot не аффилирован с Valve Corporation. Все товарные знаки являются собственностью их владельцев.
+    </div>
+</footer>
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    document.addEventListener('DOMContentLoaded', function() {
+        const rouletteTrack = document.getElementById('rouletteTrack');
+        const openButton = document.getElementById('openButton');
+        const viewContentsButton = document.getElementById('viewContentsButton');
+        const contentsModal = document.getElementById('contentsModal');
+        const closeContentsModal = document.getElementById('closeContentsModal');
+        const contentsModalGrid = document.getElementById('contentsModalGrid');
+        const user = /*[[${user}]]*/ null;
+        const items = /*[[${items}]]*/ [];
+        const casePrice = /*[[${case.price}]]*/ 0;
+
+        // Функция для цвета редкости
+        function getRarityColor(rarity) {
+            const colors = {
+                'Обычный': '#b0c3d9',
+                'Редкий': '#4b69ff',
+                'Мифический': '#8847ff',
+                'Легендарный': '#d32ce6',
+                'Древний': '#eb4b4b',
+                'Запретный': '#e4ae39'
+            };
+            return colors[rarity] || '#ffffff';
+        }
+
+        // Функция для заполнения модального окна с содержимым кейса
+        function fillContentsModal() {
+            contentsModalGrid.innerHTML = '';
+
+            items.forEach(item => {
+                const itemCard = document.createElement('div');
+                itemCard.className = 'modal-item-card';
+                itemCard.style.borderColor = getRarityColor(item.rarity);
+
+                itemCard.innerHTML = `
+                    <div class="modal-item-image-container">
+                        <img src="${item.image}" class="modal-item-image" alt="${item.nameWeapon}">
+                    </div>
+                    <div class="modal-item-name">${item.nameWeapon}</div>
+                    <div class="modal-item-details">
+                        <span class="modal-item-rarity" style="color: ${getRarityColor(item.rarity)}">${item.rarity}</span>
+                        <span class="modal-item-price">
+                            <i class="fas fa-coins"></i>
+                            ${item.price} ₽
+                        </span>
+                    </div>
+                `;
+
+                contentsModalGrid.appendChild(itemCard);
+            });
+        }
+
+        // Открытие модального окна с содержимым кейса
+        viewContentsButton.addEventListener('click', function() {
+            fillContentsModal();
+            contentsModal.classList.add('active');
+        });
+
+        // Закрытие модального окна
+        closeContentsModal.addEventListener('click', function() {
+            contentsModal.classList.remove('active');
+        });
+
+        // Закрытие модального окна при клике на оверлей
+        contentsModal.addEventListener('click', function(e) {
+            if (e.target === contentsModal) {
+                contentsModal.classList.remove('active');
+            }
+        });
+
+        // Если пользователь не авторизован
+        if (user === null) {
+            openButton.disabled = true;
+            openButton.style.background = '#666';
+
+            openButton.addEventListener('click', function() {
+                window.location.href = '/login?redirect=' + encodeURIComponent(window.location.pathname);
+            });
+            return;
+        }
+
+        // Проверка баланса
+        const userBalance = /*[[${user != null ? user.balance : 0}]]*/ 0;
+
+        if (userBalance < casePrice) {
+            openButton.disabled = true;
+            openButton.innerHTML = '<i class="fas fa-exclamation-circle"></i> Недостаточно средств';
+            return;
+        }
+
+        // Обработка открытия кейса для авторизованных
+        openButton.addEventListener('click', function() {
+            openButton.disabled = true;
+            openButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Открываем...';
+
+            // Анимация рулетки
+            const itemsCount = items.length;
+            const randomPosition = Math.floor(Math.random() * itemsCount) * 240;
+            const spinDuration = 5000; // 5 секунд
+
+            rouletteTrack.style.transition = `transform ${spinDuration}ms cubic-bezier(0.2, 0.8, 0.2, 1)`;
+            rouletteTrack.style.transform = `translateX(-${randomPosition}px)`;
+
+            // После завершения анимации
+            setTimeout(() => {
+                const wonItem = items[Math.floor(randomPosition / 240) % itemsCount];
+                showWinModal(wonItem);
+
+                // Сброс кнопки
+                setTimeout(() => {
+                    openButton.disabled = false;
+                    openButton.innerHTML = 'Открыть за ' + casePrice + ' ₽';
+                    rouletteTrack.style.transition = 'none';
+                    rouletteTrack.style.transform = 'translateX(0)';
+
+                    // Небольшая задержка перед сбросом трансформации
+                    setTimeout(() => {
+                        rouletteTrack.style.transition = 'transform 5s cubic-bezier(0.2, 0.8, 0.2, 1)';
+                    }, 50);
+                }, 3000);
+            }, spinDuration);
+        });
+
+        // Функция показа модального окна с выигрышем
+        function showWinModal(item) {
+            const modalHtml = `
+                <div class="win-modal-overlay">
+                    <div class="win-modal">
+                        <div class="win-modal-header">
+                            <h3>Поздравляем!</h3>
+                            <button class="close-modal">&times;</button>
+                        </div>
+                        <div class="win-modal-content">
+                            <div class="won-item">
+                                <img src="${item.image}" class="won-item-image">
+                                <div class="won-item-details">
+                                    <h4>${item.nameWeapon}</h4>
+                                    <div class="won-item-meta">
+                                        <span class="rarity" style="color: ${getRarityColor(item.rarity)}">${item.rarity}</span>
+                                        <span class="price">${item.price} ₽</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <p>Предмет был добавлен в ваш инвентарь</p>
+                            <button class="modal-button">Продолжить</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            const modalElement = document.createElement('div');
+            modalElement.innerHTML = modalHtml;
+            document.body.appendChild(modalElement);
+
+            // Обработчики закрытия модального окна
+            modalElement.querySelector('.close-modal').addEventListener('click', () => {
+                document.body.removeChild(modalElement);
+            });
+
+            modalElement.querySelector('.modal-button').addEventListener('click', () => {
+                document.body.removeChild(modalElement);
+            });
+        }
+    });
+    /*]]>*/
+</script>
+</body>
+</html>

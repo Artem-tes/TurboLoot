@@ -31,22 +31,19 @@ public class CaseService {
         model.addAttribute("case",aCase);
         model.addAttribute("user",request.getParameter("user"));
         model.addAttribute("items",getWeaponsToModel(aCase));
-        Weapon weapon = new Weapon(null,"p-usp","Эпический",80,130,null);
-        weaponRepository.save(weapon);
-        System.out.println(getWeaponsToModel(aCase));
         return "casepage";
     }
 
 
     private List<Weapon> getWeaponsToModel(Case aCase){
         List<Weapon> weapons = new ArrayList<>();
-        Integer[] integers = aCase.getWeapons();
+        List<Integer> integers = aCase.getWeapons();
         for (Integer integer : integers) {
             weapons.add(weaponRepository.getWeaponById(integer));
         }
-        for (Weapon weapon : weapons) {
-            weapon.setPrice(new Random().nextInt());
-        }
+//        for (Weapon weapon : weapons) {
+//            weapon.setPrice(new Random().nextInt());
+//        }
         return weapons;
     }
 }

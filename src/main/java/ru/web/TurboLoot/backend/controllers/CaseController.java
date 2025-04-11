@@ -22,5 +22,6 @@ public class CaseController {
                                   @RequestParam("case") String caseName,
                                   HttpServletRequest request){
         return caseService.returnPageCase(model,caseName, request);
+
     }
 }
