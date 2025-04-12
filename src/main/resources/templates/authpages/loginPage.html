@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>TurboLoot - Вход и регистрация</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        /* Общие стили */
+       * {
+           margin: 0;
+           padding: 0;
+           box-sizing: border-box;
+           font-family: 'Roboto', sans-serif;
+       }
+
+       body {
+           background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+           color: white;
+           min-height: 100vh;
+           display: flex;
+           flex-direction: column;
+       }
+
+       /* Хедер */
+       header {
+           background: rgba(0, 0, 0, 0.8);
+           padding: 15px 30px;
+           display: flex;
+           justify-content: space-between;
+           align-items: center;
+           box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+           position: sticky;
+           top: 0;
+           z-index: 100;
+           backdrop-filter: blur(10px);
+       }
+
+       .logo {
+           display: flex;
+           align-items: center;
+           gap: 10px;
+       }
+
+       .logo h1 {
+           font-size: 24px;
+           background: linear-gradient(to right, #ff8a00, #ffcc00);
+           -webkit-background-clip: text;
+           -webkit-text-fill-color: transparent;
+           font-weight: 800;
+           font-family: 'Montserrat', sans-serif;
+       }
+
+       /* Основной контент */
+       .auth-container {
+           display: flex;
+           justify-content: center;
+           align-items: center;
+           flex: 1;
+           padding: 40px 20px;
+       }
+
+       .auth-box {
+           background: rgba(255, 255, 255, 0.05);
+           border-radius: 15px;
+           width: 100%;
+           max-width: 450px;
+           padding: 40px;
+           box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+           border: 1px solid rgba(255, 255, 255, 0.1);
+           transition: all 0.3s ease;
+           position: relative;
+           overflow: hidden;
+       }
+
+       .auth-box::before {
+           content: '';
+           position: absolute;
+           top: -50%;
+           left: -50%;
+           width: 200%;
+           height: 200%;
+           background: radial-gradient(circle, rgba(255,204,0,0.1) 0%, transparent 70%);
+           animation: rotate 20s linear infinite;
+           z-index: -1;
+       }
+
+       .auth-box:hover {
+           border-color: rgba(255, 204, 0, 0.3);
+           box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+       }
+
+       .auth-header {
+           text-align: center;
+           margin-bottom: 30px;
+       }
+
+       .auth-header h2 {
+           font-size: 2rem;
+           font-weight: 700;
+           margin-bottom: 10px;
+           font-family: 'Montserrat', sans-serif;
+           background: linear-gradient(to right, #ff8a00, #ffcc00);
+           -webkit-background-clip: text;
+           -webkit-text-fill-color: transparent;
+       }
+
+       .auth-header p {
+           color: rgba(255, 255, 255, 0.7);
+           font-size: 0.9rem;
+       }
+
+       .auth-form .form-group {
+           margin-bottom: 20px;
+           position: relative;
+       }
+
+       .auth-form .form-group label {
+           display: block;
+           margin-bottom: 8px;
+           font-weight: 500;
+           color: rgba(255, 255, 255, 0.9);
+       }
+
+       .auth-form .form-control {
+           width: 100%;
+           padding: 12px 15px;
+           background: rgba(255, 255, 255, 0.1);
+           border: 1px solid rgba(255, 255, 255, 0.2);
+           border-radius: 8px;
+           color: white;
+           font-size: 1rem;
+           transition: all 0.3s ease;
+       }
+
+       .auth-form .form-control:focus {
+           outline: none;
+           border-color: #ffcc00;
+           box-shadow: 0 0 0 2px rgba(255, 204, 0, 0.2);
+           background: rgba(255, 255, 255, 0.15);
+       }
+
+       .auth-form .form-control::placeholder {
+           color: rgba(255, 255, 255, 0.5);
+       }
+
+       .password-toggle {
+           position: absolute;
+           right: 15px;
+           top: 40px;
+           color: rgba(255, 255, 255, 0.5);
+           cursor: pointer;
+           transition: color 0.3s;
+       }
+
+       .password-toggle:hover {
+           color: #ffcc00;
+       }
+
+       .submit-btn {
+           width: 100%;
+           padding: 14px;
+           background: linear-gradient(90deg, #ff8a00, #ffcc00);
+           border: none;
+           border-radius: 8px;
+           color: #222;
+           font-weight: 600;
+           font-size: 1rem;
+           cursor: pointer;
+           transition: all 0.3s ease;
+           margin-top: 10px;
+           box-shadow: 0 4px 15px rgba(255, 204, 0, 0.3);
+       }
+
+       .submit-btn:hover {
+           transform: translateY(-2px);
+           box-shadow: 0 6px 20px rgba(255, 204, 0, 0.4);
+       }
+
+       .auth-footer {
+           text-align: center;
+           margin-top: 25px;
+           color: rgba(255, 255, 255, 0.7);
+           font-size: 0.9rem;
+       }
+
+       .auth-footer a {
+           color: #ffcc00;
+           text-decoration: none;
+           font-weight: 500;
+           transition: all 0.3s;
+           position: relative;
+       }
+
+       .auth-footer a::after {
+           content: '';
+           position: absolute;
+           bottom: -2px;
+           left: 0;
+           width: 0;
+           height: 1px;
+           background: #ffcc00;
+           transition: width 0.3s;
+       }
+
+       .auth-footer a:hover::after {
+           width: 100%;
+       }
+
+       .social-auth {
+           margin: 25px 0;
+           text-align: center;
+       }
+
+       .social-auth p {
+           color: rgba(255, 255, 255, 0.7);
+           margin-bottom: 15px;
+           position: relative;
+       }
+
+       .social-auth p::before,
+       .social-auth p::after {
+           content: '';
+           position: absolute;
+           top: 50%;
+           width: 30%;
+           height: 1px;
+           background: rgba(255, 255, 255, 0.2);
+       }
+
+       .social-auth p::before {
+           left: 0;
+       }
+
+       .social-auth p::after {
+           right: 0;
+       }
+
+       .social-buttons {
+           display: flex;
+           justify-content: center;
+           gap: 15px;
+       }
+
+       .social-btn {
+           width: 40px;
+           height: 40px;
+           border-radius: 50%;
+           display: flex;
+           align-items: center;
+           justify-content: center;
+           background: rgba(255, 255, 255, 0.1);
+           color: white;
+           transition: all 0.3s;
+       }
+
+       .social-btn:hover {
+           transform: translateY(-3px);
+           box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+       }
+
+       .social-btn.vk { background: #4a76a8; }
+       .social-btn.google { background: #db4437; }
+       .social-btn.steam { background: #171a21; }
+
+       /* Анимации */
+       @keyframes rotate {
+           from { transform: rotate(0deg); }
+           to { transform: rotate(360deg); }
+       }
+
+       @keyframes fadeIn {
+           from { opacity: 0; transform: translateY(20px); }
+           to { opacity: 1; transform: translateY(0); }
+       }
+
+       /* Адаптивность */
+       @media (max-width: 768px) {
+           .auth-box {
+               padding: 30px 20px;
+           }
+
+           .auth-header h2 {
+               font-size: 1.8rem;
+           }
+       }
+
+       @media (max-width: 480px) {
+           .auth-box {
+               padding: 25px 15px;
+           }
+
+           .auth-header h2 {
+               font-size: 1.5rem;
+           }
+
+           .auth-form .form-control {
+               padding: 10px 12px;
+           }
+       }
+    </style>
+</head>
+<body>
+<!-- Хедер (без изменений) -->
+<header>
+    <div class="logo">
+        <h1>TurboLoot</h1>
+    </div>
+</header>
+
+<!-- Основной контент -->
+<div class="auth-container">
+    <div class="auth-box">
+        <!-- Форма входа -->
+        <div class="auth-header">
+            <h2>Вход в аккаунт</h2>
+            <p>Введите свои данные для входа</p>
+        </div>
+
+        <!-- Форма с id для удобного обращения из JS -->
+        <form class="auth-form" id="loginForm">
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" class="form-control" placeholder="Ваш email" required>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Пароль</label>
+                <input type="password" id="password" name="password" class="form-control" placeholder="Ваш пароль" required>
+                <i class="fas fa-eye password-toggle" id="togglePassword"></i>
+            </div>
+
+            <button type="submit" class="submit-btn">
+                <i class="fas fa-sign-in-alt"></i> Войти
+            </button>
+        </form>
+
+        <!-- Социальные кнопки (без изменений) -->
+        <div class="social-auth">
+            <p>Или войдите через</p>
+            <div class="social-buttons">
+                <a href="#" class="social-btn vk">
+                    <i class="fab fa-vk"></i>
+                </a>
+                <a href="#" class="social-btn google">
+                    <i class="fab fa-google"></i>
+                </a>
+                <a href="#" class="social-btn steam">
+                    <i class="fab fa-steam"></i>
+                </a>
+            </div>
+        </div>
+
+        <div class="auth-footer">
+            Нет аккаунта? <a href="/register">Зарегистрируйтесь</a>
+        </div>
+    </div>
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // Элементы
+        const password = document.getElementById('password');
+        const togglePassword = document.getElementById('togglePassword');
+        const loginForm = document.getElementById('loginForm');
+        const notification = document.getElementById('notification');
+        const notificationText = document.getElementById('notificationText');
+
+        // Переключение видимости пароля
+        togglePassword.addEventListener('click', () => {
+            password.type = password.type === 'password' ? 'text' : 'password';
+            togglePassword.classList.toggle('fa-eye-slash');
+        });
+
+        // Показать уведомление
+        const showAlert = (msg, isSuccess = false) => {
+            notificationText.textContent = msg;
+            notification.className = `notification ${isSuccess ? 'success' : ''}`;
+            notification.classList.add('show');
+            setTimeout(() => notification.classList.remove('show'), 3000);
+        };
+
+        // Отправка формы
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = e.target.querySelector('button[type="submit"]');
+
+            try {
+                btn.disabled = true;
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Вход...';
+
+                const response = await fetch('/auth/login', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        email: document.getElementById('email').value.trim(),
+                        password: password.value
+                    })
+                });
+
+                const data = await response.json();
+                data.message === 'complete'
+                    ? (showAlert('Успешный вход!', true), setTimeout(() => location.href = '/', 1500))
+                    : showAlert('Логин или пароль неверны');
+            } catch {
+                showAlert('Ошибка сервера');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Войти';
+            }
+        });
+    });
+</script>
+</body>
+</html>

@@ -3,6 +3,8 @@ package ru.web.TurboLoot.backend.models;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 @Entity
 @Table(name = "user_data")
 @Getter
@@ -17,8 +19,17 @@ public class User {
     @Column(name = "id")
     private Integer id;
 
-    @Column(name = "name")
-    private String name;
+    @Column(name = "email")
+    private String email;
+
+    @Column(name = "password")
+    private String password;
+
+    @Column(name = "balance")
+    private Integer balance;
+
+    @Column(name = "inventory")
+    private List<Integer> inventory;
 
 
 
