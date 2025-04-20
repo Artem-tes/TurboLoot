@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.web.TurboLoot.backend.models.User;
 import ru.web.TurboLoot.backend.models.Weapon;
+import ru.web.TurboLoot.backend.models.dto.UserDTO;
+import ru.web.TurboLoot.backend.models.dto.WeaponDTO;
 import ru.web.TurboLoot.backend.repositories.UserRepository;
 import ru.web.TurboLoot.backend.repositories.WeaponRepository;
 
@@ -27,16 +29,38 @@ public class AccountService {
     public Map<String,Object> getInventoryToGetDataController(HttpServletRequest request){
         User user = (User) request.getSession().getAttribute("user");
         Map<String,Object> response = new HashMap<>();
-        List<Weapon> weapons = getListWeapon(user);
+        List<WeaponDTO> weapons = getListWeaponDTO(user);
         response.put("items",weapons);
         return response;
     }
 
-    private List<Weapon> getListWeapon(User user){
+    public Map<String,Object> getProfileData(HttpServletRequest request){
+        Map<String,Object> response = new HashMap<>();
+        User user = (User) request.getSession().getAttribute("user");
+        response.put("user",formUserDTO(user));
+        return response;
+    }
+
+    private UserDTO formUserDTO(User user){
+        UserDTO userDTO = new UserDTO(
+                user.getEmail(),
+                user.getUsername(),
+                user.getBalance(),
+                user.getInventory()
+                ,user.getCountCases()
+                ,user.getCountInventory(),
+                user.getTransactional());
+        return userDTO;
+    }
+
+    private List<WeaponDTO> getListWeaponDTO(User user){
         List<Integer> idItems = user.getInventory();
-        List<Weapon> weapons = new ArrayList<>();
+        List<WeaponDTO> weapons = new ArrayList<>();
         for (Integer idItem : idItems) {
-            weapons.add(weaponRepository.getWeaponById(idItem));
+            WeaponDTO weaponDTO = new WeaponDTO(String.valueOf(weaponRepository.getWeaponById(idItem).getNameWeapon()),
+                    String.valueOf(weaponRepository.getWeaponById(idItem).getRarity()
+                    ), weaponRepository.getWeaponById(idItem).getPrice());
+            weapons.add(weaponDTO);
         }
         return weapons;
     }

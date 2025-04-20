@@ -52,7 +52,7 @@ public class AuthService {
     }
 
     public boolean getRegInfo(Map<String,Object> data){
-        User user = new User(null,(String)data.get("username"),(String) data.get("email"),(String) data.get("password"),0,new ArrayList<Integer>());
+        User user = new User(null,(String)data.get("username"),(String) data.get("email"),(String) data.get("password"),0,new ArrayList<Integer>(),0,0,new ArrayList<>());
         for (User user1 : userRepository.findAll()) {
             if(user1.getEmail().equals(user.getEmail())){
                 return false;

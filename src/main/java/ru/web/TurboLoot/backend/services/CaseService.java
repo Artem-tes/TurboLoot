@@ -36,9 +36,10 @@ public class CaseService {
         for (Integer idItem : idItems) {
             weapons.add(weaponRepository.getWeaponById(idItem));
         }
+        User user = (User) request.getSession().getAttribute("user");
         map.put("case",caseByName);
         map.put("items",weapons);
-        map.put("user",request.getSession().getAttribute("user"));
+        map.put("user",user.getBalance());
         map.put("chance",returnChanses(caseByName));
         return map;
     }
@@ -107,8 +108,17 @@ public class CaseService {
         map.put("status",returnStatus(request,nameCase));
         map.put("item",winWeapon);
         updateUserInventory(request,winWeapon);
+        updateCountCasesAndCountItems(request,nameCase);
         return map;
     }
+
+    private void updateCountCasesAndCountItems(HttpServletRequest request, String nameCase){
+        User user = (User) request.getSession().getAttribute("user");
+        user.setCountCases(user.getCountCases()+1);
+        user.setCountInventory(user.getInventory().size());
+        userRepository.save(user);
+    }
+
     private void updateUserInventory(HttpServletRequest request, Weapon winItem){
         User user = (User) request.getSession().getAttribute("user");
         user.getInventory().add(winItem.getId());

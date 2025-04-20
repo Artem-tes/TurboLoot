@@ -926,7 +926,7 @@
 
     async function fetchProfileData() {
         try {
-            const response = await fetch('/account/get-data/profile', {
+            const response = await fetch('/account/get-data/get-profile-data', {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -960,6 +960,9 @@
             const balanceStatElement = document.getElementById('balanceStat');
             const mainBalanceElement = document.getElementById('userBalance');
             const usernameElement = document.getElementById('usernamePlaceholder');
+            const casesStat = document.getElementById('casesStat');
+            const itemsStat = document.getElementById('itemsStat');
+
 
             console.log('Найденные элементы:', {
                 greetingElement,
@@ -974,6 +977,14 @@
             if (greetingElement) {
                 greetingElement.textContent = username;
                 console.log('Обновлено userGreeting');
+            }
+
+            if (casesStat) {
+                casesStat.textContent = user.countCases;
+            }
+
+            if (itemsStat) {
+                itemsStat.textContent = user.countInventory;
             }
 
             if (usernameElement) {

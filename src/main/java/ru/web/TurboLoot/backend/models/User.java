@@ -34,6 +34,15 @@ public class User {
     @Column(name = "inventory")
     private List<Integer> inventory;
 
+    @Column(name = "count_cases")
+    private Integer countCases;
+
+    @Column(name = "count_inventory")
+    private Integer countInventory;
+
+    @Column(name = "transactional_id")
+    private List<Integer> transactional;
+
 
 
 }

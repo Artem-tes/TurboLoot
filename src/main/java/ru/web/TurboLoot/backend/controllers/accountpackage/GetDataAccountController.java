@@ -19,21 +19,16 @@ public class GetDataAccountController {
     AccountService accountService;
 
     @GetMapping("/get-inventory")
+    @ResponseBody
     public ResponseEntity<Map<String,Object>> getInventoryToProfilePage(HttpServletRequest request){
         Map<String,Object> response = accountService.getInventoryToGetDataController(request);
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/profile")
+    @GetMapping("/get-profile-data")
     @ResponseBody
     public ResponseEntity<Map<String,Object>> getDataToProfilePage(HttpServletRequest request){
-        Map<String,Object> response = new HashMap<>();
-        Map<String, Object> map = new HashMap<>();
-        User user = (User) request.getSession().getAttribute("user");
-        map.put("username",user.getUsername());
-        map.put("email", user.getEmail());
-        map.put("balance",user.getBalance());
-        response.put("user",map);
+        Map<String,Object> response = accountService.getProfileData(request);
         return ResponseEntity.ok(response);
     }
 
