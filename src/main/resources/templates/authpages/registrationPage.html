@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>TurboLoot - Регистрация</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        /* Общие стили */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Хедер */
+        header {
+            background: rgba(0, 0, 0, 0.8);
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo h1 {
+            font-size: 24px;
+            background: linear-gradient(to right, #ff8a00, #ffcc00);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 800;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        /* Основной контент */
+        .auth-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex: 1;
+            padding: 40px 20px;
+        }
+
+        .auth-box {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            width: 100%;
+            max-width: 450px;
+            padding: 40px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .auth-box::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,204,0,0.1) 0%, transparent 70%);
+            animation: rotate 20s linear infinite;
+            z-index: -1;
+        }
+
+        .auth-box:hover {
+            border-color: rgba(255, 204, 0, 0.3);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .auth-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .auth-header h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            font-family: 'Montserrat', sans-serif;
+            background: linear-gradient(to right, #ff8a00, #ffcc00);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .auth-header p {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+        }
+
+        .auth-form .form-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .auth-form .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .auth-form .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            color: white;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .auth-form .form-control:focus {
+            outline: none;
+            border-color: #ffcc00;
+            box-shadow: 0 0 0 2px rgba(255, 204, 0, 0.2);
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .auth-form .form-control::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 15px;
+            top: 40px;
+            color: rgba(255, 255, 255, 0.5);
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .password-toggle:hover {
+            color: #ffcc00;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(90deg, #ff8a00, #ffcc00);
+            border: none;
+            border-radius: 8px;
+            color: #222;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+            box-shadow: 0 4px 15px rgba(255, 204, 0, 0.3);
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 204, 0, 0.4);
+        }
+
+        .auth-footer {
+            text-align: center;
+            margin-top: 25px;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+        }
+
+        .auth-footer a {
+            color: #ffcc00;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .auth-footer a::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background: #ffcc00;
+            transition: width 0.3s;
+        }
+
+        .auth-footer a:hover::after {
+            width: 100%;
+        }
+
+        .terms-checkbox {
+            display: flex;
+            align-items: center;
+            margin: 20px 0;
+        }
+
+        .terms-checkbox input {
+            margin-right: 10px;
+        }
+
+        .terms-text {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .terms-text a {
+            color: #ffcc00;
+            text-decoration: none;
+        }
+
+        /* Анимации */
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Адаптивность */
+        @media (max-width: 768px) {
+            .auth-box {
+                padding: 30px 20px;
+            }
+
+            .auth-header h2 {
+                font-size: 1.8rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .auth-box {
+                padding: 25px 15px;
+            }
+
+            .auth-header h2 {
+                font-size: 1.5rem;
+            }
+
+            .auth-form .form-control {
+                padding: 10px 12px;
+            }
+        }
+
+        /* Стили для уведомлений */
+        .login-notification {
+            position: fixed;
+            top: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-50px);
+            padding: 18px 30px;
+            border-radius: 12px;
+            color: white;
+            font-weight: 600;
+            font-size: 16px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+            z-index: 9999;
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            max-width: 90%;
+            width: auto;
+            min-width: 300px;
+            text-align: center;
+            pointer-events: none;
+            backdrop-filter: blur(4px);
+        }
+
+        .login-notification.error {
+            background: linear-gradient(135deg, #ff5e5e, #ff2d2d);
+            border-left: 5px solid #ff0000;
+        }
+
+        .login-notification.success {
+            background: linear-gradient(135deg, #00d27a, #00b16a);
+            border-left: 5px solid #008a50;
+        }
+
+        /* Иконки для уведомлений */
+        .login-notification::before {
+            content: '';
+            display: inline-block;
+            width: 22px;
+            height: 22px;
+            margin-right: 12px;
+            background-size: contain;
+            background-repeat: no-repeat;
+        }
+
+        .login-notification.error::before {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z'/%3E%3C/svg%3E");
+        }
+
+        .login-notification.success::before {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z'/%3E%3C/svg%3E");
+        }
+
+        /* Анимации уведомлений */
+        @keyframes slideIn {
+            0% { transform: translateX(-50%) translateY(-50px); opacity: 0; }
+            100% { transform: translateX(-50%) translateY(0); opacity: 1; }
+        }
+
+        @keyframes slideOut {
+            0% { transform: translateX(-50%) translateY(0); opacity: 1; }
+            100% { transform: translateX(-50%) translateY(-50px); opacity: 0; }
+        }
+
+        @keyframes gentleShake {
+            0%, 100% { transform: translateX(-50%) translateY(0); }
+            20% { transform: translateX(-52%) translateY(0); }
+            40% { transform: translateX(-48%) translateY(0); }
+            60% { transform: translateX(-51%) translateY(0); }
+            80% { transform: translateX(-49%) translateY(0); }
+        }
+
+        .login-notification.show {
+            animation: slideIn 0.5s forwards;
+            display: flex;
+        }
+
+        .login-notification.hide {
+            animation: slideOut 0.5s forwards;
+        }
+
+        .login-notification.error.show {
+            animation: slideIn 0.5s forwards, gentleShake 0.8s ease 0.5s;
+        }
+    </style>
+</head>
+<body>
+<!-- Хедер -->
+<header>
+    <div class="logo">
+        <h1>TurboLoot</h1>
+    </div>
+</header>
+
+<!-- Основной контент -->
+<div class="auth-container">
+    <div class="auth-box">
+        <!-- Заголовок регистрации -->
+        <div class="auth-header">
+            <h2>Создать аккаунт</h2>
+            <p>Заполните форму для регистрации</p>
+        </div>
+
+        <!-- Форма регистрации -->
+        <form class="auth-form" id="registrationForm">
+            <div class="form-group">
+                <label for="username">Имя пользователя</label>
+                <input type="text" id="username" name="username" class="form-control" placeholder="Придумайте имя" required>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" class="form-control" placeholder="Ваш email" required>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Пароль</label>
+                <input type="password" id="password" name="password" class="form-control" placeholder="Придумайте пароль" required>
+                <i class="fas fa-eye password-toggle" id="togglePassword"></i>
+            </div>
+
+            <div class="form-group">
+                <label for="confirmPassword">Подтвердите пароль</label>
+                <input type="password" id="confirmPassword" name="confirmPassword" class="form-control" placeholder="Повторите пароль" required>
+                <i class="fas fa-eye password-toggle" id="toggleConfirmPassword"></i>
+            </div>
+
+            <div class="terms-checkbox">
+                <input type="checkbox" id="agreeTerms" name="agreeTerms" required>
+                <label for="agreeTerms" class="terms-text">
+                    Я согласен с <a href="/terms">условиями использования</a> и <a href="/privacy">политикой конфиденциальности</a>
+                </label>
+            </div>
+
+            <button type="submit" class="submit-btn">
+                <i class="fas fa-user-plus"></i> Зарегистрироваться
+            </button>
+        </form>
+
+        <div class="auth-footer">
+            Уже есть аккаунт? <a href="/auth/login">Войдите</a>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // Элементы формы
+        const password = document.getElementById('password');
+        const username = document.getElementById('username');
+        const confirmPassword = document.getElementById('confirmPassword');
+        const togglePassword = document.getElementById('togglePassword');
+        const toggleConfirmPassword = document.getElementById('toggleConfirmPassword');
+        const registrationForm = document.getElementById('registrationForm');
+        const submitBtn = registrationForm.querySelector('button[type="submit"]');
+
+        // Создаем элемент для уведомлений
+        const notification = document.createElement('div');
+        notification.className = 'login-notification';
+        document.body.appendChild(notification);
+
+        // Переключение видимости паролей
+        togglePassword.addEventListener('click', () => {
+            password.type = password.type === 'password' ? 'text' : 'password';
+            togglePassword.classList.toggle('fa-eye-slash');
+        });
+
+        toggleConfirmPassword.addEventListener('click', () => {
+            confirmPassword.type = confirmPassword.type === 'password' ? 'text' : 'password';
+            toggleConfirmPassword.classList.toggle('fa-eye-slash');
+        });
+
+        // Функция показа уведомлений
+        function showNotification(message, isSuccess = false) {
+            notification.textContent = message;
+            notification.className = `login-notification ${isSuccess ? 'success' : 'error'}`;
+
+            // Показываем уведомление
+            notification.classList.remove('hide');
+            notification.classList.add('show');
+
+            // Скрываем через 3.5 секунды
+            setTimeout(() => {
+                notification.classList.remove('show');
+                notification.classList.add('hide');
+            }, 3500);
+        }
+
+        // Отправка формы регистрации
+        registrationForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            // Проверка совпадения паролей
+            if (password.value !== confirmPassword.value) {
+                showNotification('Пароли не совпадают');
+                return;
+            }
+
+            // Блокируем кнопку
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Регистрация...';
+
+            try {
+                // Формируем данные запроса
+                const requestData = {
+                    username : username.value,
+                    email: document.getElementById('email').value.trim(),
+                    password: password.value
+                };
+
+                // Отправляем запрос
+                const response = await fetch('/auth/registration', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(requestData)
+                });
+
+                // Обрабатываем ответ
+                const data = await response.json();
+
+                if (response.ok) {
+                    if (data.message === 'success') {
+                        showNotification('Регистрация прошла успешно!', true);
+                        setTimeout(() => window.location.href = '/auth/login', 1500);
+                    } else {
+                        showNotification('Логин занят!');
+                    }
+                } else {
+                    showNotification(data.message || 'Ошибка сервера: ' + response.status);
+                }
+            } catch (error) {
+                showNotification('Ошибка соединения');
+            } finally {
+                // Разблокируем кнопку
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fas fa-user-plus"></i> Зарегистрироваться';
+            }
+        });
+    });
+</script>
+</body>
+</html>

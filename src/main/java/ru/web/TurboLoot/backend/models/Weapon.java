@@ -1,5 +1,6 @@
 package ru.web.TurboLoot.backend.models;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.JdbcTypeCode;
@@ -23,17 +24,15 @@ public class Weapon {
     @Column(name = "name_weapon", nullable = false)
     private String nameWeapon;
 
+    //@JsonProperty("Rarity")
     @Column(name = "rarity", nullable = false)
     private String rarity;
 
-    @Column(name = "shance",nullable = false)
-    private Integer chance;
+    //@JsonProperty("chance")
+    @Column(name = "chance",nullable = false)
+    private float chance;
 
     @Column(name = "price", nullable = false)
     private Integer price;
 
-    @Lob
-    @JdbcTypeCode(Types.BINARY)
-    @Column(name = "image")
-    private byte[] image;
 }

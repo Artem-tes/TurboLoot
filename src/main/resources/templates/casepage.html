@@ -21,6 +21,77 @@
             flex-direction: column;
         }
 
+        /* Hero блок */
+        .hero-section {
+            height: 400px;
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
+                        url('https://via.placeholder.com/1920x1080') center/cover no-repeat;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-content {
+            max-width: 800px;
+            padding: 0 20px;
+            z-index: 2;
+        }
+
+        .hero-title {
+            font-size: 48px;
+            font-weight: 800;
+            margin-bottom: 20px;
+            background: linear-gradient(90deg, #ff8a00, #ffcc00);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 2px 10px rgba(255, 140, 0, 0.3);
+        }
+
+        .hero-subtitle {
+            font-size: 20px;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        .hero-button {
+            display: inline-block;
+            padding: 15px 30px;
+            background: linear-gradient(90deg, #ff8a00, #ffcc00);
+            color: #222;
+            font-weight: 700;
+            border-radius: 30px;
+            text-decoration: none;
+            font-size: 18px;
+            transition: all 0.3s;
+            box-shadow: 0 5px 20px rgba(255, 204, 0, 0.5);
+        }
+
+        .hero-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(255, 204, 0, 0.7);
+        }
+
+        /* Глобальные стили */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
         /* Хедер */
         header {
             background: rgba(0, 0, 0, 0.8);
@@ -33,11 +104,20 @@
             z-index: 10;
         }
 
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 15px;
+        .logo a {
+          font-size: 1.4rem;
+          font-weight: bold;
+          color: #ffcc00;
+          text-decoration: none;
+          transition: color 0.3s ease, text-shadow 0.3s ease;
         }
+
+        .logo a:hover {
+          color: #ffd633;
+          text-shadow: 0 0 5px rgba(255, 204, 0, 0.7);
+        }
+
+
 
         .logo img {
             height: 50px;
@@ -252,47 +332,23 @@
             font-weight: 600;
         }
 
-        /* Улучшенный вертикальный индикатор выигрыша */
-        .win-indicator-vertical {
+                .win-indicator {
             position: absolute;
-            left: 50%;
             top: 0;
+            left: 50%;
             transform: translateX(-50%);
-            width: 6px;
+            width: 4px;
             height: 100%;
             background: linear-gradient(to bottom,
                 transparent 0%,
-                #ffcc00 15%,
-                #ffcc00 85%,
+                #ffcc00 20%,
+                #ffcc00 80%,
                 transparent 100%);
-            box-shadow: 0 0 25px rgba(255, 204, 0, 0.9);
-            z-index: 5;
+            box-shadow: 0 0 15px rgba(255, 204, 0, 0.9);
+            z-index: 10;
+            pointer-events: none;
         }
 
-        .win-indicator-vertical::before,
-        .win-indicator-vertical::after {
-            content: '';
-            position: absolute;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            background: rgba(255, 204, 0, 0.6);
-            z-index: 6;
-            border: 2px solid rgba(255, 204, 0, 0.8);
-            animation: pulse 2s infinite;
-        }
-
-        .win-indicator-vertical::before {
-            top: -15px;
-            box-shadow: 0 0 20px rgba(255, 204, 0, 0.8);
-        }
-
-        .win-indicator-vertical::after {
-            bottom: -15px;
-            box-shadow: 0 0 20px rgba(255, 204, 0, 0.8);
-        }
 
         @keyframes pulse {
             0% { transform: translateX(-50%) scale(1); opacity: 0.8; }
@@ -873,65 +929,422 @@
 <body>
 <!-- Хедер -->
 <header>
+
     <div class="logo">
-        <h1>TurboLoot</h1>
+        <a href="/" title="На главную">TurboLoot</a>
     </div>
+
 
     <div class="user-controls">
         <div class="balance">
             <i class="fas fa-coins"></i>
-            <span th:text="${user != null ? user.balance + ' ₽' : '0 ₽'}">1000 ₽</span>
+            <span id="userBalance">0 ₽</span>
         </div>
     </div>
 </header>
 
+<!-- Hero блок -->
+<section class="hero-section">
+    <div class="hero-overlay"></div>
+    <div class="particles" id="particles-js"></div>
+    <div class="hero-content">
+        <div class="hero-badge">
+            <span>НОВЫЙ КЕЙС</span>
+            <div class="badge-glow"></div>
+        </div>
+        <h1 class="hero-title" id="caseHeroTitle">
+            <span class="title-gradient">Коллекция</span>
+            <span class="title-outline">"Глобальное Наступление"</span>
+        </h1>
+        <p class="hero-subtitle">
+            Эксклюзивная коллекция премиальных скинов для настоящих ценителей Counter-Strike.<br>
+            Шанс получить легендарный нож увеличен на 15% в течение ограниченного времени!
+        </p>
+        <div class="hero-features">
+            <div class="feature-item">
+                <i class="fas fa-gem pulse"></i>
+                <span>Более 50 уникальных скинов</span>
+            </div>
+            <div class="feature-item">
+                <i class="fas fa-bolt pulse"></i>
+                <span>Повышенный шанс на редкие предметы</span>
+            </div>
+            <div class="feature-item">
+                <i class="fas fa-shield-alt pulse"></i>
+                <span>Гарантированный предмет за каждое открытие</span>
+            </div>
+        </div>
+        <div class="hero-buttons">
+            <a href="#caseSection" class="hero-button shine">
+                <i class="fas fa-box-open"></i>
+                <span>Открыть кейс</span>
+            </a>
+            <a href="#contents" class="hero-button secondary">
+                <i class="fas fa-list"></i>
+                <span>Смотреть коллекцию</span>
+            </a>
+        </div>
+    </div>
+    <div class="hero-scroll-indicator">
+        <span>Листайте вниз</span>
+        <i class="fas fa-chevron-down bounce"></i>
+    </div>
+</section>
+
+<style>
+    /* Hero Section Styles */
+    .hero-section {
+        height: 100vh;
+        min-height: 800px;
+        background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
+                    url('https://images.unsplash.com/photo-1542751371-adc38448a05e?ixlib=rb-1.2.1&auto=format&fit=crop&w=1920&q=80') center/cover no-repeat;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+        color: white;
+    }
+
+    .hero-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(circle at 70% 30%, rgba(255,140,0,0.2) 0%, transparent 40%),
+                    radial-gradient(circle at 30% 70%, rgba(0,100,255,0.2) 0%, transparent 40%);
+        z-index: 1;
+    }
+
+    .hero-content {
+        max-width: 1200px;
+        padding: 0 30px;
+        z-index: 2;
+        position: relative;
+        transform: translateY(50px);
+        opacity: 0;
+        animation: fadeInUp 1s forwards 0.3s;
+    }
+
+    .hero-badge {
+        display: inline-block;
+        background: linear-gradient(90deg, #ff8a00, #ff3355);
+        color: white;
+        padding: 10px 25px;
+        border-radius: 30px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        font-size: 14px;
+        margin-bottom: 30px;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(255, 51, 85, 0.4);
+    }
+
+    .badge-glow {
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: linear-gradient(
+            to bottom right,
+            rgba(255,255,255,0) 45%,
+            rgba(255,255,255,0.3) 50%,
+            rgba(255,255,255,0) 55%
+        );
+        transform: rotate(30deg);
+        animation: shine 3s infinite;
+    }
+
+    .hero-title {
+        font-size: 72px;
+        font-weight: 900;
+        margin-bottom: 25px;
+        line-height: 1.2;
+        text-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    .title-gradient {
+        background: linear-gradient(90deg, #ffcc00, #ff8a00);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        display: block;
+    }
+
+    .title-outline {
+        color: transparent;
+        -webkit-text-stroke: 2px white;
+        text-stroke: 2px white;
+        display: block;
+    }
+
+     .hero-subtitle {
+        font-size: 24px;
+        line-height: 1.6;
+        max-width: 800px;
+        margin: 0 auto 40px;
+        text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+        position: relative;
+        padding: 20px;
+    }
+
+    .hero-features {
+        display: flex;
+        justify-content: center;
+        gap: 30px;
+        margin-bottom: 50px;
+        flex-wrap: wrap;
+    }
+
+    .feature-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(5px);
+        padding: 15px 25px;
+        border-radius: 10px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        transition: all 0.3s;
+    }
+
+    .feature-item:hover {
+        background: rgba(255, 204, 0, 0.2);
+        transform: translateY(-5px);
+    }
+
+    .feature-item i {
+        color: #ffcc00;
+        font-size: 20px;
+    }
+
+
+
+    .hero-buttons {
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+        margin-bottom: 50px;
+        flex-wrap: wrap;
+    }
+
+    .hero-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        padding: 18px 35px;
+        border-radius: 50px;
+        font-weight: 700;
+        font-size: 18px;
+        text-decoration: none;
+        transition: all 0.3s;
+        position: relative;
+        overflow: hidden;
+        min-width: 250px;
+    }
+
+    .hero-button.primary, .hero-button.shine {
+        background: linear-gradient(90deg, #ff8a00, #ffcc00);
+        color: #222;
+        box-shadow: 0 5px 25px rgba(255, 204, 0, 0.4);
+    }
+
+    .hero-button.secondary {
+        background: rgba(255, 255, 255, 0.1);
+        color: white;
+        border: 1px solid rgba(255, 204, 0, 0.3);
+        backdrop-filter: blur(5px);
+    }
+
+    .hero-button.shine::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: linear-gradient(
+            to bottom right,
+            rgba(255,255,255,0) 45%,
+            rgba(255,255,255,0.3) 50%,
+            rgba(255,255,255,0) 55%
+        );
+        transform: rotate(30deg);
+        animation: shine 3s infinite;
+    }
+
+    .hero-button:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px rgba(255, 204, 0, 0.6);
+    }
+
+    .hero-scroll-indicator {
+        position: absolute;
+        bottom: 30px;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        color: white;
+        z-index: 2;
+        opacity: 0.8;
+        font-size: 14px;
+    }
+
+    .hero-scroll-indicator i {
+        font-size: 20px;
+        margin-top: 10px;
+    }
+
+    /* Animations */
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(50px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes shine {
+        from {
+            transform: translateX(-100%) rotate(30deg);
+        }
+        to {
+            transform: translateX(100%) rotate(30deg);
+        }
+    }
+
+    @keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.1); }
+        100% { transform: scale(1); }
+    }
+
+    @keyframes bounce {
+        0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+        40% { transform: translateY(-10px); }
+        60% { transform: translateY(-5px); }
+    }
+
+    .pulse {
+        animation: pulse 2s infinite;
+    }
+
+    .bounce {
+        animation: bounce 2s infinite;
+    }
+
+    /* Particles JS container */
+    #particles-js {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        z-index: 1;
+    }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+        .hero-title {
+            font-size: 60px;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .hero-section {
+            min-height: 700px;
+        }
+
+        .hero-title {
+            font-size: 48px;
+        }
+
+        .hero-subtitle {
+            font-size: 18px;
+        }
+
+        .hero-features {
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .hero-buttons {
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .hero-button {
+            width: 100%;
+            max-width: 300px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .hero-title {
+            font-size: 36px;
+        }
+
+        .hero-badge {
+            font-size: 12px;
+            padding: 8px 15px;
+        }
+    }
+</style>
+
+
 <!-- Основной контент -->
-<main>
+<main id="caseSection">
     <!-- Улучшенный заголовок кейса -->
     <div class="case-header">
-        <h1 class="case-name" th:text="${case.nameCase}">Operation Broken Fang Case</h1>
-        <p class="case-description">Откройте кейс и получите эксклюзивные скины из этой коллекции</p>
+        <h1 class="case-name" id="caseName">Загрузка...</h1>
+        <p class="case-description" id="caseDescription">Загрузка описания кейса</p>
 
         <div class="case-stats">
             <div class="stat-item">
-                <div class="stat-value" th:text="${items.size()}">24</div>
+                <div class="stat-value" id="itemsCount">0</div>
                 <div class="stat-label">Предметов</div>
             </div>
             <div class="stat-item">
-                <div class="stat-value" th:text="${case.price} + ' ₽'">500 ₽</div>
+                <div class="stat-value" id="casePrice">0 ₽</div>
                 <div class="stat-label">Цена открытия</div>
             </div>
             <div class="stat-item">
-                <div class="stat-value">1/24</div>
-                <div class="stat-label">Шанс на редкий</div>
-            </div>
+            <div class="stat-value" id="rareChance">1/24</div>
+            <div class="stat-label">Шанс на редкий</div>
+        </div>
             <div class="stat-item">
-                <div class="stat-value">3.5%</div>
+                <div class="stat-value" id="mythicChance">3.5%</div>
                 <div class="stat-label">Шанс на мифический</div>
             </div>
+
         </div>
     </div>
 
     <!-- Рулетка -->
     <section class="roulette-section">
         <div class="roulette-container">
-            <!-- Улучшенный вертикальный индикатор выигрыша -->
-            <div class="win-indicator-vertical"></div>
-
+            <div class="win-indicator"></div>
             <div class="roulette-track" id="rouletteTrack">
-                <!-- Элементы рулетки -->
-                <div class="roulette-item" th:each="item : ${items}">
-                    <img th:src="${item.image}" class="roulette-item-image" alt="Item image">
-                    <div class="roulette-item-name" th:text="${item.nameWeapon}">AK-47 | Asiimov</div>
-                </div>
+                <!-- Элементы будут добавлены через JS -->
             </div>
         </div>
 
-        <!-- Кнопки -->
         <div class="buttons-container">
             <button class="open-button" id="openButton">
-                <span th:if="${user != null}">Открыть за <span th:text="${case.price} + ' ₽'">500 ₽</span></span>
-                <span th:if="${user == null}" onclick="window.location.href='/auth/login'">Войдите, чтобы открыть</span>
+                <span id="openButtonText">Войдите, чтобы открыть</span>
+            </button>
+            <button class="view-contents-button" id="viewContentsButton">
+                <i class="fas fa-box-open"></i> Содержимое кейса
             </button>
         </div>
     </section>
@@ -940,128 +1353,158 @@
     <section class="case-contents">
         <div class="contents-header">
             <h2 class="contents-title">Содержимое кейса</h2>
-            <div class="items-count" th:text="${items.size() + ' предметов'}">24 предмета</div>
+            <div class="items-count" id="itemsCountBottom">0 предметов</div>
         </div>
 
-        <div class="items-grid">
-            <!-- Все предметы в кейсе -->
-            <div class="item-card" th:each="item : ${items}" th:style="'border-color'">
-                <div class="item-name" th:text="${item.nameWeapon}"></div>
-                <div class="item-details">
-                    <span class="item-rarity" th:text="${item.rarity}"></span>
-                    <span class="item-price">
-                        <i class="fas fa-coins"></i>
-                        <span th:text="${item.price + ' ₽'}"></span>
-                    </span>
-                </div>
-            </div>
+        <div class="items-grid" id="itemsGrid">
+            <!-- Предметы будут добавлены через JS -->
         </div>
     </section>
 </main>
 
-<!-- Модальное окно с содержимым кейса -->
+<!-- Модальные окна -->
 <div class="contents-modal-overlay" id="contentsModal">
     <div class="contents-modal">
         <div class="contents-modal-header">
             <h2 class="contents-modal-title">Что может выпасть</h2>
             <button class="close-contents-modal" id="closeContentsModal">&times;</button>
         </div>
-        <div class="contents-modal-grid" id="contentsModalGrid">
-        </div>
+        <div class="contents-modal-grid" id="contentsModalGrid"></div>
     </div>
 </div>
 
 <!-- Футер -->
 <footer>
-    <div class="footer-content">
-        <div class="footer-column">
-            <h3>TurboLoot</h3>
-            <div class="footer-links">
-                <a href="/about">О нас</a>
-                <a href="/faq">FAQ</a>
-                <a href="/blog">Блог</a>
-                <a href="/careers">Карьера</a>
-            </div>
-        </div>
-
-        <div class="footer-column">
-            <h3>Помощь</h3>
-            <div class="footer-links">
-                <a href="/support">Поддержка</a>
-                <a href="/rules">Правила</a>
-                <a href="/safety">Безопасность</a>
-                <a href="/refund">Возврат средств</a>
-            </div>
-        </div>
-
-        <div class="footer-column">
-            <h3>Правовая информация</h3>
-            <div class="footer-links">
-                <a href="/terms">Условия использования</a>
-                <a href="/privacy">Политика конфиденциальности</a>
-                <a href="/cookies">Cookie-файлы</a>
-                <a href="/aml">AML политика</a>
-            </div>
-        </div>
-
-        <div class="footer-column">
-            <h3>Социальные сети</h3>
-            <div class="social-links">
-                <a href="#"><i class="fab fa-vk"></i></a>
-                <a href="#"><i class="fab fa-telegram"></i></a>
-                <a href="#"><i class="fab fa-youtube"></i></a>
-                <a href="#"><i class="fab fa-twitter"></i></a>
-            </div>
-        </div>
-    </div>
-
-    <div class="copyright">
-        &copy; 2025 TurboLoot. Все права защищены. TurboLoot не аффилирован с Valve Corporation. Все товарные знаки являются собственностью их владельцев.
-    </div>
+    <!-- Футер остается без изменений -->
 </footer>
 
-<script th:inline="javascript">
-    /*<![CDATA[*/
-    document.addEventListener('DOMContentLoaded', function() {
+<script>
+    document.addEventListener('DOMContentLoaded', async function() {
+        // Получаем название кейса из URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const caseName = urlParams.get('case');
+
+        // Элементы DOM
         const rouletteTrack = document.getElementById('rouletteTrack');
         const openButton = document.getElementById('openButton');
         const viewContentsButton = document.getElementById('viewContentsButton');
         const contentsModal = document.getElementById('contentsModal');
         const closeContentsModal = document.getElementById('closeContentsModal');
         const contentsModalGrid = document.getElementById('contentsModalGrid');
-        const user = /*[[${user}]]*/ null;
-        const items = /*[[${items}]]*/ [];
-        const casePrice = /*[[${case.price}]]*/ 0;
+        const itemsGrid = document.getElementById('itemsGrid');
+        const caseNameElement = document.getElementById('caseName');
+        const caseDescriptionElement = document.getElementById('caseDescription');
+        const itemsCountElement = document.getElementById('itemsCount');
+        const casePriceElement = document.getElementById('casePrice');
+        const itemsCountBottomElement = document.getElementById('itemsCountBottom');
+        const caseHeroTitle = document.getElementById('caseHeroTitle');
+        const userBalanceElement = document.getElementById('userBalance');
+        const openButtonText = document.getElementById('openButtonText');
+        const rareChance = document.getElementById('rareChance');
+        const mythicChance = document.getElementById('mythicChance');
 
-        // Функция для цвета редкости
-        function getRarityColor(rarity) {
-            const colors = {
-                'Обычный': '#b0c3d9',
-                'Редкий': '#4b69ff',
-                'Мифический': '#8847ff',
-                'Легендарный': '#d32ce6',
-                'Древний': '#eb4b4b',
-                'Запретный': '#e4ae39'
-            };
-            return colors[rarity] || '#ffffff';
+
+        // Получаем данные о кейсе
+        let caseData = null;
+        let items = [];
+        let user = null;
+
+        try {
+            // Запрос на получение данных о кейсе
+            const caseResponse = await fetch(`/cases/get-item?case=${encodeURIComponent(caseName)}`);
+            if (!caseResponse.ok) throw new Error('Ошибка загрузки кейса');
+
+            const data = await caseResponse.json();
+            caseData = data.case;
+            items = data.items;
+            user = data.user;
+            chance = data.chance;
+
+            // Обновляем UI с данными о кейсе
+            updateCaseUI();
+
+            // Заполняем рулетку и список предметов
+            fillRoulette();
+            fillItemsGrid();
+
+            // Настраиваем кнопки в зависимости от авторизации
+            setupButtons();
+
+        } catch (error) {
+            console.error('Ошибка:', error);
+            caseNameElement.textContent = 'Ошибка загрузки';
+            caseDescriptionElement.textContent = 'Не удалось загрузить данные кейса';
         }
 
-        // Функция для заполнения модального окна с содержимым кейса
+        function updateCaseUI() {
+            rareChance.textContent = chance.common;
+            mythicChance.textContent = chance.mythic;
+            caseHeroTitle.textContent = caseData.nameCase;
+            caseNameElement.textContent = caseData.nameCase;
+            caseDescriptionElement.textContent = caseData.description || 'Откройте кейс и получите эксклюзивные скины';
+            itemsCountElement.textContent = items.length;
+            casePriceElement.textContent = caseData.price + ' ₽';
+            itemsCountBottomElement.textContent = items.length + ' предметов';
+
+            if (user) {
+                userBalanceElement.textContent = user.balance + ' ₽';
+            }
+        }
+
+        function fillRoulette() {
+        rouletteTrack.innerHTML = '';
+
+        items.forEach(item => {
+            const itemElement = document.createElement('div');
+            itemElement.className = 'roulette-item';
+            itemElement.style.width = '220px'; // Фиксированная ширина
+            itemElement.innerHTML = `
+                <div class="roulette-item-name">${item.nameWeapon}</div>
+            `;
+            rouletteTrack.appendChild(itemElement);
+        });
+    }
+
+        function fillItemsGrid() {
+            itemsGrid.innerHTML = '';
+
+            items.forEach(item => {
+                const itemElement = document.createElement('div');
+                itemElement.className = 'item-card';
+                itemElement.style.borderColor = getRarityColor(item.rarity);
+
+                itemElement.innerHTML = `
+                    <div class="item-image-container">
+                    </div>
+                    <div class="item-name">${item.nameWeapon}</div>
+                    <div class="item-details">
+                        <span class="modal-item-rarity">${item.rarity}</span>
+                        <span class="item-price">
+                            <i class="fas fa-coins"></i>
+                            ${item.price} ₽
+                        </span>
+                    </div>
+                `;
+
+                itemsGrid.appendChild(itemElement);
+            });
+        }
+
         function fillContentsModal() {
             contentsModalGrid.innerHTML = '';
 
             items.forEach(item => {
-                const itemCard = document.createElement('div');
-                itemCard.className = 'modal-item-card';
-                itemCard.style.borderColor = getRarityColor(item.rarity);
+                const itemElement = document.createElement('div');
+                itemElement.className = 'modal-item-card';
+                itemElement.style.borderColor = getRarityColor(item.rarity);
 
-                itemCard.innerHTML = `
+                itemElement.innerHTML = `
                     <div class="modal-item-image-container">
-                        <img src="${item.image}" class="modal-item-image" alt="${item.nameWeapon}">
+
                     </div>
                     <div class="modal-item-name">${item.nameWeapon}</div>
                     <div class="modal-item-details">
-                        <span class="modal-item-rarity" style="color: ${getRarityColor(item.rarity)}">${item.rarity}</span>
+                        <span class="modal-item-rarity">${item.rarity}</span>
                         <span class="modal-item-price">
                             <i class="fas fa-coins"></i>
                             ${item.price} ₽
@@ -1069,103 +1512,146 @@
                     </div>
                 `;
 
-                contentsModalGrid.appendChild(itemCard);
+                contentsModalGrid.appendChild(itemElement);
             });
         }
 
-        // Открытие модального окна с содержимым кейса
-        viewContentsButton.addEventListener('click', function() {
-            fillContentsModal();
-            contentsModal.classList.add('active');
-        });
+        function getRarityColor(rarity) {
+            const colors = {
+                'Uncommon': '#b0c3d9',
+                'Rare': '#4b69ff',
+                'Common': '#8847ff',
+                'Epic': '#d32ce6',
+                'Legendary': '#eb4b4b',
+                'Запретный': '#e4ae39'
+            };
+            return colors[rarity] || '#ffffff';
+        }
 
-        // Закрытие модального окна
-        closeContentsModal.addEventListener('click', function() {
-            contentsModal.classList.remove('active');
-        });
-
-        // Закрытие модального окна при клике на оверлей
-        contentsModal.addEventListener('click', function(e) {
-            if (e.target === contentsModal) {
-                contentsModal.classList.remove('active');
+        function setupButtons() {
+            if (!user) {
+                openButtonText.textContent = 'Войдите, чтобы открыть';
+                openButton.addEventListener('click', () => {
+                    window.location.href = '/auth/login?redirect=' + encodeURIComponent(window.location.pathname + window.location.search);
+                });
+                return;
             }
-        });
 
-        // Если пользователь не авторизован
-        if (user === null) {
-            openButton.disabled = true;
-            openButton.style.background = '#666';
+            if (user.balance < caseData.price) {
+                openButton.disabled = true;
+                openButtonText.innerHTML = '<i class="fas fa-exclamation-circle"></i> Недостаточно средств';
+                return;
+            }
 
-            openButton.addEventListener('click', function() {
-                window.location.href = '/login?redirect=' + encodeURIComponent(window.location.pathname);
+            openButtonText.innerHTML = `Открыть за ${caseData.price} ₽`;
+            openButton.addEventListener('click', openCase);
+        }
+
+        async function openCase() {
+        openButton.disabled = true;
+        openButtonText.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Открываем...';
+
+        try {
+            const response = await fetch('/cases/open-case', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    caseName: caseData.nameCase
+                }),
+                credentials: 'include'
             });
-            return;
-        }
 
-        // Проверка баланса
-        const userBalance = /*[[${user != null ? user.balance : 0}]]*/ 0;
+            if (!response.ok) throw new Error('Ошибка открытия кейса');
 
-        if (userBalance < casePrice) {
-            openButton.disabled = true;
-            openButton.innerHTML = '<i class="fas fa-exclamation-circle"></i> Недостаточно средств';
-            return;
-        }
+            const result = await response.json();
 
-        // Обработка открытия кейса для авторизованных
-        openButton.addEventListener('click', function() {
-            openButton.disabled = true;
-            openButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Открываем...';
+            if (result.status === 'success') {
+                const wonItem = result.item;
+                const itemIndex = items.findIndex(item => item.id === wonItem.id);
+                const itemWidth = 220; // Должно соответствовать ширине roulette-item в CSS
+                const visibleWidth = rouletteTrack.parentElement.offsetWidth;
 
-            // Анимация рулетки
-            const itemsCount = items.length;
-            const randomPosition = Math.floor(Math.random() * itemsCount) * 240;
-            const spinDuration = 5000; // 5 секунд
+                // Рассчитываем конечную позицию так, чтобы выигранный item оказался по центру
+                const targetPosition = itemIndex * itemWidth - (visibleWidth / 2 - itemWidth / 2);
 
-            rouletteTrack.style.transition = `transform ${spinDuration}ms cubic-bezier(0.2, 0.8, 0.2, 1)`;
-            rouletteTrack.style.transform = `translateX(-${randomPosition}px)`;
+                // Добавляем несколько полных прокруток для эффекта анимации
+                const spinDistance = targetPosition + (itemWidth * items.length * 3);
 
-            // После завершения анимации
-            setTimeout(() => {
-                const wonItem = items[Math.floor(randomPosition / 240) % itemsCount];
-                showWinModal(wonItem);
+                // Сбрасываем текущую позицию без анимации
+                rouletteTrack.style.transition = 'none';
+                rouletteTrack.style.transform = 'translateX(0)';
 
-                // Сброс кнопки
+                // Запускаем анимацию
                 setTimeout(() => {
-                    openButton.disabled = false;
-                    openButton.innerHTML = 'Открыть за ' + casePrice + ' ₽';
-                    rouletteTrack.style.transition = 'none';
-                    rouletteTrack.style.transform = 'translateX(0)';
+                    rouletteTrack.style.transition = 'transform 4s cubic-bezier(0.2, 0.1, 0.2, 1)';
+                    rouletteTrack.style.transform = `translateX(-${spinDistance}px)`;
+                }, 10);
 
-                    // Небольшая задержка перед сбросом трансформации
+                // После завершения анимации
+                setTimeout(() => {
+                    showWinModal(wonItem);
+
+                    // Обновляем баланс
+                    if (result.newBalance !== undefined) {
+                        userBalanceElement.textContent = result.newBalance + ' ₽';
+                    }
+
+                    // Сброс кнопки через 3 секунды после показа модального окна
                     setTimeout(() => {
-                        rouletteTrack.style.transition = 'transform 5s cubic-bezier(0.2, 0.8, 0.2, 1)';
-                    }, 50);
-                }, 3000);
-            }, spinDuration);
-        });
+                        openButton.disabled = false;
+                        openButtonText.innerHTML = `Открыть за ${caseData.price} ₽`;
 
-        // Функция показа модального окна с выигрышем
+                        // Плавный сброс позиции рулетки
+                        setTimeout(() => {
+                            rouletteTrack.style.transition = 'transform 0.5s ease-out';
+                            rouletteTrack.style.transform = 'translateX(0)';
+                        }, 50);
+                    }, 3000);
+                }, 4000); // Должно соответствовать длительности анимации
+
+            } else if (result.status === 'notmoney') {
+                alert('У вас недостаточно средств для открытия этого кейса.');
+                openButton.disabled = false;
+                openButtonText.innerHTML = `Открыть за ${caseData.price} ₽`;
+            } else {
+                alert('Произошла ошибка при открытии кейса');
+                openButton.disabled = false;
+                openButtonText.innerHTML = `Открыть за ${caseData.price} ₽`;
+            }
+
+        } catch (error) {
+            console.error('Ошибка:', error);
+            openButton.disabled = false;
+            openButtonText.innerHTML = `Открыть за ${caseData.price} ₽`;
+            alert('Произошла ошибка при открытии кейса');
+        }
+    }
+
+
+
         function showWinModal(item) {
             const modalHtml = `
-                <div class="win-modal-overlay">
-                    <div class="win-modal">
-                        <div class="win-modal-header">
-                            <h3>Поздравляем!</h3>
-                            <button class="close-modal">&times;</button>
+                <div class="win-modal-overlay" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.9); display: flex; justify-content: center; align-items: center; z-index: 2000;">
+                    <div class="win-modal" style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 20px; padding: 30px; max-width: 500px; width: 90%; text-align: center; border: 1px solid rgba(255, 204, 0, 0.3);">
+                        <div class="win-modal-header" style="margin-bottom: 20px;">
+                            <h3 style="font-size: 28px; background: linear-gradient(90deg, #ffcc00, #ff8a00); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800;">Поздравляем!</h3>
                         </div>
                         <div class="win-modal-content">
-                            <div class="won-item">
-                                <img src="${item.image}" class="won-item-image">
+                            <div class="won-item" style="margin-bottom: 20px;">
                                 <div class="won-item-details">
-                                    <h4>${item.nameWeapon}</h4>
-                                    <div class="won-item-meta">
-                                        <span class="rarity" style="color: ${getRarityColor(item.rarity)}">${item.rarity}</span>
-                                        <span class="price">${item.price} ₽</span>
+                                    <h4 style="font-size: 22px; margin-bottom: 10px;">${item.nameWeapon}</h4>
+                                    <div class="won-item-meta" style="display: flex; justify-content: center; gap: 20px;">
+                                        <span class="rarity" style="font-weight: 600; padding: 5px 10px; border-radius: 4px; color: ${getRarityColor(item.rarity)}">${item.rarity}</span>
+                                        <span class="price" style="color: #ffcc00; font-weight: 700;">
+                                            <i class="fas fa-coins"></i> ${item.price} ₽
+                                        </span>
                                     </div>
                                 </div>
                             </div>
-                            <p>Предмет был добавлен в ваш инвентарь</p>
-                            <button class="modal-button">Продолжить</button>
+                            <p style="margin-bottom: 25px; font-size: 16px;">Предмет был добавлен в ваш инвентарь</p>
+                            <button class="modal-button" style="background: linear-gradient(90deg, #ff8a00, #ffcc00); color: #222; border: none; padding: 12px 25px; border-radius: 30px; font-size: 16px; font-weight: 700; cursor: pointer; transition: all 0.3s; min-width: 150px;">Продолжить</button>
                         </div>
                     </div>
                 </div>
@@ -1175,17 +1661,27 @@
             modalElement.innerHTML = modalHtml;
             document.body.appendChild(modalElement);
 
-            // Обработчики закрытия модального окна
-            modalElement.querySelector('.close-modal').addEventListener('click', () => {
-                document.body.removeChild(modalElement);
-            });
-
             modalElement.querySelector('.modal-button').addEventListener('click', () => {
                 document.body.removeChild(modalElement);
             });
         }
+
+        // Обработчики модального окна содержимого
+        viewContentsButton.addEventListener('click', () => {
+            fillContentsModal();
+            contentsModal.classList.add('active');
+        });
+
+        closeContentsModal.addEventListener('click', () => {
+            contentsModal.classList.remove('active');
+        });
+
+        contentsModal.addEventListener('click', (e) => {
+            if (e.target === contentsModal) {
+                contentsModal.classList.remove('active');
+            }
+        });
     });
-    /*]]>*/
 </script>
 </body>
 </html>

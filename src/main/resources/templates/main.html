@@ -2,11 +2,12 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>TurboLoot - CS:GO Case Roulette</title>
+    <title>TurboLoot - Главная</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
     <style>
-        /* Глобальные стили */
+        /* Все стили остаются без изменений */
+         /* Глобальные стили */
         * {
             margin: 0;
             padding: 0;
@@ -86,15 +87,6 @@
             gap: 10px;
         }
 
-        .logo img {
-            height: 40px;
-            transition: transform 0.3s;
-        }
-
-        .logo:hover img {
-            transform: rotate(15deg);
-        }
-
         .logo h1 {
             font-size: 24px;
             background: linear-gradient(to right, #ff8a00, #ffcc00);
@@ -104,6 +96,7 @@
             font-family: 'Montserrat', sans-serif;
         }
 
+        /* Кнопки авторизации */
         .login-button {
             background: linear-gradient(90deg, #ff8a00, #ffcc00);
             color: #333;
@@ -123,12 +116,68 @@
             box-shadow: 0 6px 20px rgba(255, 204, 0, 0.4);
         }
 
-        .login-button i {
-            transition: transform 0.3s;
+        .account-button {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(90deg, #ff8a00, #ffcc00);
+            color: #222;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
         }
 
-        .login-button:hover i {
-            transform: rotateY(180deg);
+        .account-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 204, 0, 0.4);
+        }
+
+        .account-button i {
+            font-size: 18px;
+        }
+
+        .account-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: rgba(0, 0, 0, 0.9);
+            border-radius: 8px;
+            padding: 10px 0;
+            min-width: 180px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+            z-index: 100;
+        }
+
+        .account-button:hover .account-dropdown {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(5px);
+        }
+
+        .account-dropdown a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: white;
+            padding: 8px 15px;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .account-dropdown a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #ffcc00;
+        }
+
+        .account-dropdown a i {
+            width: 20px;
+            text-align: center;
         }
 
         /* Hero секция */
@@ -172,7 +221,6 @@
             -webkit-text-fill-color: transparent;
             text-transform: uppercase;
             letter-spacing: 2px;
-            animation: fadeInUp 1s ease;
         }
 
         .hero p {
@@ -180,14 +228,12 @@
             margin-bottom: 30px;
             line-height: 1.6;
             color: rgba(255, 255, 255, 0.9);
-            animation: fadeInUp 1s ease 0.2s both;
         }
 
         .hero-buttons {
             display: flex;
             justify-content: center;
             gap: 20px;
-            animation: fadeInUp 1s ease 0.4s both;
         }
 
         .hero-button {
@@ -276,6 +322,7 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             position: relative;
             border: 1px solid rgba(255, 255, 255, 0.1);
+            cursor: pointer;
         }
 
         .modern-case:hover {
@@ -397,6 +444,34 @@
             background: rgba(255, 255, 255, 0.1);
         }
 
+        /* Уведомления */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 12px 20px;
+            background: #ff4444;
+            color: white;
+            border-radius: 5px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transform: translateY(-30px);
+            opacity: 0;
+            transition: all 0.3s;
+            z-index: 1000;
+        }
+
+        .notification.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .notification.success {
+            background: #00C851;
+        }
+
         /* Футер */
         footer {
             background: rgba(0, 0, 0, 0.9);
@@ -461,23 +536,6 @@
             border-top: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        /* Анимации */
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
-
         /* Адаптивность */
         @media (max-width: 1200px) {
             .hero h1 {
@@ -533,7 +591,6 @@
 <!-- Хедер -->
 <header>
     <div class="nav-left">
-        <!-- Кнопки навигации -->
         <a href="/" class="nav-button">
             <i class="fas fa-home"></i>
             <span>Главная</span>
@@ -548,16 +605,13 @@
         </a>
     </div>
 
-    <!-- Логотип -->
     <div class="logo">
         <h1>TurboLoot</h1>
     </div>
 
-    <!-- Кнопка входа -->
-    <a href="/auth/login" class="login-button">
-        <span>Войти</span>
-        <i class="fas fa-sign-in-alt"></i>
-    </a>
+    <div id="authButtonContainer">
+        <!-- Заполнится JavaScript -->
+    </div>
 </header>
 
 <!-- Hero секция -->
@@ -639,59 +693,29 @@
 
 <script th:inline="javascript">
     /*<![CDATA[*/
-    document.addEventListener('DOMContentLoaded', function() {
-        const cases = /*[[${cases}]]*/ [];
-        const container = document.getElementById('casesContainer');
+    document.addEventListener('DOMContentLoaded', async function() {
+        // Функция для получения данных с сервера
+        async function fetchMainPageData() {
+            try {
+                const response = await fetch('/get-data/main-page', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    credentials: 'include'
+                });
 
-        if (cases.length === 0) {
-            container.innerHTML = `
-                <div class="empty-state" style="grid-column: 1 / -1;">
-                    <div class="empty-icon">
-                        <i class="fas fa-box-open"></i>
-                    </div>
-                    <h3>Коллекция пуста</h3>
-                    <p>Попробуйте зайти позже</p>
-                </div>
-            `;
-            return;
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return await response.json();
+            } catch (error) {
+                console.error('Ошибка при получении данных:', error);
+                return { user: null, cases: [] };
+            }
         }
 
-        cases.forEach(caseItem => {
-            const caseElement = document.createElement('div');
-            caseElement.className = 'modern-case';
-            caseElement.innerHTML = `
-                <div class="case-image-wrapper">
-                    <div class="case-overlay">
-                        <div class="case-price">${caseItem.price} ₽</div>
-                        <div class="case-action">
-                            <span>Открыть</span>
-                            <i class="fas fa-chevron-right"></i>
-                        </div>
-                    </div>
-                </div>
-                <div class="case-details">
-                    <h3 class="case-title">${caseItem.nameCase}</h3>
-                    <div class="case-meta">
-                        <div class="case-items">
-                            <i class="fas fa-gem"></i>
-                            <span>${caseItem.countItems} предметов</span>
-                        </div>
-                        <div class="case-rarity" style="background: ${getRarityBackground(caseItem.rarity)}; color: ${getRarityTextColor(caseItem.rarity)}">
-                            ${caseItem.rarity}
-                        </div>
-                    </div>
-                </div>
-            `;
-
-            // Клик по кейсу
-            caseElement.addEventListener('click', function() {
-                window.location.href = `/case?case=${encodeURIComponent(caseItem.nameCase)}`;
-            });
-
-            container.appendChild(caseElement);
-        });
-
-        // Функция для цвета фона редкости
+        // Функции для работы с редкостями
         function getRarityBackground(rarity) {
             const colors = {
                 'Обычный': 'rgba(176, 195, 217, 0.1)',
@@ -704,7 +728,6 @@
             return colors[rarity] || 'rgba(255, 255, 255, 0.1)';
         }
 
-        // Функция для цвета текста редкости
         function getRarityTextColor(rarity) {
             const colors = {
                 'Обычный': '#b0c3d9',
@@ -716,6 +739,97 @@
             };
             return colors[rarity] || '#ffffff';
         }
+
+        // Основная функция инициализации
+        async function init() {
+            const authButtonContainer = document.getElementById('authButtonContainer');
+            const container = document.getElementById('casesContainer');
+
+            // Получаем данные с сервера
+            const data = await fetchMainPageData();
+            console.log('Полученные данные:', data); // Для отладки
+
+            const user = data.user;
+            const cases = data.cases || [];
+
+            // Обновляем кнопку входа/аккаунта
+            function updateAuthButton() {
+                if (user) {
+                    authButtonContainer.innerHTML = `
+                        <div class="account-button">
+                            <i class="fas fa-user-circle"></i>
+                            <span>${user.username || 'Аккаунт'}</span>
+                            <div class="account-dropdown">
+                                <a href="/account/profile"><i class="fas fa-user"></i> Профиль</a>
+                                <a href="/inventory"><i class="fas fa-box-open"></i> Инвентарь</a>
+                                <a href="/settings"><i class="fas fa-cog"></i> Настройки</a>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    authButtonContainer.innerHTML = `
+                        <a href="/auth/login" class="login-button">
+                            <span>Войти</span>
+                            <i class="fas fa-sign-in-alt"></i>
+                        </a>
+                    `;
+                }
+            }
+            updateAuthButton();
+
+            // Обработка кейсов
+            container.innerHTML = ''; // Очищаем контейнер
+
+            if (!cases || cases.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state" style="grid-column: 1 / -1;">
+                        <div class="empty-icon">
+                            <i class="fas fa-box-open"></i>
+                        </div>
+                        <h3>Коллекция пуста</h3>
+                        <p>Попробуйте зайти позже</p>
+                    </div>
+                `;
+                return;
+            }
+
+            cases.forEach(caseItem => {
+                const caseElement = document.createElement('div');
+                caseElement.className = 'modern-case';
+                caseElement.innerHTML = `
+                    <div class="case-image-wrapper">
+                        <div class="case-overlay">
+                            <div class="case-price">${caseItem.price} ₽</div>
+                            <div class="case-action">
+                                <span>Открыть</span>
+                                <i class="fas fa-chevron-right"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="case-details">
+                        <h3 class="case-title">${caseItem.nameCase}</h3>
+                        <div class="case-meta">
+                            <div class="case-items">
+                                <i class="fas fa-gem"></i>
+                                <span>${caseItem.countItems} предметов</span>
+                            </div>
+                            <div class="case-rarity" style="background: ${getRarityBackground(caseItem.rarity)}; color: ${getRarityTextColor(caseItem.rarity)}">
+                                ${caseItem.rarity}
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                caseElement.addEventListener('click', function() {
+                    window.location.href = `/case?case=${encodeURIComponent(caseItem.nameCase)}`;
+                });
+
+                container.appendChild(caseElement);
+            });
+        }
+
+        // Запускаем инициализацию
+        init();
     });
     /*]]>*/
 </script>

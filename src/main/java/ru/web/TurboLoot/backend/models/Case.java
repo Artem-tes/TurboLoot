@@ -1,5 +1,6 @@
 package ru.web.TurboLoot.backend.models;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import jakarta.persistence.*;
 import lombok.*;
@@ -29,11 +30,7 @@ public class Case {
     @Column(name = "name_case")
     private String nameCase;
 
-    @Lob
-    @JdbcTypeCode(Types.BINARY)
-    @Column(name = "image", columnDefinition = "bytea")
-    private byte[] image;
-
+    @JsonProperty("items")
     @Column(name = "items")
     private List<Integer> weapons;
 

@@ -11,7 +11,12 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception{
-        httpSecurity.authorizeHttpRequests(auth ->
+        httpSecurity
+                .logout(logout -> logout
+                        .logoutUrl("/logout")
+                        .logoutSuccessUrl("/"))
+                .csrf(crsf -> crsf.disable())
+                .authorizeHttpRequests(auth ->
                 auth.requestMatchers("/**").permitAll());
         return httpSecurity.build();
     }

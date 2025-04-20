@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>TurboLoot - Пополнение баланса</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        /* Общие стили */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Хедер */
+        header {
+            background: rgba(0, 0, 0, 0.8);
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo h1 {
+            font-size: 24px;
+            background: linear-gradient(to right, #ff8a00, #ffcc00);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 800;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        /* Основной контент */
+        .deposit-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex: 1;
+            padding: 40px 20px;
+        }
+
+        .deposit-box {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            width: 100%;
+            max-width: 500px;
+            padding: 40px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .deposit-box::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,204,0,0.1) 0%, transparent 70%);
+            animation: rotate 20s linear infinite;
+            z-index: -1;
+        }
+
+        .deposit-box:hover {
+            border-color: rgba(255, 204, 0, 0.3);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .deposit-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .deposit-header h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            font-family: 'Montserrat', sans-serif;
+            background: linear-gradient(to right, #ff8a00, #ffcc00);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .deposit-header p {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+        }
+
+        .deposit-form .form-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .deposit-form .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .deposit-form .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            color: white;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .deposit-form .form-control:focus {
+            outline: none;
+            border-color: #ffcc00;
+            box-shadow: 0 0 0 2px rgba(255, 204, 0, 0.2);
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .deposit-form .form-control::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 15px;
+            top: 40px;
+            color: rgba(255, 255, 255, 0.5);
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .password-toggle:hover {
+            color: #ffcc00;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(90deg, #ff8a00, #ffcc00);
+            border: none;
+            border-radius: 8px;
+            color: #222;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+            box-shadow: 0 4px 15px rgba(255, 204, 0, 0.3);
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 204, 0, 0.4);
+        }
+
+        .submit-btn:disabled {
+            background: linear-gradient(90deg, #ff8a0080, #ffcc0080);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .amount-selector {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .amount-option {
+            flex: 1;
+            min-width: 100px;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            color: white;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .amount-option:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 204, 0, 0.5);
+        }
+
+        .amount-option.active {
+            background: linear-gradient(90deg, #ff8a0030, #ffcc0030);
+            border-color: #ffcc00;
+            color: #ffcc00;
+            font-weight: 500;
+        }
+
+        .custom-amount {
+            display: flex;
+            align-items: center;
+            margin-top: 10px;
+        }
+
+        .custom-amount input {
+            flex: 1;
+            border-top-right-radius: 0;
+            border-bottom-right-radius: 0;
+        }
+
+        .currency {
+            padding: 12px 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-left: none;
+            border-top-right-radius: 8px;
+            border-bottom-right-radius: 8px;
+        }
+
+        /* Уведомления */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 8px;
+            color: white;
+            font-weight: 500;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            transform: translateX(150%);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .notification.success {
+            background: linear-gradient(90deg, #4CAF50, #8BC34A);
+        }
+
+        .notification.error {
+            background: linear-gradient(90deg, #F44336, #FF5252);
+        }
+
+        .notification i {
+            font-size: 1.2rem;
+        }
+
+        /* Анимации */
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Адаптивность */
+        @media (max-width: 768px) {
+            .deposit-box {
+                padding: 30px 20px;
+            }
+
+            .deposit-header h2 {
+                font-size: 1.8rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .deposit-box {
+                padding: 25px 15px;
+            }
+
+            .deposit-header h2 {
+                font-size: 1.5rem;
+            }
+
+            .deposit-form .form-control {
+                padding: 10px 12px;
+            }
+
+            .amount-option {
+                min-width: calc(50% - 10px);
+            }
+        }
+    </style>
+</head>
+<body>
+<!-- Хедер -->
+<header>
+    <div class="logo">
+        <h1>TurboLoot</h1>
+    </div>
+</header>
+
+<!-- Основной контент -->
+<div class="deposit-container">
+    <div class="deposit-box">
+        <div class="deposit-header">
+            <h2>Пополнение баланса</h2>
+            <p>Выберите сумму для пополнения</p>
+        </div>
+
+        <form class="deposit-form" id="depositForm">
+            <div class="amount-selector">
+                <div class="amount-option" data-amount="100">100 ₽</div>
+                <div class="amount-option" data-amount="300">300 ₽</div>
+                <div class="amount-option" data-amount="500">500 ₽</div>
+                <div class="amount-option" data-amount="1000">1000 ₽</div>
+                <div class="amount-option" data-amount="2000">2000 ₽</div>
+                <div class="amount-option" data-amount="5000">5000 ₽</div>
+            </div>
+
+            <div class="form-group">
+                <label for="customAmount">Или введите свою сумму</label>
+                <div class="custom-amount">
+                    <input type="number" id="customAmount" class="form-control" placeholder="Сумма" min="10" step="10">
+                    <div class="currency">₽</div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Пароль</label>
+                <input type="password" id="password" name="password" class="form-control" placeholder="Ваш пароль" required>
+                <i class="fas fa-eye password-toggle" id="togglePassword"></i>
+            </div>
+
+            <button type="submit" class="submit-btn" id="submitBtn">
+                <i class="fas fa-wallet"></i> Пополнить баланс
+            </button>
+        </form>
+    </div>
+</div>
+
+<!-- Уведомление (будет показываться при необходимости) -->
+<div class="notification" id="notification">
+    <i class="fas fa-check-circle"></i>
+    <span id="notificationText">Успешное уведомление!</span>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Элементы формы
+        const depositForm = document.getElementById('depositForm');
+        const amountOptions = document.querySelectorAll('.amount-option');
+        const customAmountInput = document.getElementById('customAmount');
+        const passwordInput = document.getElementById('password');
+        const togglePassword = document.getElementById('togglePassword');
+        const submitBtn = document.getElementById('submitBtn');
+        const notification = document.getElementById('notification');
+        const notificationText = document.getElementById('notificationText');
+
+        let selectedAmount = null;
+
+        // Выбор суммы из вариантов
+        amountOptions.forEach(option => {
+            option.addEventListener('click', function() {
+                amountOptions.forEach(opt => opt.classList.remove('active'));
+                this.classList.add('active');
+                selectedAmount = this.dataset.amount;
+                customAmountInput.value = '';
+            });
+        });
+
+        // Ввод своей суммы
+        customAmountInput.addEventListener('input', function() {
+            if (this.value) {
+                amountOptions.forEach(opt => opt.classList.remove('active'));
+                selectedAmount = this.value;
+            }
+        });
+
+        // Переключение видимости пароля
+        togglePassword.addEventListener('click', function() {
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+            this.classList.toggle('fa-eye');
+            this.classList.toggle('fa-eye-slash');
+        });
+
+document.getElementById("submitBtn").addEventListener("click", async function (event) {
+    event.preventDefault();
+
+    const amount = document.getElementById("customAmount").value;
+    const password = document.getElementById("password").value;
+
+    if (!amount || !password) {
+        showModal("❗ Пожалуйста, заполните все поля.");
+        return;
+    }
+
+    try {
+        const response = await fetch("/account/get-data/try-put-money", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ amount: amount, password: password })
+        });
+
+        const result = await response.json();
+
+        if (result.status === "success") {
+            showModal("✅ Баланс успешно пополнен!");
+            window.location.replace("/account/profile");
+        } else {
+            showModal("❌ Неверный пароль. Попробуйте снова.");
+        }
+    } catch (error) {
+        console.error("Ошибка:", error);
+        showModal("⚠️ Произошла ошибка. Попробуйте позже.");
+    }
+});
+
+// Простейшая реализация модального окна
+function showModal(message) {
+    const modal = document.createElement("div");
+    modal.style.position = "fixed";
+    modal.style.top = "50%";
+    modal.style.left = "50%";
+    modal.style.transform = "translate(-50%, -50%)";
+    modal.style.background = "#fff";
+    modal.style.padding = "20px 30px";
+    modal.style.borderRadius = "10px";
+    modal.style.boxShadow = "0 0 15px rgba(0, 0, 0, 0.3)";
+    modal.style.zIndex = "9999";
+    modal.style.fontSize = "18px";
+    modal.style.fontWeight = "bold";
+    modal.style.textAlign = "center";
+    modal.style.color = "#333";
+    modal.innerText = message;
+
+    document.body.appendChild(modal);
+
+    setTimeout(() => {
+        modal.remove();
+    }, 3000); // Удалить модалку через 3 секунды
+}
+
+        // Функция показа уведомления
+        function showNotification(text, type) {
+            notificationText.textContent = text;
+            notification.className = `notification ${type} show`;
+
+            // Устанавливаем соответствующую иконку
+            const icon = notification.querySelector('i');
+            if (icon) {
+                icon.className = type === 'success'
+                    ? 'fas fa-check-circle'
+                    : 'fas fa-exclamation-circle';
+            }
+
+            // Автоматическое скрытие через 5 секунд
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 5000);
+        }
+    });
+</script>
+</body>
+</html>

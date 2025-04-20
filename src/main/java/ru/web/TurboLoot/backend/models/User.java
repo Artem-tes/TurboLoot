@@ -19,6 +19,9 @@ public class User {
     @Column(name = "id")
     private Integer id;
 
+    @Column(name = "username")
+    private String username;
+
     @Column(name = "email")
     private String email;
 

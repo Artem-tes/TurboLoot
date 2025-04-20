@@ -352,18 +352,22 @@
         </div>
 
         <div class="auth-footer">
-            Нет аккаунта? <a href="/register">Зарегистрируйтесь</a>
+            Нет аккаунта? <a href="/auth/registration">Зарегистрируйтесь</a>
         </div>
     </div>
 </div>
 <script>
     document.addEventListener('DOMContentLoaded', () => {
-        // Элементы
+        // Элементы формы
         const password = document.getElementById('password');
         const togglePassword = document.getElementById('togglePassword');
         const loginForm = document.getElementById('loginForm');
-        const notification = document.getElementById('notification');
-        const notificationText = document.getElementById('notificationText');
+        const submitBtn = loginForm.querySelector('button[type="submit"]');
+
+        // Создаем элемент для уведомлений
+        const notification = document.createElement('div');
+        notification.className = 'login-notification';
+        document.body.appendChild(notification);
 
         // Переключение видимости пароля
         togglePassword.addEventListener('click', () => {
@@ -371,44 +375,155 @@
             togglePassword.classList.toggle('fa-eye-slash');
         });
 
-        // Показать уведомление
-        const showAlert = (msg, isSuccess = false) => {
-            notificationText.textContent = msg;
-            notification.className = `notification ${isSuccess ? 'success' : ''}`;
-            notification.classList.add('show');
-            setTimeout(() => notification.classList.remove('show'), 3000);
-        };
+        function showNotification(message, isSuccess = false) {
+        const notification = document.querySelector('.login-notification');
+        notification.textContent = message;
+        notification.className = `login-notification ${isSuccess ? 'success' : 'error'}`;
+
+        // Показываем уведомление
+        notification.classList.remove('hide');1
+        notification.classList.add('show');
+
+        // Скрываем через 3.5 секунды
+        setTimeout(() => {
+            notification.classList.remove('show');
+            notification.classList.add('hide');
+        }, 3500);
+        }
 
         // Отправка формы
         loginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            const btn = e.target.querySelector('button[type="submit"]');
+
+            // Блокируем кнопку
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Вход...';
 
             try {
-                btn.disabled = true;
-                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Вход...';
+                // Формируем данные запроса
+                const requestData = {
+                    email: document.getElementById('email').value.trim(),
+                    password: password.value
+                };
 
+                // Отправляем запрос
                 const response = await fetch('/auth/login', {
                     method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({
-                        email: document.getElementById('email').value.trim(),
-                        password: password.value
-                    })
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(requestData)
                 });
 
-                const data = await response.json();
-                data.message === 'complete'
-                    ? (showAlert('Успешный вход!', true), setTimeout(() => location.href = '/', 1500))
-                    : showAlert('Логин или пароль неверны');
-            } catch {
-                showAlert('Ошибка сервера');
+                // Обрабатываем ответ
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.message === 'success') {
+                        setTimeout(() => window.location.href = '/account/profile', 1500);
+                        showNotification('Вход выполнен успешно!', true);
+                    } if(data.message === 'notsuccess') {
+                        showNotification('Неверный email или пароль',false);
+                    }if(data.message === 'nulluser') {
+                        showNotification('Пользватель не найден',false);
+                    }
+                } else {
+                    showNotification('Ошибка сервера: ' + response.status);
+                }
+            } catch (error) {
+                showNotification('Ошибка соединения');
             } finally {
-                btn.disabled = false;
-                btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Войти';
+                // Разблокируем кнопку
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Войти';
             }
         });
     });
 </script>
+
+<style>
+    .login-notification {
+        position: fixed;
+        top: 30px;
+        left: 50%;
+        transform: translateX(-50%) translateY(-50px);
+        padding: 18px 30px;
+        border-radius: 12px;
+        color: white;
+        font-weight: 600;
+        font-size: 16px;
+        box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+        z-index: 9999;
+        opacity: 0;
+        transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        max-width: 90%;
+        width: auto;
+        min-width: 300px;
+        text-align: center;
+        pointer-events: none;
+        backdrop-filter: blur(4px);
+    }
+
+    .login-notification.error {
+        background: linear-gradient(135deg, #ff5e5e, #ff2d2d);
+        border-left: 5px solid #ff0000;
+    }
+
+    .login-notification.success {
+        background: linear-gradient(135deg, #00d27a, #00b16a);
+        border-left: 5px solid #008a50;
+    }
+
+    /* Иконки для уведомлений */
+    .login-notification::before {
+        content: '';
+        display: inline-block;
+        width: 22px;
+        height: 22px;
+        margin-right: 12px;
+        background-size: contain;
+        background-repeat: no-repeat;
+    }
+
+    .login-notification.error::before {
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z'/%3E%3C/svg%3E");
+    }
+
+    .login-notification.success::before {
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z'/%3E%3C/svg%3E");
+    }
+
+    /* Анимации */
+    @keyframes slideIn {
+        0% { transform: translateX(-50%) translateY(-50px); opacity: 0; }
+        100% { transform: translateX(-50%) translateY(0); opacity: 1; }
+    }
+
+    @keyframes slideOut {
+        0% { transform: translateX(-50%) translateY(0); opacity: 1; }
+        100% { transform: translateX(-50%) translateY(-50px); opacity: 0; }
+    }
+
+    @keyframes gentleShake {
+        0%, 100% { transform: translateX(-50%) translateY(0); }
+        20% { transform: translateX(-52%) translateY(0); }
+        40% { transform: translateX(-48%) translateY(0); }
+        60% { transform: translateX(-51%) translateY(0); }
+        80% { transform: translateX(-49%) translateY(0); }
+    }
+
+    .login-notification.show {
+        animation: slideIn 0.5s forwards;
+        display: flex;
+    }
+
+    .login-notification.hide {
+        animation: slideOut 0.5s forwards;
+    }
+
+    .login-notification.error.show {
+        animation: slideIn 0.5s forwards, gentleShake 0.8s ease 0.5s;
+    }
+</style>
 </body>
 </html>

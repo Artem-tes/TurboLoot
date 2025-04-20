@@ -1,0 +1,1329 @@
+[
+  {
+    "id": null,
+    "nameWeapon": "AK-47",
+    "Rarity": "Legendary",
+    "chance": 0.05,
+    "price": 5000
+  },
+  {
+    "id": null,
+    "nameWeapon": "M4A4",
+    "Rarity": "Epic",
+    "chance": 0.10,
+    "price": 4000
+  },
+  {
+    "id": null,
+    "nameWeapon": "AWP",
+    "Rarity": "Legendary",
+    "chance": 0.03,
+    "price": 7000
+  },
+  {
+    "id": null,
+    "nameWeapon": "Desert Eagle",
+    "Rarity": "Rare",
+    "chance": 0.15,
+    "price": 2000
+  },
+  {
+    "id": null,
+    "nameWeapon": "P90",
+    "Rarity": "Uncommon",
+    "chance": 0.20,
+    "price": 2500
+  },
+  {
+    "id": null,
+    "nameWeapon": "FAMAS",
+    "Rarity": "Rare",
+    "chance": 0.12,
+    "price": 2300
+  },
+  {
+    "id": null,
+    "nameWeapon": "MAC-10",
+    "Rarity": "Uncommon",
+    "chance": 0.18,
+    "price": 1500
+  },
+  {
+    "id": null,
+    "nameWeapon": "Galil AR",
+    "Rarity": "Common",
+    "chance": 0.25,
+    "price": 1200
+  },
+  {
+    "id": null,
+    "nameWeapon": "UMP-45",
+    "Rarity": "Common",
+    "chance": 0.30,
+    "price": 1700
+  },
+  {
+    "id": null,
+    "nameWeapon": "Negev",
+    "Rarity": "Epic",
+    "chance": 0.08,
+    "price": 5000
+  },
+  {
+    "id": null,
+    "nameWeapon": "R8 Revolver",
+    "Rarity": "Rare",
+    "chance": 0.10,
+    "price": 3000
+  },
+  {
+    "id": null,
+    "nameWeapon": "CZ75-Auto",
+    "Rarity": "Uncommon",
+    "chance": 0.17,
+    "price": 1700
+  },
+  {
+    "id": null,
+    "nameWeapon": "P250",
+    "Rarity": "Common",
+    "chance": 0.28,
+    "price": 1100
+  },
+  {
+    "id": null,
+    "nameWeapon": "Sawed-Off",
+    "Rarity": "Rare",
+    "chance": 0.12,
+    "price": 1600
+  },
+  {
+    "id": null,
+    "nameWeapon": "M249",
+    "Rarity": "Epic",
+    "chance": 0.05,
+    "price": 4200
+  },
+  {
+    "id": null,
+    "nameWeapon": "Tec-9",
+    "Rarity": "Common",
+    "chance": 0.35,
+    "price": 1400
+  },
+  {
+    "id": null,
+    "nameWeapon": "Nova",
+    "Rarity": "Uncommon",
+    "chance": 0.20,
+    "price": 1500
+  },
+  {
+    "id": null,
+    "nameWeapon": "XM1014",
+    "Rarity": "Rare",
+    "chance": 0.09,
+    "price": 1800
+  },
+  {
+    "id": null,
+    "nameWeapon": "M4A1-S",
+    "Rarity": "Legendary",
+    "chance": 0.04,
+    "price": 5200
+  },
+  {
+    "id": null,
+    "nameWeapon": "FiveseveN",
+    "Rarity": "Uncommon",
+    "chance": 0.14,
+    "price": 2300
+  },
+  {
+    "id": null,
+    "nameWeapon": "M1911",
+    "Rarity": "Epic",
+    "chance": 0.06,
+    "price": 5500
+  },
+  {
+    "id": null,
+    "nameWeapon": "AWM",
+    "Rarity": "Legendary",
+    "chance": 0.03,
+    "price": 8000
+  },
+  {
+    "id": null,
+    "nameWeapon": "PP-Bizon",
+    "Rarity": "Common",
+    "chance": 0.40,
+    "price": 1300
+  },
+  {
+    "id": null,
+    "nameWeapon": "AK-74M",
+    "Rarity": "Rare",
+    "chance": 0.09,
+    "price": 3700
+  },
+  {
+    "id": null,
+    "nameWeapon": "AK-47 Redline",
+    "Rarity": "Epic",
+    "chance": 0.05,
+    "price": 6000
+  },
+  {
+    "id": null,
+    "nameWeapon": "M4A4 Asiimov",
+    "Rarity": "Legendary",
+    "chance": 0.04,
+    "price": 6500
+  },
+  {
+    "id": null,
+    "nameWeapon": "USP-S",
+    "Rarity": "Common",
+    "chance": 0.50,
+    "price": 1000
+  },
+  {
+    "id": null,
+    "nameWeapon": "SG 553",
+    "Rarity": "Uncommon",
+    "chance": 0.18,
+    "price": 2000
+  },
+  {
+    "id": null,
+    "nameWeapon": "SCAR-20",
+    "Rarity": "Rare",
+    "chance": 0.10,
+    "price": 3500
+  },
+  {
+    "id": null,
+    "nameWeapon": "Glock-18",
+    "Rarity": "Common",
+    "chance": 0.45,
+    "price": 900
+  },
+  {
+    "id": null,
+    "nameWeapon": "AK-47 | Vulcan",
+    "Rarity": "Legendary",
+    "chance": 0.03,
+    "price": 7500
+  },
+  {
+    "id": null,
+    "nameWeapon": "AWP | Dragon Lore",
+    "Rarity": "Legendary",
+    "chance": 0.02,
+    "price": 10000
+  },
+  {
+    "id": null,
+    "nameWeapon": "M4A1-S | Hyper Beast",
+    "Rarity": "Epic",
+    "chance": 0.06,
+    "price": 6000
+  },
+  {
+    "id": null,
+    "nameWeapon": "AUG",
+    "Rarity": "Uncommon",
+    "chance": 0.22,
+    "price": 2800
+  },
+  {
+    "id": null,
+    "nameWeapon": "MP9",
+    "Rarity": "Common",
+    "chance": 0.30,
+    "price": 1100
+  },
+  {
+    "id": null,
+    "nameWeapon": "F2000",
+    "Rarity": "Epic",
+    "chance": 0.07,
+    "price": 5600
+  },
+  {
+    "id": null,
+    "nameWeapon": "P90 | Death's Head",
+    "Rarity": "Legendary",
+    "chance": 0.03,
+    "price": 6500
+  },
+  {
+    "id": null,
+    "nameWeapon": "Shooting Star",
+    "Rarity": "Epic",
+    "chance": 0.09,
+    "price": 4800
+  },
+  {
+    "id": null,
+    "nameWeapon": "M4A4 | The Emperor",
+    "Rarity": "Epic",
+    "chance": 0.04,
+    "price": 5200
+  },
+  {
+    "id": null,
+    "nameWeapon": "XM1014 | Blaze",
+    "Rarity": "Rare",
+    "chance": 0.06,
+    "price": 1800
+  },
+    {
+      "id": null,
+      "nameWeapon": "M4A4 | The Emperor",
+      "Rarity": "Epic",
+      "chance": 0.04,
+      "price": 5200
+    },
+    {
+      "id": null,
+      "nameWeapon": "AWP | Hyper Beast",
+      "Rarity": "Legendary",
+      "chance": 0.02,
+      "price": 8500
+    },
+    {
+      "id": null,
+      "nameWeapon": "P250 | Supernova",
+      "Rarity": "Common",
+      "chance": 0.33,
+      "price": 1500
+    },
+    {
+      "id": null,
+      "nameWeapon": "Desert Eagle | Hand Cannon",
+      "Rarity": "Rare",
+      "chance": 0.08,
+      "price": 2800
+    },
+    {
+      "id": null,
+      "nameWeapon": "M4A1-S | Masterpiece",
+      "Rarity": "Epic",
+      "chance": 0.05,
+      "price": 6000
+    },
+    {
+      "id": null,
+      "nameWeapon": "AK-47 | Fire Serpent",
+      "Rarity": "Legendary",
+      "chance": 0.01,
+      "price": 10000
+    },
+    {
+      "id": null,
+      "nameWeapon": "AWP | Medusa",
+      "Rarity": "Legendary",
+      "chance": 0.02,
+      "price": 12000
+    },
+    {
+      "id": null,
+      "nameWeapon": "MP7 | Skulls",
+      "Rarity": "Epic",
+      "chance": 0.04,
+      "price": 4800
+    },
+    {
+      "id": null,
+      "nameWeapon": "MP9 | Bulldozer",
+      "Rarity": "Common",
+      "chance": 0.40,
+      "price": 1100
+    },
+    {
+      "id": null,
+      "nameWeapon": "M4A4 | Royal Blue",
+      "Rarity": "Epic",
+      "chance": 0.04,
+      "price": 5400
+    },
+    {
+      "id": null,
+      "nameWeapon": "AK-47 | Jaguar",
+      "Rarity": "Epic",
+      "chance": 0.03,
+      "price": 6500
+    },
+    {
+      "id": null,
+      "nameWeapon": "AWP | Fade",
+      "Rarity": "Legendary",
+      "chance": 0.02,
+      "price": 9500
+    },
+    {
+      "id": null,
+      "nameWeapon": "M4A1-S | Chantico's Fire",
+      "Rarity": "Legendary",
+      "chance": 0.01,
+      "price": 10500
+    },
+    {
+      "id": null,
+      "nameWeapon": "M4A4 | Desert Storm",
+      "Rarity": "Epic",
+      "chance": 0.05,
+      "price": 5700
+    },
+    {
+      "id": null,
+      "nameWeapon": "SG 553 | Tiger Moth",
+      "Rarity": "Rare",
+      "chance": 0.09,
+      "price": 3300
+    },
+    {
+      "id": null,
+      "nameWeapon": "AWP | Redline",
+      "Rarity": "Epic",
+      "chance": 0.06,
+      "price": 6500
+    },
+    {
+      "id": null,
+      "nameWeapon": "M4A4 | Buzz Kill",
+      "Rarity": "Legendary",
+      "chance": 0.03,
+      "price": 6200
+    },
+    {
+      "id": null,
+      "nameWeapon": "AK-47 | Slate",
+      "Rarity": "Epic",
+      "chance": 0.05,
+      "price": 7000
+    },
+    {
+      "id": null,
+      "nameWeapon": "FAMAS | Roll Cage",
+      "Rarity": "Uncommon",
+      "chance": 0.12,
+      "price": 2200
+    },
+
+    {
+      "id": null,
+      "nameWeapon": "AWP | Dragon Lore",
+      "Rarity": "Legendary",
+      "chance": 0.01,
+      "price": 15000
+    },
+    {
+      "id": null,
+      "nameWeapon": "M4A1-S | Blood Tiger",
+      "Rarity": "Epic",
+      "chance": 0.04,
+      "price": 6200
+    },
+    {
+      "id": null,
+      "nameWeapon": "AK-47 | Vulcan",
+      "Rarity": "Legendary",
+      "chance": 0.02,
+      "price": 7800
+    },
+    {
+      "id": null,
+      "nameWeapon": "FAMAS | Pulse",
+      "Rarity": "Rare",
+      "chance": 0.07,
+      "price": 3000
+    },
+    {
+      "id": null,
+      "nameWeapon": "MP5-SD | Labyrinth",
+      "Rarity": "Rare",
+      "chance": 0.10,
+      "price": 2800
+    },
+    {
+      "id": null,
+      "nameWeapon": "M4A4 | The Emperor",
+      "Rarity": "Epic",
+      "chance": 0.03,
+      "price": 5500
+    },
+    {
+      "id": null,
+      "nameWeapon": "AK-47 | Asiimov",
+      "Rarity": "Legendary",
+      "chance": 0.01,
+      "price": 9500
+    },
+    {
+      "id": null,
+      "nameWeapon": "AWP | Hyper Beast",
+      "Rarity": "Legendary",
+      "chance": 0.02,
+      "price": 8400
+    },
+    {
+      "id": null,
+      "nameWeapon": "P90 | Shredder",
+      "Rarity": "Uncommon",
+      "chance": 0.25,
+      "price": 3000
+    },
+    {
+      "id": null,
+      "nameWeapon": "P250 | Nova",
+      "Rarity": "Common",
+      "chance": 0.40,
+      "price": 1500
+    },
+    {
+      "id": null,
+      "nameWeapon": "M4A4 | The Emperor",
+      "Rarity": "Epic",
+      "chance": 0.03,
+      "price": 5700
+    },
+    {
+      "id": null,
+      "nameWeapon": "AWP | Dragon Lore",
+      "Rarity": "Legendary",
+      "chance": 0.01,
+      "price": 15000
+    },
+    {
+      "id": null,
+      "nameWeapon": "P250 | Moonlit",
+      "Rarity": "Uncommon",
+      "chance": 0.20,
+      "price": 2300
+    },
+    {
+      "id": null,
+      "nameWeapon": "M4A1-S | Blaze",
+      "Rarity": "Legendary",
+      "chance": 0.01,
+      "price": 8900
+    },
+    {
+      "id": null,
+      "nameWeapon": "P90 | Ancient Ritual",
+      "Rarity": "Epic",
+      "chance": 0.04,
+      "price": 5000
+    },
+    {
+      "id": null,
+      "nameWeapon": "FAMAS | Surreal",
+      "Rarity": "Epic",
+      "chance": 0.03,
+      "price": 4500
+    },
+    {
+      "id": null,
+      "nameWeapon": "AK-47 | Aquamarine Revenge",
+      "Rarity": "Legendary",
+      "chance": 0.01,
+      "price": 9200
+    },
+    {
+      "id": null,
+      "nameWeapon": "AWP | Electric Hive",
+      "Rarity": "Legendary",
+      "chance": 0.02,
+      "price": 9600
+    },
+    {
+      "id": null,
+      "nameWeapon": "SG 553 | Tiger Moth",
+      "Rarity": "Rare",
+      "chance": 0.09,
+      "price": 3800
+    },
+    {
+      "id": null,
+      "nameWeapon": "M4A1-S | Hyper Beast",
+      "Rarity": "Epic",
+      "chance": 0.06,
+      "price": 6500
+    },
+    {
+      "id": null,
+      "nameWeapon": "USP-S | Dragonfire",
+      "Rarity": "Rare",
+      "chance": 0.08,
+      "price": 2500
+    },
+    {
+      "id": null,
+      "nameWeapon": "Glock-18 | Royal Legion",
+      "Rarity": "Common",
+      "chance": 0.35,
+      "price": 1200
+    },
+    {
+      "id": null,
+      "nameWeapon": "M4A4 | Dragon King",
+      "Rarity": "Epic",
+      "chance": 0.05,
+      "price": 5200
+    },
+    {
+      "id": null,
+      "nameWeapon": "AK-47 | Redline",
+      "Rarity": "Epic",
+      "chance": 0.03,
+      "price": 6900
+    },
+    {
+      "id": null,
+      "nameWeapon": "AWP | Hyper Beast",
+      "Rarity": "Legendary",
+      "chance": 0.01,
+      "price": 9500
+    },
+    {
+      "id": null,
+      "nameWeapon": "MP9 | Toxic",
+      "Rarity": "Uncommon",
+      "chance": 0.12,
+      "price": 2200
+    },
+    {
+      "id": null,
+      "nameWeapon": "P90 | Blue Dragon",
+      "Rarity": "Rare",
+      "chance": 0.08,
+      "price": 4500
+    },
+    {
+      "id": null,
+      "nameWeapon": "AK-47 | Chameleon",
+      "Rarity": "Legendary",
+      "chance": 0.01,
+      "price": 11000
+    },
+    {
+      "id": null,
+      "nameWeapon": "M4A4 | The Prince",
+      "Rarity": "Legendary",
+      "chance": 0.02,
+      "price": 8500
+    },
+    {
+      "id": null,
+      "nameWeapon": "AWP | Asimov",
+      "Rarity": "Legendary",
+      "chance": 0.03,
+      "price": 9000
+    },
+    {
+      "id": null,
+      "nameWeapon": "MP5-SD | Nightfall",
+      "Rarity": "Rare",
+      "chance": 0.09,
+      "price": 2800
+    },
+    {
+      "id": null,
+      "nameWeapon": "CZ75-Auto | Blaze",
+      "Rarity": "Rare",
+      "chance": 0.07,
+      "price": 3300
+    },
+    {
+      "id": null,
+      "nameWeapon": "M4A4 | The Empress",
+      "Rarity": "Epic",
+      "chance": 0.04,
+      "price": 5900
+    },
+    {
+      "id": null,
+      "nameWeapon": "P250 | Supernova",
+      "Rarity": "Common",
+      "chance": 0.33,
+      "price": 1600
+    },
+    {
+      "id": null,
+      "nameWeapon": "AWP | Arctic",
+      "Rarity": "Legendary",
+      "chance": 0.01,
+      "price": 10000
+    },
+    {
+      "id": null,
+      "nameWeapon": "P90 | Mercury",
+      "Rarity": "Epic",
+      "chance": 0.03,
+      "price": 4800
+    },
+    {
+      "id": null,
+      "nameWeapon": "M4A1-S | Cyber",
+      "Rarity": "Epic",
+      "chance": 0.05,
+      "price": 6200
+    },
+    {
+      "id": null,
+      "nameWeapon": "AK-47 | Safari Mesh",
+      "Rarity": "Common",
+      "chance": 0.40,
+      "price": 1200
+    },
+    {
+      "id": null,
+      "nameWeapon": "M249 | Magma",
+      "Rarity": "Epic",
+      "chance": 0.06,
+      "price": 4600
+    },
+
+  {
+      "id": null,
+      "nameWeapon": "P90 | Shredder",
+      "Rarity": "Uncommon",
+      "chance": 0.25,
+      "price": 3000
+    },
+    {
+      "id": null,
+      "nameWeapon": "AWP | Lightning Strike",
+      "Rarity": "Legendary",
+      "chance": 0.02,
+      "price": 9000
+    },
+    {
+      "id": null,
+      "nameWeapon": "P250 | Red Rock",
+      "Rarity": "Common",
+      "chance": 0.38,
+      "price": 1200
+    },
+    {
+      "id": null,
+      "nameWeapon": "MP5-SD | Labyrinth",
+      "Rarity": "Rare",
+      "chance": 0.10,
+      "price": 2800
+    },
+    {
+      "id": null,
+      "nameWeapon": "P90 | Asiimov",
+      "Rarity": "Epic",
+      "chance": 0.03,
+      "price": 5500
+    },
+    {
+      "id": null,
+      "nameWeapon": "M249 | Magma",
+      "Rarity": "Epic",
+      "chance": 0.05,
+      "price": 4600
+    },
+    {
+      "id": null,
+      "nameWeapon": "R8 Revolver | Crimson Web",
+      "Rarity": "Epic",
+      "chance": 0.04,
+      "price": 5500
+    },
+    {
+      "id": null,
+      "nameWeapon": "M4A1-S | Basilisk",
+      "Rarity": "Epic",
+      "chance": 0.05,
+      "price": 5300
+    },
+    {
+      "id": null,
+      "nameWeapon": "M249 | Magma",
+      "Rarity": "Epic",
+      "chance": 0.05,
+      "price": 4600
+    },
+    {
+      "id": null,
+      "nameWeapon": "AK-47 | Elite Build",
+      "Rarity": "Epic",
+      "chance": 0.03,
+      "price": 6500
+    },
+    {
+      "id": null,
+      "nameWeapon": "M4A1-S | Guardian",
+      "Rarity": "Legendary",
+      "chance": 0.02,
+      "price": 7000
+    },
+    {
+      "id": null,
+      "nameWeapon": "Glock-18 | Royal Legion",
+      "Rarity": "Common",
+      "chance": 0.35,
+      "price": 1000
+    },
+    {
+      "id": null,
+      "nameWeapon": "R8 Revolver | Bone Mask",
+      "Rarity": "Epic",
+      "chance": 0.05,
+      "price": 4500
+    },
+  {
+    "id": null,
+    "nameWeapon": "AK-47 | Bloodsport",
+    "Rarity": "Legendary",
+    "chance": 0.02,
+    "price": 9500
+  },
+  {
+    "id": null,
+    "nameWeapon": "M4A4 | Lullaby",
+    "Rarity": "Epic",
+    "chance": 0.05,
+    "price": 5600
+  },
+  {
+    "id": null,
+    "nameWeapon": "AWP | Wildfire",
+    "Rarity": "Legendary",
+    "chance": 0.01,
+    "price": 11000
+  },
+  {
+    "id": null,
+    "nameWeapon": "Glock-18 | Twilight Galaxy",
+    "Rarity": "Rare",
+    "chance": 0.09,
+    "price": 2600
+  },
+  {
+    "id": null,
+    "nameWeapon": "P90 | Nuclear Threat",
+    "Rarity": "Epic",
+    "chance": 0.04,
+    "price": 4700
+  },
+  {
+    "id": null,
+    "nameWeapon": "M4A4 | X-Ray",
+    "Rarity": "Rare",
+    "chance": 0.07,
+    "price": 4500
+  },
+  {
+    "id": null,
+    "nameWeapon": "M4A1-S | Cyrex",
+    "Rarity": "Legendary",
+    "chance": 0.02,
+    "price": 7500
+  },
+  {
+    "id": null,
+    "nameWeapon": "UMP-45 | Carbon Fiber",
+    "Rarity": "Common",
+    "chance": 0.30,
+    "price": 2300
+  },
+  {
+    "id": null,
+    "nameWeapon": "M4A4 | Pulse",
+    "Rarity": "Epic",
+    "chance": 0.06,
+    "price": 5100
+  },
+  {
+    "id": null,
+    "nameWeapon": "AWP | Asiimov",
+    "Rarity": "Legendary",
+    "chance": 0.01,
+    "price": 9500
+  },
+  {
+    "id": null,
+    "nameWeapon": "AK-47 | Cartel",
+    "Rarity": "Epic",
+    "chance": 0.03,
+    "price": 6500
+  },
+  {
+    "id": null,
+    "nameWeapon": "FAMAS | Pulse",
+    "Rarity": "Rare",
+    "chance": 0.08,
+    "price": 2800
+  },
+  {
+    "id": null,
+    "nameWeapon": "USP-S | Flashback",
+    "Rarity": "Common",
+    "chance": 0.35,
+    "price": 1500
+  },
+  {
+    "id": null,
+    "nameWeapon": "M4A1-S | Guardian",
+    "Rarity": "Legendary",
+    "chance": 0.02,
+    "price": 7000
+  },
+  {
+    "id": null,
+    "nameWeapon": "P250 | Valence",
+    "Rarity": "Rare",
+    "chance": 0.07,
+    "price": 1900
+  },
+  {
+    "id": null,
+    "nameWeapon": "AK-47 | Wasteland Rebel",
+    "Rarity": "Epic",
+    "chance": 0.04,
+    "price": 6200
+  },
+  {
+    "id": null,
+    "nameWeapon": "M4A1-S | Mecha Industries",
+    "Rarity": "Epic",
+    "chance": 0.05,
+    "price": 5800
+  },
+  {
+    "id": null,
+    "nameWeapon": "Galil AR | Sandstorm",
+    "Rarity": "Common",
+    "chance": 0.25,
+    "price": 1800
+  },
+  {
+    "id": null,
+    "nameWeapon": "Desert Eagle | Cobalt Disruption",
+    "Rarity": "Epic",
+    "chance": 0.06,
+    "price": 4200
+  },
+  {
+    "id": null,
+    "nameWeapon": "AWP | Electric Hive",
+    "Rarity": "Legendary",
+    "chance": 0.01,
+    "price": 10000
+  },
+  {
+    "id": null,
+    "nameWeapon": "FAMAS | Doomkitty",
+    "Rarity": "Epic",
+    "chance": 0.03,
+    "price": 3500
+  },
+  {
+    "id": null,
+    "nameWeapon": "CZ75-Auto | Tigris",
+    "Rarity": "Rare",
+    "chance": 0.07,
+    "price": 2700
+  },
+  {
+    "id": null,
+    "nameWeapon": "MP9 | Bio Leak",
+    "Rarity": "Uncommon",
+    "chance": 0.12,
+    "price": 2200
+  },
+  {
+    "id": null,
+    "nameWeapon": "Glock-18 | Off World",
+    "Rarity": "Common",
+    "chance": 0.40,
+    "price": 1000
+  },
+  {
+    "id": null,
+    "nameWeapon": "AWP | Fever Dream",
+    "Rarity": "Legendary",
+    "chance": 0.01,
+    "price": 8000
+  },
+  {
+    "id": null,
+    "nameWeapon": "M4A4 | The Empress",
+    "Rarity": "Epic",
+    "chance": 0.04,
+    "price": 5900
+  },
+  {
+    "id": null,
+    "nameWeapon": "PP-Bizon | Judgement of Anubis",
+    "Rarity": "Rare",
+    "chance": 0.09,
+    "price": 2500
+  },
+  {
+    "id": null,
+    "nameWeapon": "M4A4 | The Prince",
+    "Rarity": "Legendary",
+    "chance": 0.02,
+    "price": 8500
+  },
+  {
+    "id": null,
+    "nameWeapon": "AWP | Gungnir",
+    "Rarity": "Legendary",
+    "chance": 0.01,
+    "price": 12000
+  },
+  {
+    "id": null,
+    "nameWeapon": "USP-S | Stainless",
+    "Rarity": "Epic",
+    "chance": 0.05,
+    "price": 3200
+  },
+  {
+    "id": null,
+    "nameWeapon": "Deagle | Golden Koi",
+    "Rarity": "Epic",
+    "chance": 0.03,
+    "price": 4500
+  },
+  {
+    "id": null,
+    "nameWeapon": "P90 | Asiimov",
+    "Rarity": "Legendary",
+    "chance": 0.01,
+    "price": 9200
+  },
+  {
+    "id": null,
+    "nameWeapon": "MAC-10 | Stalker",
+    "Rarity": "Rare",
+    "chance": 0.08,
+    "price": 2700
+  },
+  {
+    "id": null,
+    "nameWeapon": "AWP | Man-o'-war",
+    "Rarity": "Legendary",
+    "chance": 0.01,
+    "price": 9500
+  },
+  {
+    "id": null,
+    "nameWeapon": "AK-47 | Blue Laminate",
+    "Rarity": "Epic",
+    "chance": 0.04,
+    "price": 7000
+  },
+  {
+    "id": null,
+    "nameWeapon": "M4A1-S | Chantico's Fire",
+    "Rarity": "Epic",
+    "chance": 0.05,
+    "price": 6000
+  },
+  {
+    "id": null,
+    "nameWeapon": "AWP | Pink DDPAT",
+    "Rarity": "Rare",
+    "chance": 0.07,
+    "price": 4000
+  },
+  {
+    "id": null,
+    "nameWeapon": "FAMAS | Survivor Z",
+    "Rarity": "Rare",
+    "chance": 0.08,
+    "price": 2900
+  },
+  {
+    "id": null,
+    "nameWeapon": "M4A4 | Dragon King",
+    "Rarity": "Epic",
+    "chance": 0.05,
+    "price": 5200
+  },
+  {
+    "id": null,
+    "nameWeapon": "P250 | Cartel",
+    "Rarity": "Uncommon",
+    "chance": 0.12,
+    "price": 2200
+  },
+  {
+    "id": null,
+    "nameWeapon": "CZ75-Auto | Tigris",
+    "Rarity": "Epic",
+    "chance": 0.04,
+    "price": 3300
+  },
+  {
+    "id": null,
+    "nameWeapon": "UMP-45 | Primal Saber",
+    "Rarity": "Rare",
+    "chance": 0.06,
+    "price": 3100
+  },
+  {
+    "id": null,
+    "nameWeapon": "M4A4 | Evil Daimyo",
+    "Rarity": "Epic",
+    "chance": 0.03,
+    "price": 5300
+  },
+  {
+    "id": null,
+    "nameWeapon": "P90 | Trigon",
+    "Rarity": "Common",
+    "chance": 0.20,
+    "price": 3000
+  },
+  {
+    "id": null,
+    "nameWeapon": "Nova | Exo",
+    "Rarity": "Rare",
+    "chance": 0.07,
+    "price": 2700
+  },
+  {
+    "id": null,
+    "nameWeapon": "AK-47 | Fire Serpent",
+    "Rarity": "Legendary",
+    "chance": 0.01,
+    "price": 11000
+  },
+  {
+    "id": null,
+    "nameWeapon": "MAG-7 | Heat",
+    "Rarity": "Epic",
+    "chance": 0.05,
+    "price": 2500
+  },
+  {
+    "id": null,
+    "nameWeapon": "AUG | Storm",
+    "Rarity": "Common",
+    "chance": 0.15,
+    "price": 2900
+  },
+  {
+    "id": null,
+    "nameWeapon": "M4A1-S | Hot Rod",
+    "Rarity": "Legendary",
+    "chance": 0.02,
+    "price": 8500
+  },
+  {
+    "id": null,
+    "nameWeapon": "AK-47 | Redline",
+    "Rarity": "Epic",
+    "chance": 0.04,
+    "price": 7000
+  },
+  {
+    "id": null,
+    "nameWeapon": "AWP | Hyper Beast",
+    "Rarity": "Legendary",
+    "chance": 0.02,
+    "price": 9500
+  },
+  {
+    "id": null,
+    "nameWeapon": "P250 | Iron Clad",
+    "Rarity": "Uncommon",
+    "chance": 0.18,
+    "price": 2200
+  },
+  {
+    "id": null,
+    "nameWeapon": "M4A4 | Royal Paladin",
+    "Rarity": "Epic",
+    "chance": 0.03,
+    "price": 5900
+  },
+  {
+    "id": null,
+    "nameWeapon": "Desert Eagle | Golden Koi",
+    "Rarity": "Epic",
+    "chance": 0.04,
+    "price": 4500
+  },
+  {
+    "id": null,
+    "nameWeapon": "M4A1-S | Mecha Industries",
+    "Rarity": "Legendary",
+    "chance": 0.01,
+    "price": 8500
+  },
+  {
+    "id": null,
+    "nameWeapon": "Glock-18 | Weasel",
+    "Rarity": "Common",
+    "chance": 0.45,
+    "price": 900
+  },
+  {
+    "id": null,
+    "nameWeapon": "AK-47 | Neon Revolution",
+    "Rarity": "Legendary",
+    "chance": 0.01,
+    "price": 11000
+  },
+  {
+    "id": null,
+    "nameWeapon": "MP9 | Rose Iron",
+    "Rarity": "Epic",
+    "chance": 0.06,
+    "price": 3200
+  },
+
+  {
+    "id": null,
+    "nameWeapon": "M249 | Magma",
+    "Rarity": "Epic",
+    "chance": 0.05,
+    "price": 4600
+  },
+  {
+    "id": null,
+    "nameWeapon": "AWP | Desert Hydra",
+    "Rarity": "Legendary",
+    "chance": 0.02,
+    "price": 9500
+  },
+  {
+    "id": null,
+    "nameWeapon": "AK-47 | Asiimov",
+    "Rarity": "Epic",
+    "chance": 0.04,
+    "price": 6500
+  },
+  {
+    "id": null,
+    "nameWeapon": "P90 | Tracer",
+    "Rarity": "Rare",
+    "chance": 0.07,
+    "price": 3000
+  },
+  {
+    "id": null,
+    "nameWeapon": "M4A4 | X-Ray",
+    "Rarity": "Epic",
+    "chance": 0.05,
+    "price": 5200
+  },
+  {
+    "id": null,
+    "nameWeapon": "CZ75-Auto | Tigris",
+    "Rarity": "Epic",
+    "chance": 0.06,
+    "price": 3400
+  },
+  {
+    "id": null,
+    "nameWeapon": "M4A4 | Hellfire",
+    "Rarity": "Legendary",
+    "chance": 0.02,
+    "price": 8000
+  },
+  {
+    "id": null,
+    "nameWeapon": "AWP | Worm God",
+    "Rarity": "Rare",
+    "chance": 0.10,
+    "price": 3500
+  },
+  {
+    "id": null,
+    "nameWeapon": "M4A1-S | Green Laminate",
+    "Rarity": "Epic",
+    "chance": 0.06,
+    "price": 6300
+  },
+  {
+    "id": null,
+    "nameWeapon": "MP7 | Skulls",
+    "Rarity": "Epic",
+    "chance": 0.04,
+    "price": 4700
+  },
+  {
+    "id": null,
+    "nameWeapon": "AK-47 | Gold Arabesque",
+    "Rarity": "Legendary",
+    "chance": 0.01,
+    "price": 11500
+  },
+  {
+    "id": null,
+    "nameWeapon": "SG 553 | Army Sheen",
+    "Rarity": "Rare",
+    "chance": 0.07,
+    "price": 3100
+  },
+  {
+    "id": null,
+    "nameWeapon": "M4A4 | Hades",
+    "Rarity": "Epic",
+    "chance": 0.05,
+    "price": 5400
+  },
+  {
+    "id": null,
+    "nameWeapon": "AK-47 | Inferno Blaze",
+    "Rarity": "Legendary",
+    "chance": 0.01,
+    "price": 12500
+  },
+  {
+    "id": null,
+    "nameWeapon": "AWP | Phantom Strike",
+    "Rarity": "Epic",
+    "chance": 0.04,
+    "price": 5100
+  },
+  {
+    "id": null,
+    "nameWeapon": "Desert Eagle | Night Fury",
+    "Rarity": "Rare",
+    "chance": 0.08,
+    "price": 2100
+  },
+  {
+    "id": null,
+    "nameWeapon": "USP-S | Toxic Wave",
+    "Rarity": "Uncommon",
+    "chance": 0.15,
+    "price": 950
+  },
+  {
+    "id": null,
+    "nameWeapon": "Glock-18 | Urban Rust",
+    "Rarity": "Common",
+    "chance": 0.25,
+    "price": 400
+  },
+  {
+    "id": null,
+    "nameWeapon": "FAMAS | Starfall",
+    "Rarity": "Rare",
+    "chance": 0.07,
+    "price": 1950
+  },
+  {
+    "id": null,
+    "nameWeapon": "MP9 | Neon Web",
+    "Rarity": "Epic",
+    "chance": 0.045,
+    "price": 4800
+  }
+
+]
