@@ -1569,47 +1569,60 @@
 
             if (result.status === 'success') {
                 const wonItem = result.item;
-                const itemIndex = items.findIndex(item => item.id === wonItem.id);
-                const itemWidth = 220; // Должно соответствовать ширине roulette-item в CSS
-                const visibleWidth = rouletteTrack.parentElement.offsetWidth;
+const itemWidth = 220; // Ширина одного элемента
+const visibleWidth = rouletteTrack.parentElement.offsetWidth;
+const repeatCount = 20; // Сколько раз повторить элементы для имитации бесконечной прокрутки
 
-                // Рассчитываем конечную позицию так, чтобы выигранный item оказался по центру
-                const targetPosition = itemIndex * itemWidth - (visibleWidth / 2 - itemWidth / 2);
+// Клонируем исходные элементы в рулетку многократно
+rouletteTrack.innerHTML = '';
+const extendedItems = [];
 
-                // Добавляем несколько полных прокруток для эффекта анимации
-                const spinDistance = targetPosition + (itemWidth * items.length * 3);
+for (let i = 0; i < repeatCount; i++) {
+    items.forEach(item => {
+        const itemEl = document.createElement('div');
+        itemEl.className = 'roulette-item';
+        itemEl.dataset.itemId = item.id;
+        itemEl.innerHTML = `
+            ${item.nameWeapon}
+        `;
+        rouletteTrack.appendChild(itemEl);
+        extendedItems.push(item);
+    });
+}
 
-                // Сбрасываем текущую позицию без анимации
-                rouletteTrack.style.transition = 'none';
-                rouletteTrack.style.transform = 'translateX(0)';
+// Находим индекс выигрышного элемента в повторённом списке, ближе к концу
+const finalIndex = extendedItems.findLastIndex(item => item.id === wonItem.id);
 
-                // Запускаем анимацию
-                setTimeout(() => {
-                    rouletteTrack.style.transition = 'transform 4s cubic-bezier(0.2, 0.1, 0.2, 1)';
-                    rouletteTrack.style.transform = `translateX(-${spinDistance}px)`;
-                }, 10);
+// Смещение так, чтобы выигрыш оказался по центру
+const targetPosition = finalIndex * itemWidth - (visibleWidth / 2 - itemWidth / 2);
 
-                // После завершения анимации
-                setTimeout(() => {
-                    showWinModal(wonItem);
+// Убираем transition, ставим в начало
+rouletteTrack.style.transition = 'none';
+rouletteTrack.style.transform = `translateX(0)`;
 
-                    // Обновляем баланс
-                    if (result.newBalance !== undefined) {
-                        userBalanceElement.textContent = result.newBalance + ' ₽';
-                    }
+// Старт анимации через небольшой таймаут
+setTimeout(() => {
+    rouletteTrack.style.transition = 'transform 5s cubic-bezier(0.2, 0.1, 0.2, 1)';
+    rouletteTrack.style.transform = `translateX(-${targetPosition}px)`;
+}, 50);
 
-                    // Сброс кнопки через 3 секунды после показа модального окна
-                    setTimeout(() => {
-                        openButton.disabled = false;
-                        openButtonText.innerHTML = `Открыть за ${caseData.price} ₽`;
+// После завершения
+setTimeout(() => {
+    showWinModal(wonItem);
 
-                        // Плавный сброс позиции рулетки
-                        setTimeout(() => {
-                            rouletteTrack.style.transition = 'transform 0.5s ease-out';
-                            rouletteTrack.style.transform = 'translateX(0)';
-                        }, 50);
-                    }, 3000);
-                }, 4000); // Должно соответствовать длительности анимации
+    if (result.newBalance !== undefined) {
+        userBalanceElement.textContent = result.newBalance + ' ₽';
+    }
+
+    setTimeout(() => {
+        openButton.disabled = false;
+        openButtonText.innerHTML = `Открыть за ${caseData.price} ₽`;
+
+        // Сбросить рулетку
+        rouletteTrack.style.transition = 'transform 0.3s ease-out';
+        rouletteTrack.style.transform = 'translateX(0)';
+    }, 3000);
+}, 5200); // Соответствует времени анимации
 
             } else if (result.status === 'notmoney') {
                 alert('У вас недостаточно средств для открытия этого кейса.');

@@ -1,10 +1,1025 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>TurboLoot - Инвентарь</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        /* Глобальные стили */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Хедер */
+        header {
+            background: rgba(0, 0, 0, 0.8);
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+
+        .nav-left {
+            display: flex;
+            gap: 30px;
+        }
+
+        .nav-button {
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: all 0.3s;
+            padding: 5px 0;
+            position: relative;
+        }
+
+        .nav-button i {
+            color: #ffcc00;
+            font-size: 20px;
+            margin-bottom: 5px;
+            transition: all 0.3s;
+        }
+
+        .nav-button:hover i {
+            transform: translateY(-3px);
+            text-shadow: 0 0 10px rgba(255, 204, 0, 0.5);
+        }
+
+        .nav-button::after {
+            content: '';
+            display: block;
+            width: 0;
+            height: 2px;
+            background: #ffcc00;
+            transition: width 0.3s;
+            position: absolute;
+            bottom: 0;
+        }
+
+        .nav-button:hover::after {
+            width: 100%;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo h1 {
+            font-size: 24px;
+            background: linear-gradient(to right, #ff8a00, #ffcc00);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 800;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        /* Кнопки аккаунта */
+        .account-button {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(90deg, #ff8a00, #ffcc00);
+            color: #222;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .account-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 204, 0, 0.4);
+        }
+
+        .account-button i {
+            font-size: 18px;
+        }
+
+        .account-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: rgba(0, 0, 0, 0.9);
+            border-radius: 8px;
+            padding: 10px 0;
+            min-width: 180px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+            z-index: 100;
+        }
+
+        .account-button:hover .account-dropdown {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(5px);
+        }
+
+        .account-dropdown a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: white;
+            padding: 8px 15px;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .account-dropdown a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #ffcc00;
+        }
+
+        .account-dropdown a i {
+            width: 20px;
+            text-align: center;
+        }
+
+        /* Hero секция */
+        .account-hero {
+            background: linear-gradient(135deg, #ff8a00 0%, #ffcc00 100%);
+            padding: 60px 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .account-hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none"><path fill="rgba(255,255,255,0.1)" d="M0,0 L100,0 L100,100 L0,100 Z" /><path fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="2" stroke-dasharray="5,5" d="M0,50 Q25,25 50,50 T100,50" /></svg>');
+            background-size: cover;
+            opacity: 0.5;
+        }
+
+        .account-hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .account-hero h1 {
+            font-size: 3rem;
+            font-weight: 900;
+            margin-bottom: 15px;
+            font-family: 'Montserrat', sans-serif;
+            color: #222;
+        }
+
+        .account-hero p {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            line-height: 1.6;
+            color: rgba(0, 0, 0, 0.8);
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .balance-container {
+            display: inline-flex;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 30px;
+            padding: 8px 20px;
+            margin-bottom: 20px;
+        }
+
+        .balance-amount {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin: 0 10px;
+            color: #222;
+        }
+
+        .balance-icon {
+            font-size: 1.5rem;
+            color: #222;
+        }
+
+        /* Основной контент */
+        .account-content {
+            display: flex;
+            max-width: 1400px;
+            margin: 40px auto;
+            padding: 0 30px;
+            gap: 30px;
+        }
+
+        /* Боковая панель */
+        .account-sidebar {
+            flex: 0 0 280px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 20px;
+            height: fit-content;
+        }
+
+        .sidebar-section {
+            margin-bottom: 30px;
+        }
+
+        .sidebar-section h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #ffcc00;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar-menu {
+            list-style: none;
+        }
+
+        .sidebar-menu li {
+            margin-bottom: 8px;
+        }
+
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            padding: 10px 15px;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+
+        .sidebar-menu a:hover, .sidebar-menu a.active {
+            background: rgba(255, 204, 0, 0.1);
+            color: #ffcc00;
+        }
+
+        .sidebar-menu a i {
+            width: 20px;
+            text-align: center;
+        }
+
+        /* Основная область */
+        .account-main {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 30px;
+        }
+
+        .account-section {
+            margin-bottom: 40px;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .section-header h2 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            font-family: 'Montserrat', sans-serif;
+            color: white;
+        }
+
+        .section-header a {
+            color: #ffcc00;
+            text-decoration: none;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.3s;
+        }
+
+        .section-header a:hover {
+            color: #ff8a00;
+        }
+
+        /* Карточки статистики */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 10px;
+            padding: 20px;
+            transition: all 0.3s;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.12);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .stat-card h3 {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 10px;
+        }
+
+        .stat-card .stat-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 5px;
+        }
+
+        .stat-card .stat-change {
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .stat-card .stat-change.positive {
+            color: #4CAF50;
+        }
+
+        .stat-card .stat-change.negative {
+            color: #F44336;
+        }
+
+        /* Сетка инвентаря */
+        .inventory-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 20px;
+        }
+
+        .weapon-card {
+            background: #1e1e1e;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 2px solid #333;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .weapon-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .weapon-image {
+            width: 100%;
+            height: 140px;
+            background: linear-gradient(135deg, #2c3e50 0%, #4ca1af 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 40px;
+        }
+
+        .weapon-details {
+            padding: 15px;
+        }
+
+        .weapon-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .weapon-rarity {
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+        }
+
+        .weapon-price {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #ffcc00;
+            margin-bottom: 15px;
+        }
+
+        .weapon-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .weapon-btn {
+            flex: 1;
+            padding: 8px 0;
+            border: none;
+            border-radius: 5px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .weapon-btn.sell {
+            background: #ff4444;
+            color: white;
+        }
+
+        .weapon-btn.sell:hover {
+            background: #cc0000;
+        }
+
+        .weapon-btn.inspect {
+            background: #444;
+            color: white;
+        }
+
+        .weapon-btn.inspect:hover {
+            background: #666;
+        }
+
+        /* Цвета редкостей */
+        .common {
+            border-color: #b0b0b0;
+        }
+        .common .weapon-name {
+            color: #b0b0b0;
+        }
+        .common .weapon-rarity {
+            color: #b0b0b0;
+        }
+
+        .rare {
+            border-color: #4fa3ff;
+        }
+        .rare .weapon-name {
+            color: #4fa3ff;
+        }
+        .rare .weapon-rarity {
+            color: #4fa3ff;
+        }
+
+        .epic {
+            border-color: #b54fff;
+        }
+        .epic .weapon-name {
+            color: #b54fff;
+        }
+        .epic .weapon-rarity {
+            color: #b54fff;
+        }
+
+        .legendary {
+            border-color: #ffd700;
+        }
+        .legendary .weapon-name {
+            color: #ffd700;
+        }
+        .legendary .weapon-rarity {
+            color: #ffd700;
+        }
+
+        /* Футер */
+        footer {
+            background: rgba(0, 0, 0, 0.9);
+            padding: 40px 30px 20px;
+            text-align: center;
+            margin-top: auto;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            text-align: left;
+        }
+
+        .footer-column h3 {
+            color: #ffcc00;
+            margin-bottom: 20px;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .footer-links {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .footer-links a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: #ffcc00;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .social-links a {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 20px;
+            transition: color 0.3s;
+        }
+
+        .social-links a:hover {
+            color: #ffcc00;
+        }
+
+        .copyright {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 14px;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Анимации */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .animated-card {
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+
+        /* Адаптивность */
+        @media (max-width: 1024px) {
+            .account-content {
+                flex-direction: column;
+            }
+
+            .account-sidebar {
+                flex: 1;
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                gap: 15px;
+                padding: 15px;
+            }
+
+            .nav-left {
+                gap: 15px;
+            }
+
+            .account-hero h1 {
+                font-size: 2.2rem;
+            }
+
+            .account-hero p {
+                font-size: 1rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .inventory-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .account-hero h1 {
+                font-size: 1.8rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .inventory-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 <body>
+<!-- Хедер -->
+<header>
+    <div class="nav-left">
+        <a href="/" class="nav-button">
+            <i class="fas fa-home"></i>
+            <span>Главная</span>
+        </a>
+        <a href="/upgrade" class="nav-button">
+            <i class="fas fa-level-up-alt"></i>
+            <span>Апгрейд</span>
+        </a>
+        <a href="/shop" class="nav-button">
+            <i class="fas fa-shopping-cart"></i>
+            <span>Магазин</span>
+        </a>
+    </div>
 
-</body>
-</html>
+    <div class="logo">
+        <h1>TurboLoot</h1>
+    </div>
+
+    <div class="account-button">
+        <i class="fas fa-user-circle"></i>
+        <span id="usernamePlaceholder">Username</span>
+        <div class="account-dropdown">
+            <a href="/account/inventory"><i class="fas fa-box-open"></i> Инвентарь</a>
+            <a href="/account/transactions"><i class="fas fa-history"></i> История</a>
+            <a href="/account/settings"><i class="fas fa-cog"></i> Настройки</a>
+            <a href="/logout" id="logoutButton"><i class="fas fa-sign-out-alt"></i> Выйти</a>
+        </div>
+    </div>
+</header>
+
+<!-- Hero секция -->
+<section class="account-hero">
+    <div class="account-hero-content">
+        <div class="balance-container">
+            <i class="fas fa-coins balance-icon"></i>
+            <span class="balance-amount" id="userBalance">0.00</span>
+            <i class="fas fa-plus-circle balance-icon" id="addFundsButton" style="cursor: pointer;"></i>
+        </div>
+        <h1>Ваш инвентарь, <span id="userGreeting">Игрок</span>!</h1>
+        <p>Здесь собраны все ваши выигранные предметы. Вы можете продать их или рассмотреть подробнее</p>
+    </div>
+</section>
+
+<!-- Основной контент -->
+<div class="account-content">
+    <!-- Боковая панель -->
+    <aside class="account-sidebar">
+        <div class="sidebar-section">
+            <h3>Меню</h3>
+            <ul class="sidebar-menu">
+                <li><a href="/account/profile"><i class="fas fa-user"></i> Профиль</a></li>
+                <li><a href="/account/inventory" class="active"><i class="fas fa-box-open"></i> Инвентарь</a></li>
+                <li><a href="/account/put-money"><i class="fas fa-history"></i>Пополнить баланс</a></li>
+                <li><a href="/account/transactions"><i class="fas fa-history"></i> История операций</a></li>
+                <li><a href="/account/withdraw"><i class="fas fa-wallet"></i> Вывод средств</a></li>
+                <li><a href="/account/referrals"><i class="fas fa-users"></i> Рефералы</a></li>
+                <li><a href="/account/settings"><i class="fas fa-cog"></i> Настройки</a></li>
+            </ul>
+        </div>
+
+        <div class="sidebar-section">
+            <h3>Статистика</h3>
+            <ul class="sidebar-menu">
+                <li><a href="#"><i class="fas fa-chart-line"></i> Общая статистика</a></li>
+                <li><a href="#"><i class="fas fa-gem"></i> Открыто кейсов: <span id="casesOpened">0</span></a></li>
+                <li><a href="#"><i class="fas fa-trophy"></i> Лучший дроп: <span id="bestDrop">-</span></a></li>
+                <li><a href="#"><i class="fas fa-boxes"></i> Предметов: <span id="totalItems">0</span></a></li>
+            </ul>
+        </div>
+    </aside>
+
+    <!-- Основная область -->
+    <main class="account-main">
+        <section class="account-section">
+            <div class="section-header">
+                <h2>Ваш инвентарь</h2>
+                <div>
+                    <span id="itemsCount">0 предметов</span>
+                </div>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card animated-card" style="animation-delay: 0.1s;">
+                    <h3>Общая стоимость</h3>
+                    <div class="stat-value">R<span id="totalInventoryValue">0.00</span></div>
+                    <div class="stat-change">
+                        <i class="fas fa-minus"></i> <span>без изменений</span>
+                    </div>
+                </div>
+
+                <div class="stat-card animated-card" style="animation-delay: 0.2s;">
+                    <h3>Самый дорогой</h3>
+                    <div class="stat-value"><span id="mostExpensiveItem">-</span></div>
+                    <div class="stat-change">
+                        <i class="fas fa-minus"></i> <span>R<span id="mostExpensivePrice">0.00</span></span>
+                    </div>
+                </div>
+
+                <div class="stat-card animated-card" style="animation-delay: 0.3s;">
+                    <h3>Легендарных</h3>
+                    <div class="stat-value"><span id="legendaryCount">0</span></div>
+                    <div class="stat-change">
+                        <i class="fas fa-minus"></i> <span>без изменений</span>
+                    </div>
+                </div>
+
+                <div class="stat-card animated-card" style="animation-delay: 0.4s;">
+                    <h3>Обычных</h3>
+                    <div class="stat-value"><span id="commonCount">0</span></div>
+                    <div class="stat-change">
+                        <i class="fas fa-minus"></i> <span>без изменений</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="account-section">
+            <div class="section-header">
+                <h2>Все предметы</h2>
+                <div class="sort-options">
+                    <select id="sortSelect" class="weapon-btn inspect" style="padding: 8px 12px;">
+                        <option value="newest">Сначала новые</option>
+                        <option value="oldest">Сначала старые</option>
+                        <option value="price-high">Дорогие</option>
+                        <option value="price-low">Дешевые</option>
+                        <option value="rarity">По редкости</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="inventory-grid" id="inventoryItemsGrid">
+                <!-- Здесь будут отображаться предметы из инвентаря -->
+                <div class="loading" style="grid-column: 1 / -1; text-align: center; padding: 50px;">
+                    <i class="fas fa-spinner fa-spin fa-3x"></i>
+                    <p>Загрузка инвентаря...</p>
+                </div>
+            </div>
+        </section>
+    </main>
+</div>
+
+<!-- Футер -->
+<footer>
+    <div class="footer-content">
+        <div class="footer-column">
+            <h3>TurboLoot</h3>
+            <div class="footer-links">
+                <a href="/about">О нас</a>
+                <a href="/blog">Блог</a>
+                <a href="/careers">Карьера</a>
+                <a href="/press">Пресса</a>
+            </div>
+        </div>
+
+        <div class="footer-column">
+            <h3>Помощь</h3>
+            <div class="footer-links">
+                <a href="/support">Поддержка</a>
+                <a href="/rules">Правила</a>
+                <a href="/safety">Безопасность</a>
+                <a href="/refund">Возврат средств</a>
+            </div>
+        </div>
+
+        <div class="footer-column">
+            <h3>Правовая информация</h3>
+            <div class="footer-links">
+                <a href="/terms">Условия использования</a>
+                <a href="/privacy">Политика конфиденциальности</a>
+                <a href="/cookies">Cookie-файлы</a>
+                <a href="/aml">AML политика</a>
+            </div>
+        </div>
+
+        <div class="footer-column">
+            <h3>Социальные сети</h3>
+            <div class="social-links">
+                <a href="#"><i class="fab fa-vk"></i></a>
+                <a href="#"><i class="fab fa-telegram"></i></a>
+                <a href="#"><i class="fab fa-youtube"></i></a>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+            </div>
+        </div>
+    </div>
+
+    <div class="copyright">
+        &copy; 2025 TurboLoot. Все права защищены. TurboLoot не аффилирован с Valve Corporation. Все товарные знаки являются собственностью их владельцев.
+    </div>
+</footer>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Запрашиваем данные инвентаря с сервера
+        fetch('/account/get-data/inventory-data')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                // Обновляем информацию о пользователе
+                if (data.user) {
+                    document.getElementById('usernamePlaceholder').textContent = data.user.username;
+                    document.getElementById('userGreeting').textContent = data.user.username;
+                    document.getElementById('userBalance').textContent = data.user.balance.toFixed(2);
+                    document.getElementById('casesOpened').textContent = data.user.countCases;
+                    document.getElementById('bestDrop').textContent = data.bestDrop || '-';
+                }
+
+                // Отображаем предметы инвентаря
+                if (data.inventory && data.inventory.length > 0) {
+                    renderInventoryItems(data.inventory);
+                    updateInventoryStats(data.inventory);
+                } else {
+                    document.getElementById('inventoryItemsGrid').innerHTML =
+                        '<div class="empty-inventory" style="grid-column: 1 / -1; text-align: center; padding: 50px;">' +
+                        '<i class="fas fa-box-open fa-3x" style="margin-bottom: 20px;"></i>' +
+                        '<h3>Ваш инвентарь пуст</h3>' +
+                        '<p>Откройте кейсы, чтобы получить предметы</p>' +
+                        '<a href="/shop" class="weapon-btn inspect" style="display: inline-block; margin-top: 20px; padding: 10px 20px;">В магазин</a>' +
+                        '</div>';
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching inventory data:', error);
+                document.getElementById('inventoryItemsGrid').innerHTML =
+                    '<div class="error-message" style="grid-column: 1 / -1; text-align: center; padding: 50px; color: #ff4444;">' +
+                    '<i class="fas fa-exclamation-triangle fa-3x" style="margin-bottom: 20px;"></i>' +
+                    '<h3>Ошибка загрузки инвентаря</h3>' +
+                    '<p>Попробуйте обновить страницу</p>' +
+                    '</div>';
+            });
+
+        // Обработчик сортировки
+        document.getElementById('sortSelect').addEventListener('change', function() {
+            const sortValue = this.value;
+            const inventoryGrid = document.getElementById('inventoryItemsGrid');
+            const items = Array.from(inventoryGrid.children).filter(el => el.classList.contains('weapon-card'));
+
+            // Сортируем элементы в соответствии с выбранным вариантом
+            items.sort((a, b) => {
+                if (sortValue === 'newest') {
+                    return parseInt(b.dataset.id) - parseInt(a.dataset.id);
+                } else if (sortValue === 'oldest') {
+                    return parseInt(a.dataset.id) - parseInt(b.dataset.id);
+                } else if (sortValue === 'price-high') {
+                    return parseFloat(b.dataset.price) - parseFloat(a.dataset.price);
+                } else if (sortValue === 'price-low') {
+                    return parseFloat(a.dataset.price) - parseFloat(b.dataset.price);
+                } else if (sortValue === 'rarity') {
+                    const rarityOrder = { 'legendary': 4, 'epic': 3, 'rare': 2, 'common': 1 };
+                    return rarityOrder[b.dataset.rarity] - rarityOrder[a.dataset.rarity];
+                }
+                return 0;
+            });
+
+            // Переставляем элементы в DOM
+            items.forEach(item => inventoryGrid.appendChild(item));
+        });
+    });
+
+    // Функция для отображения предметов инвентаря
+    function renderInventoryItems(items) {
+        const inventoryGrid = document.getElementById('inventoryItemsGrid');
+        inventoryGrid.innerHTML = '';
+
+        items.forEach(item => {
+            const rarityClass = getRarityClass(item.rarity);
+            const itemElement = document.createElement('div');
+            itemElement.className = `weapon-card animated-card ${rarityClass}`;
+            itemElement.dataset.id = item.id;
+            itemElement.dataset.price = item.price;
+            itemElement.dataset.rarity = item.rarity;
+
+            itemElement.innerHTML = `
+                <div class="weapon-image">
+                    <i class="fas ${getWeaponIcon(item.type)}"></i>
+                </div>
+                <div class="weapon-details">
+                    <h3 class="weapon-name">${item.name}</h3>
+                    <div class="weapon-rarity">${getRarityName(item.rarity)}</div>
+                    <div class="weapon-price">R${item.price.toFixed(2)}</div>
+                    <div class="weapon-actions">
+                        <button class="weapon-btn sell" data-id="${item.id}">Продать</button>
+                        <button class="weapon-btn inspect" data-id="${item.id}">Осмотреть</button>
+                    </div>
+                </div>
+            `;
+
+            inventoryGrid.appendChild(itemElement);
+        });
+
+        // Добавляем обработчики событий для кнопок
+        document.querySelectorAll('.weapon-btn.sell').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const itemId = this.dataset.id;
+                sellItem(itemId);
+            });
+        });
+
+        document.querySelectorAll('.weapon-btn.inspect').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const itemId = this.dataset.id;
+                inspectItem(itemId);
+            });
+        });
+    }
+
+    // Функция для обновления статистики инвентаря
+    function updateInventoryStats(items) {
+        document.getElementById('itemsCount').textContent = `${items.length} предметов`;
+        document.getElementById('totalItems').textContent = items.length;
+
+        // Общая стоимость инвентаря
+        const totalValue = items.reduce((sum, item) => sum + item.price, 0);
+        document.getElementById('totalInventoryValue').textContent = totalValue.toFixed(2);
+
+        // Самый дорогой предмет
+        if (items.length > 0) {
+            const mostExpensive = items.reduce((max, item) =>
+                item.price > max.price ? item : max, items[0]);
+            document.getElementById('mostExpensiveItem').textContent = mostExpensive.name;
+            document.getElementById('mostExpensivePrice').textContent = mostExpensive.price.toFixed(2);
+        }
+
+        // Количество предметов по редкости
+        const legendaryCount = items.filter(item => item.rarity === 'legendary').length;
+        const epicCount = items.filter(item => item.rarity === 'epic').length;
+        const rareCount = items.filter(item => item.rarity === 'rare').length;
+        const commonCount = items.filter(item => item.rarity === 'common').length;
+
+        document.getElementById('legendaryCount').textContent = legendaryCount;
+        document.getElementById('commonCount').textContent = commonCount;
+    }
+
+    // Вспомогательные функции
+    function getRarityClass(rarity) {
+        switch (rarity) {
+            case 'common': return 'common';
+            case 'rare': return 'rare';
+            case 'epic': return 'epic';
+            case 'legendary': return 'legendary';
+            default: return 'common';
+        }
+    }
+
+    function getRarityName(rarity) {
+        switch (rarity) {
+            case 'common': return 'Обычный';
+            case 'rare': return 'Редкий';
+            case 'epic': return 'Эпический';
+            case 'legendary': return 'Легендарный';
+            default: return 'Обычный';
+        }
+    }
+
+    function getWeaponIcon(type) {
+        // Здесь можно добавить больше иконок для разных типов оружия
+        switch (type.toLowerCase()) {
+            case 'knife': return 'fa-cut';
+            case 'pistol': return 'fa-gun';
+            case 'rifle': return 'fa-gun';
+            case 'sniper': return 'fa-bullseye';
+            case 'smg': return 'fa-gun';
+            case 'heavy': return 'fa-bomb';
+            default: return 'fa-gun';
+        }
+    }
+
+    function sellItem(itemId) {
+        // Тут можно реализовать POST-запрос на продажу предмета
+        alert(`Вы продали предмет с ID: ${itemId}`);
+    }
+
+    function inspectItem(itemId) {
+        // Тут можно реализовать просмотр предмета
+        alert(`Вы осматриваете предмет с ID: ${itemId}`);
+    }
+</script>
+<body>
+<html>

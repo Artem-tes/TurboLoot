@@ -18,6 +18,12 @@ public class GetDataAccountController {
     @Autowired
     AccountService accountService;
 
+    @GetMapping("/inventory-data")
+    public ResponseEntity<Map<String,Object>> getDataToInventory(HttpServletRequest request){
+        Map<String,Object> response = accountService.getDataToInventoryController(request);
+        return ResponseEntity.ok(response);
+    }
+
     @GetMapping("/get-inventory")
     @ResponseBody
     public ResponseEntity<Map<String,Object>> getInventoryToProfilePage(HttpServletRequest request){
