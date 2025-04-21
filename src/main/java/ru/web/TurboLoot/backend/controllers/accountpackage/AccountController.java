@@ -26,5 +26,8 @@ public class AccountController {
         return "accountpages/putmoney";
     }
 
-
+    @GetMapping("/inventory")
+    public String getInventoryPage(){
+        return "accountpages/inventory";
+    }
 }

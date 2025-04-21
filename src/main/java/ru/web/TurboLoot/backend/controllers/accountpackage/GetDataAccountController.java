@@ -39,6 +39,4 @@ public class GetDataAccountController {
         return ResponseEntity.ok(response);
     }
 
-
-
 }

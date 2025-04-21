@@ -39,7 +39,12 @@ public class CaseService {
         User user = (User) request.getSession().getAttribute("user");
         map.put("case",caseByName);
         map.put("items",weapons);
-        map.put("user",user.getBalance());
+        if(user!=null){
+            map.put("user",user.getBalance());
+        }else {
+            map.put("user",0);
+        }
+
         map.put("chance",returnChanses(caseByName));
         return map;
     }

@@ -23,7 +23,7 @@ public class CaseController {
 
 
     @GetMapping("/case")
-    private String returnCasePage(Model model,
+    public String returnCasePage(Model model,
                                   @RequestParam("case") String caseName,
                                   HttpServletRequest request){
         return caseService.returnPageCase(model,caseName, request);
@@ -31,6 +31,7 @@ public class CaseController {
     }
 
     @GetMapping("/cases/get-item")
+    @ResponseBody
     public ResponseEntity<Map<String,Object>> getWeapons(@RequestParam("case") String name, HttpServletRequest request){
         return ResponseEntity.ok(caseService.returnProm(name,request));
     }

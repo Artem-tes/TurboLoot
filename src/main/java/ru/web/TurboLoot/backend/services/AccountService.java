@@ -37,7 +37,11 @@ public class AccountService {
     public Map<String,Object> getProfileData(HttpServletRequest request){
         Map<String,Object> response = new HashMap<>();
         User user = (User) request.getSession().getAttribute("user");
-        response.put("user",formUserDTO(user));
+        if(user!=null) {
+            response.put("user", formUserDTO(user));
+        }else {
+            response.put("user",null);
+        }
         return response;
     }
 
