@@ -33,8 +33,8 @@ public class AccountService {
         response.put("bestDrop",getBestDropToInventoryPage(user));
         response.put("inventory",getListWeaponToInventoryPage(user));
         response.put("allPrice",getAllPriceToInventoryPage(user));
-        response.put("legendaryCount",getCountRaretiesToInventoryPage(user).get(1));
-        response.put("commonCount",getCountRaretiesToInventoryPage(user).get(2));
+        response.put("legendaryCount",getCountRaretiesToInventoryPage(user).get(2));
+        response.put("commonCount",getCountRaretiesToInventoryPage(user).get(1));
         return response;
     }
 

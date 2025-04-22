@@ -725,7 +725,7 @@
             <div class="stats-grid">
                 <div class="stat-card animated-card" style="animation-delay: 0.1s;">
                     <h3>Общая стоимость</h3>
-                    <div class="stat-value">R<span id="totalInventoryValue">0.00</span></div>
+                    <div class="stat-value"><span id="totalInventoryValue">0.00</span>R</div>
                     <div class="stat-change">
                         <i class="fas fa-minus"></i> <span>без изменений</span>
                     </div>
@@ -760,15 +760,6 @@
         <section class="account-section">
             <div class="section-header">
                 <h2>Все предметы</h2>
-                <div class="sort-options">
-                    <select id="sortSelect" class="weapon-btn inspect" style="padding: 8px 12px;">
-                        <option value="newest">Сначала новые</option>
-                        <option value="oldest">Сначала старые</option>
-                        <option value="price-high">Дорогие</option>
-                        <option value="price-low">Дешевые</option>
-                        <option value="rarity">По редкости</option>
-                    </select>
-                </div>
             </div>
 
             <div class="inventory-grid" id="inventoryItemsGrid">
@@ -832,194 +823,152 @@
 </footer>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Запрашиваем данные инвентаря с сервера
-        fetch('/account/get-data/inventory-data')
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.json();
-            })
-            .then(data => {
-                // Обновляем информацию о пользователе
-                if (data.user) {
-                    document.getElementById('usernamePlaceholder').textContent = data.user.username;
-                    document.getElementById('userGreeting').textContent = data.user.username;
-                    document.getElementById('userBalance').textContent = data.user.balance.toFixed(2);
-                    document.getElementById('casesOpened').textContent = data.user.countCases;
-                    document.getElementById('bestDrop').textContent = data.bestDrop || '-';
-                }
+    document.addEventListener('DOMContentLoaded', function () {
+    fetch('/account/get-data/inventory-data')
+        .then(response => {
+            if (!response.ok) throw new Error('Ошибка сети');
+            return response.json();
+        })
+        .then(data => {
+            const { user, inventory, allPrice, bestDrop, legendaryCount, commonCount } = data;
 
-                // Отображаем предметы инвентаря
-                if (data.inventory && data.inventory.length > 0) {
-                    renderInventoryItems(data.inventory);
-                    updateInventoryStats(data.inventory);
-                } else {
-                    document.getElementById('inventoryItemsGrid').innerHTML =
-                        '<div class="empty-inventory" style="grid-column: 1 / -1; text-align: center; padding: 50px;">' +
-                        '<i class="fas fa-box-open fa-3x" style="margin-bottom: 20px;"></i>' +
-                        '<h3>Ваш инвентарь пуст</h3>' +
-                        '<p>Откройте кейсы, чтобы получить предметы</p>' +
-                        '<a href="/shop" class="weapon-btn inspect" style="display: inline-block; margin-top: 20px; padding: 10px 20px;">В магазин</a>' +
-                        '</div>';
-                }
-            })
-            .catch(error => {
-                console.error('Error fetching inventory data:', error);
+            // Обновление пользовательской информации
+            if (user) {
+                document.getElementById('usernamePlaceholder').textContent = user.username;
+                document.getElementById('userGreeting').textContent = user.username;
+                document.getElementById('userBalance').textContent = user.balance.toFixed(2);
+                document.getElementById('casesOpened').textContent = user.countCases;
+                document.getElementById('bestDrop').textContent = bestDrop || '-';
+            }
+
+            if (inventory && inventory.length > 0) {
+                renderInventoryItems(inventory);
+                updateInventoryStats(inventory, allPrice, legendaryCount, commonCount);
+            } else {
                 document.getElementById('inventoryItemsGrid').innerHTML =
-                    '<div class="error-message" style="grid-column: 1 / -1; text-align: center; padding: 50px; color: #ff4444;">' +
-                    '<i class="fas fa-exclamation-triangle fa-3x" style="margin-bottom: 20px;"></i>' +
-                    '<h3>Ошибка загрузки инвентаря</h3>' +
-                    '<p>Попробуйте обновить страницу</p>' +
-                    '</div>';
-            });
-
-        // Обработчик сортировки
-        document.getElementById('sortSelect').addEventListener('change', function() {
-            const sortValue = this.value;
-            const inventoryGrid = document.getElementById('inventoryItemsGrid');
-            const items = Array.from(inventoryGrid.children).filter(el => el.classList.contains('weapon-card'));
-
-            // Сортируем элементы в соответствии с выбранным вариантом
-            items.sort((a, b) => {
-                if (sortValue === 'newest') {
-                    return parseInt(b.dataset.id) - parseInt(a.dataset.id);
-                } else if (sortValue === 'oldest') {
-                    return parseInt(a.dataset.id) - parseInt(b.dataset.id);
-                } else if (sortValue === 'price-high') {
-                    return parseFloat(b.dataset.price) - parseFloat(a.dataset.price);
-                } else if (sortValue === 'price-low') {
-                    return parseFloat(a.dataset.price) - parseFloat(b.dataset.price);
-                } else if (sortValue === 'rarity') {
-                    const rarityOrder = { 'legendary': 4, 'epic': 3, 'rare': 2, 'common': 1 };
-                    return rarityOrder[b.dataset.rarity] - rarityOrder[a.dataset.rarity];
-                }
-                return 0;
-            });
-
-            // Переставляем элементы в DOM
-            items.forEach(item => inventoryGrid.appendChild(item));
+                    `<div class="empty-inventory" style="grid-column: 1 / -1; text-align: center; padding: 50px;">
+                        <i class="fas fa-box-open fa-3x" style="margin-bottom: 20px;"></i>
+                        <h3>Ваш инвентарь пуст</h3>
+                        <p>Откройте кейсы, чтобы получить предметы</p>
+                        <a href="/shop" class="weapon-btn inspect" style="display: inline-block; margin-top: 20px; padding: 10px 20px;">В магазин</a>
+                    </div>`;
+            }
+        })
+        .catch(error => {
+            console.error('Ошибка загрузки данных инвентаря:', error);
+            document.getElementById('inventoryItemsGrid').innerHTML =
+                `<div class="error-message" style="grid-column: 1 / -1; text-align: center; padding: 50px; color: #ff4444;">
+                    <i class="fas fa-exclamation-triangle fa-3x" style="margin-bottom: 20px;"></i>
+                    <h3>Ошибка загрузки инвентаря</h3>
+                    <p>Попробуйте обновить страницу</p>
+                </div>`;
         });
+
+    document.getElementById('sortSelect').addEventListener('change', function () {
+        const sortValue = this.value;
+        const inventoryGrid = document.getElementById('inventoryItemsGrid');
+        const items = Array.from(inventoryGrid.children).filter(el => el.classList.contains('weapon-card'));
+
+        items.sort((a, b) => {
+            const getRarityOrder = rarity => ({ legendary: 4, epic: 3, rare: 2, common: 1 }[rarity.toLowerCase()] || 0);
+
+            if (sortValue === 'newest') return parseInt(b.dataset.id) - parseInt(a.dataset.id);
+            if (sortValue === 'oldest') return parseInt(a.dataset.id) - parseInt(b.dataset.id);
+            if (sortValue === 'price-high') return parseFloat(b.dataset.price) - parseFloat(a.dataset.price);
+            if (sortValue === 'price-low') return parseFloat(a.dataset.price) - parseFloat(b.dataset.price);
+            if (sortValue === 'rarity') return getRarityOrder(b.dataset.rarity) - getRarityOrder(a.dataset.rarity);
+            return 0;
+        });
+
+        items.forEach(item => inventoryGrid.appendChild(item));
+    });
+});
+
+function renderInventoryItems(items) {
+    const inventoryGrid = document.getElementById('inventoryItemsGrid');
+    inventoryGrid.innerHTML = '';
+
+    items.forEach((item, index) => {
+        const rarityClass = getRarityClass(item.rarity);
+        const itemElement = document.createElement('div');
+        itemElement.className = `weapon-card animated-card ${rarityClass}`;
+        itemElement.dataset.id = index;
+        itemElement.dataset.price = item.price;
+        itemElement.dataset.rarity = item.rarity.toLowerCase();
+
+        itemElement.innerHTML = `
+            <div class="weapon-image">
+                <i class="fas ${getWeaponIcon(item.nameWeapon)}"></i>
+            </div>
+            <div class="weapon-details">
+                <h3 class="weapon-name">${item.nameWeapon}</h3>
+                <div class="weapon-rarity">${getRarityName(item.rarity)}</div>
+                <div class="weapon-price">R${item.price.toFixed(2)}</div>
+                <div class="weapon-actions">
+                    <button class="weapon-btn sell" data-id="${index}">Продать</button>
+                    <button class="weapon-btn inspect" data-id="${index}">Осмотреть</button>
+                </div>
+            </div>
+        `;
+
+        inventoryGrid.appendChild(itemElement);
     });
 
-    // Функция для отображения предметов инвентаря
-    function renderInventoryItems(items) {
-        const inventoryGrid = document.getElementById('inventoryItemsGrid');
-        inventoryGrid.innerHTML = '';
+    document.querySelectorAll('.weapon-btn.sell').forEach(btn => {
+        btn.addEventListener('click', () => sellItem(btn.dataset.id));
+    });
 
-        items.forEach(item => {
-            const rarityClass = getRarityClass(item.rarity);
-            const itemElement = document.createElement('div');
-            itemElement.className = `weapon-card animated-card ${rarityClass}`;
-            itemElement.dataset.id = item.id;
-            itemElement.dataset.price = item.price;
-            itemElement.dataset.rarity = item.rarity;
+    document.querySelectorAll('.weapon-btn.inspect').forEach(btn => {
+        btn.addEventListener('click', () => inspectItem(btn.dataset.id));
+    });
+}
 
-            itemElement.innerHTML = `
-                <div class="weapon-image">
-                    <i class="fas ${getWeaponIcon(item.type)}"></i>
-                </div>
-                <div class="weapon-details">
-                    <h3 class="weapon-name">${item.name}</h3>
-                    <div class="weapon-rarity">${getRarityName(item.rarity)}</div>
-                    <div class="weapon-price">R${item.price.toFixed(2)}</div>
-                    <div class="weapon-actions">
-                        <button class="weapon-btn sell" data-id="${item.id}">Продать</button>
-                        <button class="weapon-btn inspect" data-id="${item.id}">Осмотреть</button>
-                    </div>
-                </div>
-            `;
+function updateInventoryStats(items, totalValue, legendaryCount, commonCount) {
+    document.getElementById('itemsCount').textContent = `${items.length} предметов`;
+    document.getElementById('totalItems').textContent = items.length;
+    document.getElementById('totalInventoryValue').textContent = totalValue.toFixed(2);
 
-            inventoryGrid.appendChild(itemElement);
-        });
+    const mostExpensive = items.reduce((max, item) => item.price > max.price ? item : max, items[0]);
+    document.getElementById('mostExpensiveItem').textContent = mostExpensive.nameWeapon;
+    document.getElementById('mostExpensivePrice').textContent = mostExpensive.price.toFixed(2);
 
-        // Добавляем обработчики событий для кнопок
-        document.querySelectorAll('.weapon-btn.sell').forEach(btn => {
-            btn.addEventListener('click', function() {
-                const itemId = this.dataset.id;
-                sellItem(itemId);
-            });
-        });
+    document.getElementById('legendaryCount').textContent = legendaryCount;
+    document.getElementById('commonCount').textContent = commonCount;
+}
 
-        document.querySelectorAll('.weapon-btn.inspect').forEach(btn => {
-            btn.addEventListener('click', function() {
-                const itemId = this.dataset.id;
-                inspectItem(itemId);
-            });
-        });
+// Вспомогательные функции
+function getRarityClass(rarity) {
+    return rarity.toLowerCase();
+}
+
+function getRarityName(rarity) {
+    switch (rarity.toLowerCase()) {
+        case 'common': return 'Обычный';
+        case 'rare': return 'Редкий';
+        case 'epic': return 'Эпический';
+        case 'legendary': return 'Легендарный';
+        default: return 'Неизвестно';
     }
+}
 
-    // Функция для обновления статистики инвентаря
-    function updateInventoryStats(items) {
-        document.getElementById('itemsCount').textContent = `${items.length} предметов`;
-        document.getElementById('totalItems').textContent = items.length;
+function getWeaponIcon(name) {
+    const lower = name.toLowerCase();
+    if (lower.includes('knife')) return 'fa-cut';
+    if (lower.includes('p250') || lower.includes('usp') || lower.includes('deagle') || lower.includes('tec')) return 'fa-gun';
+    if (lower.includes('ak') || lower.includes('m4') || lower.includes('galil') || lower.includes('famas')) return 'fa-gun';
+    if (lower.includes('sniper') || lower.includes('awp') || lower.includes('awm')) return 'fa-bullseye';
+    if (lower.includes('mp') || lower.includes('bizon') || lower.includes('smg')) return 'fa-gun';
+    if (lower.includes('scar') || lower.includes('heavy') || lower.includes('xm1014')) return 'fa-bomb';
+    return 'fa-gun';
+}
 
-        // Общая стоимость инвентаря
-        const totalValue = items.reduce((sum, item) => sum + item.price, 0);
-        document.getElementById('totalInventoryValue').textContent = totalValue.toFixed(2);
+function sellItem(itemId) {
+    alert(`Вы продали предмет с ID: ${itemId}`);
+}
 
-        // Самый дорогой предмет
-        if (items.length > 0) {
-            const mostExpensive = items.reduce((max, item) =>
-                item.price > max.price ? item : max, items[0]);
-            document.getElementById('mostExpensiveItem').textContent = mostExpensive.name;
-            document.getElementById('mostExpensivePrice').textContent = mostExpensive.price.toFixed(2);
-        }
-
-        // Количество предметов по редкости
-        const legendaryCount = items.filter(item => item.rarity === 'legendary').length;
-        const epicCount = items.filter(item => item.rarity === 'epic').length;
-        const rareCount = items.filter(item => item.rarity === 'rare').length;
-        const commonCount = items.filter(item => item.rarity === 'common').length;
-
-        document.getElementById('legendaryCount').textContent = legendaryCount;
-        document.getElementById('commonCount').textContent = commonCount;
-    }
-
-    // Вспомогательные функции
-    function getRarityClass(rarity) {
-        switch (rarity) {
-            case 'common': return 'common';
-            case 'rare': return 'rare';
-            case 'epic': return 'epic';
-            case 'legendary': return 'legendary';
-            default: return 'common';
-        }
-    }
-
-    function getRarityName(rarity) {
-        switch (rarity) {
-            case 'common': return 'Обычный';
-            case 'rare': return 'Редкий';
-            case 'epic': return 'Эпический';
-            case 'legendary': return 'Легендарный';
-            default: return 'Обычный';
-        }
-    }
-
-    function getWeaponIcon(type) {
-        // Здесь можно добавить больше иконок для разных типов оружия
-        switch (type.toLowerCase()) {
-            case 'knife': return 'fa-cut';
-            case 'pistol': return 'fa-gun';
-            case 'rifle': return 'fa-gun';
-            case 'sniper': return 'fa-bullseye';
-            case 'smg': return 'fa-gun';
-            case 'heavy': return 'fa-bomb';
-            default: return 'fa-gun';
-        }
-    }
-
-    function sellItem(itemId) {
-        // Тут можно реализовать POST-запрос на продажу предмета
-        alert(`Вы продали предмет с ID: ${itemId}`);
-    }
-
-    function inspectItem(itemId) {
-        // Тут можно реализовать просмотр предмета
-        alert(`Вы осматриваете предмет с ID: ${itemId}`);
-    }
+function inspectItem(itemId) {
+    alert(`Вы осматриваете предмет с ID: ${itemId}`);
+}
 </script>
 <body>
 <html>
