@@ -18,6 +18,13 @@ public class GetDataAccountController {
     @Autowired
     AccountService accountService;
 
+    @PostMapping("/inventory-sell-item")
+    @ResponseBody
+    public ResponseEntity<Map<String,Object>> sellItem(@RequestBody Map<String,Object> data, HttpServletRequest request){
+        Map<String,Object> response = accountService.sellItem(data,request);
+        return ResponseEntity.ok(response);
+    }
+
     @GetMapping("/inventory-data")
     public ResponseEntity<Map<String,Object>> getDataToInventory(HttpServletRequest request){
         Map<String,Object> response = accountService.getDataToInventoryController(request);

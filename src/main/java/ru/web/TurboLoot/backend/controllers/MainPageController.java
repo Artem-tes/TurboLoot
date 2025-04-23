@@ -46,8 +46,8 @@ public class MainPageController {
         map.put("user",request.getSession().getAttribute("user"));
         map.put("cases",caseRepository.getAllCases());
 
-        /*
-        String json = "src/main/java/ru/web/TurboLoot/backend/models/jsondata/weapons.json";
+
+        /*String json = "src/main/java/ru/web/TurboLoot/backend/models/jsondata/weapons.json";
         ObjectMapper objectMapper = new ObjectMapper();
 
         try {
@@ -62,10 +62,10 @@ public class MainPageController {
 
         } catch (IOException e) {
             e.printStackTrace();
-        }
+        }*/
 
 
-         */
+
         return ResponseEntity.ok(map);
     }
 

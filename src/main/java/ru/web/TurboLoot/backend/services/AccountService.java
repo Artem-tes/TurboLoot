@@ -20,11 +20,41 @@ import java.util.Map;
 public class AccountService {
 
     @Autowired
+    @Qualifier("userRepository")
     UserRepository userRepository;
 
     @Autowired
     @Qualifier("weaponRepository")
     WeaponRepository weaponRepository;
+
+    public Map<String,Object> sellItem(Map<String,Object> data, HttpServletRequest request){
+        Map<String,Object> responseToController = new HashMap<>();
+        User user = (User) request.getSession().getAttribute("user");
+        operationSellItem(String.valueOf(data.get("nameWeapon")), user);
+        responseToController.put("status","success");
+        responseToController.put("newBalance",getNewBalance(user));
+        responseToController.put("newAllPrice",getAllPriceToInventoryPage(user));
+        responseToController.put("newBestWeapon",getBestDropToInventoryPage(user));
+        responseToController.put("legendary",getCountRaretiesToInventoryPage(user).get(2));
+        responseToController.put("common",getCountRaretiesToInventoryPage(user).get(1));
+        return responseToController;
+    }
+
+    private Integer getNewBalance(User user){
+        return user.getBalance();
+    }
+
+    private void operationSellItem(String nameWeapon, User user){
+        Weapon weapon = weaponRepository.findByNameWeapon(nameWeapon);
+        List<Integer> idItems = user.getInventory();
+        if(idItems.contains(weapon.getId())){
+            idItems.remove(weapon.getId());
+        }
+        user.setInventory(idItems);
+        user.setBalance(user.getBalance()+weapon.getPrice());
+        userRepository.save(user);
+    }
+
 
     public Map<String,Object> getDataToInventoryController(HttpServletRequest request){
         User user = (User) request.getSession().getAttribute("user");
