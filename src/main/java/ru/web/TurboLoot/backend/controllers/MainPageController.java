@@ -10,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import ru.web.TurboLoot.backend.models.Case;
 import ru.web.TurboLoot.backend.models.Weapon;
 import ru.web.TurboLoot.backend.repositories.CaseRepository;
 import ru.web.TurboLoot.backend.repositories.WeaponRepository;
@@ -47,7 +48,7 @@ public class MainPageController {
         map.put("cases",caseRepository.getAllCases());
 
 
-        /*String json = "src/main/java/ru/web/TurboLoot/backend/models/jsondata/weapons.json";
+        /*String json = "src/main/java/ru/web/TurboLoot/backend/models/jsondata/cases.json";
         ObjectMapper objectMapper = new ObjectMapper();
 
         try {
@@ -55,9 +56,9 @@ public class MainPageController {
             File file = new File(json);
 
             // Преобразуем JSON в список объектов Weapon
-            List<Weapon> weapons = objectMapper.readValue(file, new TypeReference<List<Weapon>>() {});
-            for (Weapon weapon : weapons) {
-                weaponRepository.save(weapon);
+            List<Case> weapons = objectMapper.readValue(file, new TypeReference<List<Case>>() {});
+            for (Case weapon : weapons) {
+                caseRepository.save(weapon);
             }
 
         } catch (IOException e) {
