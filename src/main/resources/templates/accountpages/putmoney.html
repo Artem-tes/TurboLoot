@@ -282,6 +282,19 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
+        .logo a {
+          font-size: 1.4rem;
+          font-weight: bold;
+          color: #ffcc00;
+          text-decoration: none;
+          transition: color 0.3s ease, text-shadow 0.3s ease;
+        }
+
+        .logo a:hover {
+          color: #ffd633;
+          text-shadow: 0 0 5px rgba(255, 204, 0, 0.7);
+        }
+
         /* Адаптивность */
         @media (max-width: 768px) {
             .deposit-box {
@@ -316,7 +329,7 @@
 <!-- Хедер -->
 <header>
     <div class="logo">
-        <h1>TurboLoot</h1>
+        <a href="/" title="На главную">TurboLoot</a>
     </div>
 </header>
 

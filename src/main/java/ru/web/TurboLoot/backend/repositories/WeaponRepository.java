@@ -12,7 +12,7 @@ public interface WeaponRepository extends JpaRepository<Weapon,Integer> {
     @Query(value = "select * from weapons where weapon_id = :id_weapon", nativeQuery = true)
     Weapon getWeaponById(@Param("id_weapon") Integer id_weapon);
 
-    @Query(value = "select * from weapons where name_weapon = :nameWeapon", nativeQuery = true)
-    Weapon findByNameWeapon(@Param(value = "nameWeapon") String nameWeapon);
+    @Query(value = "select * from weapons where name_weapon = :nameWeapon and price = :price", nativeQuery = true)
+    Weapon findByNameWeapon(@Param(value = "nameWeapon") String nameWeapon, @Param("price") Integer price);
 
 }

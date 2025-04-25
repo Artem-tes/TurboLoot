@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>TurboLoot - Личный кабинет</title>
+    <title>TurboLoot - История транзакций</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
@@ -329,65 +329,14 @@
             color: #ff8a00;
         }
 
-        /* Карточки статистики */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-
-        .stat-card {
-            background: rgba(255, 255, 255, 0.08);
-            border-radius: 10px;
-            padding: 20px;
-            transition: all 0.3s;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        .stat-card:hover {
-            transform: translateY(-5px);
-            background: rgba(255, 255, 255, 0.12);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-        }
-
-        .stat-card h3 {
-            font-size: 0.9rem;
-            font-weight: 500;
-            color: rgba(255, 255, 255, 0.7);
-            margin-bottom: 10px;
-        }
-
-        .stat-card .stat-value {
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: white;
-            margin-bottom: 5px;
-        }
-
-        .stat-card .stat-change {
-            font-size: 0.9rem;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .stat-card .stat-change.positive {
-            color: #4CAF50;
-        }
-
-        .stat-card .stat-change.negative {
-            color: #F44336;
-        }
-
-        /* История операций */
-        .operations-table {
+        /* Таблица транзакций */
+        .transactions-table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 20px;
         }
 
-        .operations-table th {
+        .transactions-table th {
             text-align: left;
             padding: 12px 15px;
             font-weight: 500;
@@ -395,114 +344,41 @@
             background: rgba(255, 255, 255, 0.05);
         }
 
-        .operations-table td {
+        .transactions-table td {
             padding: 15px;
             border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         }
 
-        .operation-type {
+        .transaction-type {
             display: flex;
             align-items: center;
             gap: 10px;
         }
 
-        .operation-type i {
+        .transaction-type i {
             width: 20px;
             text-align: center;
         }
 
-        .operation-amount {
+        .transaction-amount {
             font-weight: 600;
         }
 
-        .operation-amount.positive {
+        .transaction-amount.income {
             color: #4CAF50;
         }
 
-        .operation-amount.negative {
+        .transaction-amount.outcome {
             color: #F44336;
         }
 
-        .operation-date {
+        .transaction-date {
             color: rgba(255, 255, 255, 0.6);
             font-size: 0.9rem;
         }
 
-        /* Инвентарь */
-        .inventory-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-            gap: 15px;
-        }
-
-        .inventory-item {
-            background: rgba(255, 255, 255, 0.08);
-            border-radius: 8px;
-            overflow: hidden;
-            transition: all 0.3s;
-            position: relative;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .inventory-item:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-            border-color: rgba(255, 204, 0, 0.3);
-        }
-
-        .item-image {
-            width: 100%;
-            height: 120px;
-            object-fit: cover;
-            background: linear-gradient(135deg, #2c3e50 0%, #4ca1af 100%);
-        }
-
-        .item-details {
-            padding: 12px;
-        }
-
-        .item-name {
-            font-size: 0.9rem;
+        .transaction-owner {
             font-weight: 500;
-            margin-bottom: 5px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .item-price {
-            font-size: 0.9rem;
-            font-weight: 600;
-            color: #ffcc00;
-        }
-
-        .item-actions {
-            position: absolute;
-            top: 5px;
-            right: 5px;
-            display: none;
-        }
-
-        .inventory-item:hover .item-actions {
-            display: flex;
-            gap: 5px;
-        }
-
-        .item-action {
-            width: 30px;
-            height: 30px;
-            background: rgba(0, 0, 0, 0.7);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .item-action:hover {
-            background: #ffcc00;
-            color: #222;
         }
 
         /* Футер */
@@ -511,57 +387,6 @@
             padding: 40px 30px 20px;
             text-align: center;
             margin-top: auto;
-        }
-
-                .inventory-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-            gap: 16px;
-            padding: 20px;
-        }
-
-        .inventory-item {
-            background: #1e1e1e;
-            border: 2px solid #333;
-            border-radius: 10px;
-            padding: 12px;
-            color: #fff;
-            box-shadow: 0 0 8px rgba(0,0,0,0.5);
-            transition: transform 0.2s ease;
-        }
-
-        .inventory-item:hover {
-            transform: scale(1.05);
-        }
-
-        /* Название оружия */
-        .weapon-name {
-            font-size: 16px;
-            margin-bottom: 8px;
-        }
-
-        /* Редкости с цветами */
-        .inventory-item.common .weapon-name {
-            color: #b0b0b0;
-        }
-        .inventory-item.rare .weapon-name {
-            color: #4fa3ff;
-        }
-        .inventory-item.epic .weapon-name {
-            color: #b54fff;
-        }
-        .inventory-item.legendary .weapon-name {
-            color: #ffd700;
-        }
-
-        .weapon-rarity span {
-            font-weight: bold;
-        }
-
-        .weapon-price {
-            margin-top: 6px;
-            font-weight: bold;
-            color: #8eff92;
         }
 
         .footer-content {
@@ -626,8 +451,39 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        .animated-card {
-            animation: fadeIn 0.5s ease-out forwards;
+        /* Загрузочный экран */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: #1a1a2e;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease;
+        }
+
+        .loading-screen.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            border-top-color: #ffcc00;
+            animation: spin 1s ease-in-out infinite;
+            margin-bottom: 20px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
 
         /* Адаптивность */
@@ -661,8 +517,9 @@
                 font-size: 1rem;
             }
 
-            .stats-grid {
-                grid-template-columns: 1fr 1fr;
+            .transactions-table {
+                display: block;
+                overflow-x: auto;
             }
         }
 
@@ -671,17 +528,21 @@
                 font-size: 1.8rem;
             }
 
-            .stats-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .inventory-grid {
-                grid-template-columns: 1fr 1fr;
+            .transactions-table th,
+            .transactions-table td {
+                padding: 8px;
+                font-size: 0.9rem;
             }
         }
     </style>
 </head>
 <body>
+<!-- Загрузочный экран -->
+<div class="loading-screen" id="loadingScreen">
+    <div class="loading-spinner"></div>
+    <h3>Загрузка истории транзакций...</h3>
+</div>
+
 <!-- Хедер -->
 <header>
     <div class="nav-left">
@@ -708,7 +569,7 @@
         <span id="usernamePlaceholder">Username</span>
         <div class="account-dropdown">
             <a href="/account/inventory"><i class="fas fa-box-open"></i> Инвентарь</a>
-            <a href="/account/transactions"><i class="fas fa-history"></i> История</a>
+            <a href="/account/transactions" class="active"><i class="fas fa-history"></i> История</a>
             <a href="/account/settings"><i class="fas fa-cog"></i> Настройки</a>
             <a href="/logout" id="logoutButton"><i class="fas fa-sign-out-alt"></i> Выйти</a>
         </div>
@@ -723,8 +584,8 @@
             <span class="balance-amount" id="userBalance">0.00</span>
             <i class="fas fa-plus-circle balance-icon" id="addFundsButton" style="cursor: pointer;"></i>
         </div>
-        <h1>Добро пожаловать, <span id="userGreeting">Игрок</span>!</h1>
-        <p>Управляйте своим аккаунтом, просматривайте историю операций и инвентарь</p>
+        <h1>История транзакций, <span id="userGreeting">Игрок</span>!</h1>
+        <p>Здесь отображаются все ваши финансовые операции - пополнения, выводы и покупки</p>
     </div>
 </section>
 
@@ -735,10 +596,10 @@
         <div class="sidebar-section">
             <h3>Меню</h3>
             <ul class="sidebar-menu">
-                <li><a href="/account/profile" class="active"><i class="fas fa-user"></i> Профиль</a></li>
+                <li><a href="/account/profile"><i class="fas fa-user"></i> Профиль</a></li>
                 <li><a href="/account/inventory"><i class="fas fa-box-open"></i> Инвентарь</a></li>
                 <li><a href="/account/put-money"><i class="fas fa-history"></i>Пополнить баланс</a></li>
-                <li><a href="/account/transactions"><i class="fas fa-history"></i> История операций</a></li>
+                <li><a href="/account/transactions" class="active"><i class="fas fa-history"></i> История операций</a></li>
                 <li><a href="/account/withdraw"><i class="fas fa-wallet"></i> Вывод средств</a></li>
                 <li><a href="/account/referrals"><i class="fas fa-users"></i> Рефералы</a></li>
                 <li><a href="/account/settings"><i class="fas fa-cog"></i> Настройки</a></li>
@@ -751,6 +612,7 @@
                 <li><a href="#"><i class="fas fa-chart-line"></i> Общая статистика</a></li>
                 <li><a href="#"><i class="fas fa-gem"></i> Открыто кейсов: <span id="casesOpened">0</span></a></li>
                 <li><a href="#"><i class="fas fa-trophy"></i> Лучший дроп: <span id="bestDrop">-</span></a></li>
+                <li><a href="#"><i class="fas fa-boxes"></i> Предметов: <span id="totalItems">0</span></a></li>
             </ul>
         </div>
     </aside>
@@ -759,38 +621,40 @@
     <main class="account-main">
         <section class="account-section">
             <div class="section-header">
-                <h2>Обзор аккаунта</h2>
-                <a href="/account/settings">Настройки профиля <i class="fas fa-arrow-right"></i></a>
+                <h2>Все транзакции</h2>
+                <div>
+                    <span id="transactionsCount">0 транзакций</span>
+                </div>
             </div>
 
             <div class="stats-grid">
                 <div class="stat-card animated-card" style="animation-delay: 0.1s;">
-                    <h3>Баланс</h3>
-                    <div class="stat-value">R<span id="balanceStat">0.00</span></div>
-                    <div class="stat-change positive">
-                        <i class="fas fa-arrow-up"></i> <span>+$10.00 сегодня</span>
+                    <h3>Общий доход</h3>
+                    <div class="stat-value"><span id="totalIncome">0.00</span>R</div>
+                    <div class="stat-change">
+                        <i class="fas fa-minus"></i> <span>без изменений</span>
                     </div>
                 </div>
 
                 <div class="stat-card animated-card" style="animation-delay: 0.2s;">
-                    <h3>Открыто кейсов</h3>
-                    <div class="stat-value"><span id="casesStat">0</span></div>
-                    <div class="stat-change positive">
-                        <i class="fas fa-arrow-up"></i> <span>+2 сегодня</span>
+                    <h3>Общий расход</h3>
+                    <div class="stat-value"><span id="totalOutcome">0.00</span>R</div>
+                    <div class="stat-change">
+                        <i class="fas fa-minus"></i> <span>без изменений</span>
                     </div>
                 </div>
 
                 <div class="stat-card animated-card" style="animation-delay: 0.3s;">
-                    <h3>Предметов в инвентаре</h3>
-                    <div class="stat-value"><span id="itemsStat">0</span></div>
-                    <div class="stat-change negative">
-                        <i class="fas fa-arrow-down"></i> <span>-1 сегодня</span>
+                    <h3>Пополнений</h3>
+                    <div class="stat-value"><span id="depositCount">0</span></div>
+                    <div class="stat-change">
+                        <i class="fas fa-minus"></i> <span>без изменений</span>
                     </div>
                 </div>
 
                 <div class="stat-card animated-card" style="animation-delay: 0.4s;">
-                    <h3>Рефералов</h3>
-                    <div class="stat-value"><span id="refsStat">0</span></div>
+                    <h3>Выводов</h3>
+                    <div class="stat-value"><span id="withdrawCount">0</span></div>
                     <div class="stat-change">
                         <i class="fas fa-minus"></i> <span>без изменений</span>
                     </div>
@@ -801,33 +665,21 @@
         <section class="account-section">
             <div class="section-header">
                 <h2>Последние операции</h2>
-                <a href="/account/transactions">Вся история <i class="fas fa-arrow-right"></i></a>
             </div>
 
-            <table class="operations-table">
+            <table class="transactions-table">
                 <thead>
                 <tr>
                     <th>Тип операции</th>
                     <th>Сумма</th>
                     <th>Дата</th>
-                    <th>Статус</th>
+                    <th>Отправитель/Получатель</th>
                 </tr>
                 </thead>
                 <tbody id="transactionsList">
                 <!-- Транзакции будут добавлены через JavaScript -->
                 </tbody>
             </table>
-        </section>
-
-        <section class="account-section">
-            <div class="section-header">
-                <h2>Последние предметы</h2>
-                <a href="/account/inventory">Весь инвентарь <i class="fas fa-arrow-right"></i></a>
-            </div>
-
-            <div class="inventory-grid" id="recentItemsGrid">
-                <!-- Предметы будут добавлены через JavaScript -->
-            </div>
         </section>
     </main>
 </div>
@@ -882,156 +734,138 @@
 </footer>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        document.body.style.opacity = '0';
+    document.addEventListener('DOMContentLoaded', function() {
+        // Запрашиваем данные транзакций с сервера
+        fetch('/account/get-data/get-transactions')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                // Обновляем информацию о пользователе
+                if (data.user) {
+                    document.getElementById('usernamePlaceholder').textContent = data.user.username;
+                    document.getElementById('userGreeting').textContent = data.user.username;
+                    document.getElementById('userBalance').textContent = data.user.balance.toFixed(2);
+                    document.getElementById('casesOpened').textContent = data.user.casesOpened;
+                    document.getElementById('bestDrop').textContent = data.user.bestDrop || '-';
+                    document.getElementById('totalItems').textContent = data.user.totalItems || '0';
+                }
 
-        Promise.all([fetchProfileData(), loadInventory(), loadTransactions()])
-            .then(([userData]) => {
-                populateProfileData(userData);
-                document.body.style.transition = 'opacity 0.3s ease';
-                document.body.style.opacity = '1';
+                // Отображаем транзакции
+                if (data.transactions && data.transactions.length > 0) {
+                    renderTransactions(data.transactions);
+                    updateTransactionsStats(data.transactions);
+                } else {
+                    document.getElementById('transactionsList').innerHTML =
+                        '<tr><td colspan="4" style="text-align: center; padding: 40px;">' +
+                        '<i class="fas fa-exchange-alt fa-3x" style="margin-bottom: 20px; opacity: 0.5;"></i>' +
+                        '<h3>Нет транзакций</h3>' +
+                        '<p>Здесь будут отображаться ваши финансовые операции</p>' +
+                        '</td></tr>';
+                }
+
+                // Скрываем загрузочный экран
+                setTimeout(() => {
+                    document.getElementById('loadingScreen').classList.add('hidden');
+                }, 500);
             })
             .catch(error => {
-                console.error('Ошибка загрузки данных:', error);
-                document.body.style.opacity = '1';
-                alert('Не удалось загрузить данные профиля или инвентаря');
+                console.error('Error fetching transactions data:', error);
+                document.getElementById('transactionsList').innerHTML =
+                    '<tr><td colspan="4" style="text-align: center; padding: 40px; color: #ff4444;">' +
+                    '<i class="fas fa-exclamation-triangle fa-3x" style="margin-bottom: 20px;"></i>' +
+                    '<h3>Ошибка загрузки транзакций</h3>' +
+                    '<p>Попробуйте обновить страницу</p>' +
+                    '</td></tr>';
+
+                // Все равно скрываем загрузочный экран
+                setTimeout(() => {
+                    document.getElementById('loadingScreen').classList.add('hidden');
+                }, 500);
             });
     });
 
-    async function loadInventory() {
-        try {
-            const response = await fetch('/account/get-data/get-inventory');
-            const data = await response.json();
+    // Функция для отображения транзакций
+function renderTransactions(transactions) {
+    const transactionsList = document.getElementById('transactionsList');
+    transactionsList.innerHTML = '';
 
-            const grid = document.getElementById('recentItemsGrid');
-            grid.innerHTML = ''; // очистить текущие элементы
+    transactions.forEach(transaction => {
+        const row = document.createElement('tr');
+        row.className = 'animated-card';
 
-            data.items.forEach(item => {
-                const itemDiv = document.createElement('div');
-                itemDiv.classList.add('inventory-item');
-
-                itemDiv.innerHTML = `
-                    <h3 class="weapon-name">${item.nameWeapon}</h3>
-                    <p class="weapon-rarity">Редкость: <span>${item.rarity}</span></p>
-                    <p class="weapon-price">Цена: <strong>${item.price} ₽</strong></p>
-                `;
-
-                grid.appendChild(itemDiv);
-            });
-
-        } catch (error) {
-            console.error('Ошибка при загрузке инвентаря:', error);
-            throw error; // чтобы Promise.all отловил ошибку
+        // Определяем тип операции
+        let typeIcon, typeText, amountClass;
+        if (transaction.type === 'deposit') {
+            typeIcon = 'fa-plus-circle';
+            typeText = 'Пополнение';
+            amountClass = 'income';
+        } else if (transaction.type === 'withdraw') {
+            typeIcon = 'fa-minus-circle';
+            typeText = 'Вывод';
+            amountClass = 'outcome';
+        } else if (transaction.type === 'purchase') {
+            typeIcon = 'fa-shopping-cart';
+            typeText = 'Покупка';
+            amountClass = 'outcome';
+        } else if (transaction.type === 'sale') {
+            typeIcon = 'fa-money-bill-wave';
+            typeText = 'Продажа';
+            amountClass = 'income';
+        } else {
+            typeIcon = 'fa-exchange-alt';
+            typeText = 'Транзакция';
+            amountClass = transaction.amount >= 0 ? 'income' : 'outcome';
         }
+
+        row.innerHTML = `
+            <td>
+                <div class="transaction-type">
+                    <i class="fas ${typeIcon}"></i>
+                    <span>${typeText}</span>
+                </div>
+            </td>
+            <td>
+                <span class="transaction-amount ${amountClass}">
+                    ${transaction.amount >= 0 ? '+' : ''}${transaction.amount.toFixed(2)}R
+                </span>
+            </td>
+            <td class="transaction-date">${transaction.date}</td> <!-- Убрано форматирование даты -->
+            <td class="transaction-owner">${transaction.owner || 'TurboLoot'}</td>
+        `;
+
+        transactionsList.appendChild(row);
+    });
+}
+
+    // Функция для обновления статистики транзакций
+    function updateTransactionsStats(transactions) {
+        document.getElementById('transactionsCount').textContent = `${transactions.length} транзакций`;
+
+        // Общий доход и расход
+        const totalIncome = transactions
+            .filter(t => t.amount >= 0)
+            .reduce((sum, t) => sum + t.amount, 0);
+
+        const totalOutcome = transactions
+            .filter(t => t.amount < 0)
+            .reduce((sum, t) => sum + Math.abs(t.amount), 0);
+
+        document.getElementById('totalIncome').textContent = totalIncome.toFixed(2);
+        document.getElementById('totalOutcome').textContent = totalOutcome.toFixed(2);
+
+        // Количество операций по типам
+        const depositCount = transactions.filter(t => t.type === 'deposit').length;
+        const withdrawCount = transactions.filter(t => t.type === 'withdraw').length;
+        const purchaseCount = transactions.filter(t => t.type === 'purchase').length;
+        const saleCount = transactions.filter(t => t.type === 'sale').length;
+
+        document.getElementById('depositCount').textContent = depositCount;
+        document.getElementById('withdrawCount').textContent = withdrawCount;
     }
-
-    async function loadTransactions() {
-        try {
-            const response = await fetch('/account/get-data/get-transactions');
-            const data = await response.json();
-
-            renderTransactions(data.transactions); // Отображаем транзакции
-
-        } catch (error) {
-            console.error('Ошибка при загрузке транзакций:', error);
-        }
-    }
-
-    async function fetchProfileData() {
-        try {
-            const response = await fetch('/account/get-data/get-profile-data', {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json'
-                },
-                credentials: 'include'
-            });
-
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-
-            const data = await response.json();
-
-            if (!data || !data.user) {
-                throw new Error('Invalid data format from server');
-            }
-
-            return data.user;
-        } catch (error) {
-            console.error('Ошибка при получении данных:', error);
-            throw error;
-        }
-    }
-
-    function renderTransactions(transactions) {
-        const transactionsList = document.getElementById('transactionsList');
-        transactionsList.innerHTML = '';
-
-        transactions.forEach(transaction => {
-            const row = document.createElement('tr');
-
-            // Определяем тип операции
-            let typeText, amountClass;
-            if (transaction.type === 'deposit') {
-                typeText = 'Пополнение';
-                amountClass = 'income';
-            } else if (transaction.type === 'withdraw') {
-                typeText = 'Вывод';
-                amountClass = 'outcome';
-            } else if (transaction.type === 'purchase') {
-                typeText = 'Покупка';
-                amountClass = 'outcome';
-            } else if (transaction.type === 'sale') {
-                typeText = 'Продажа';
-                amountClass = 'income';
-            } else {
-                typeText = 'Транзакция';
-                amountClass = transaction.amount >= 0 ? 'income' : 'outcome';
-            }
-
-            row.innerHTML = `
-                <td>${typeText}</td>
-                <td><span class="transaction-amount ${amountClass}">${transaction.amount >= 0 ? '+' : ''}${transaction.amount.toFixed(2)} ₽</span></td>
-                <td class="transaction-date">${transaction.date}</td>
-                <td class="transaction-status">${transaction.status || '-'}</td>
-            `;
-
-            transactionsList.appendChild(row);
-        });
-    }
-
-    function populateProfileData(user) {
-        try {
-            console.log('Получены данные пользователя:', user);
-
-            const greetingElement = document.getElementById('userGreeting');
-            const balanceStatElement = document.getElementById('balanceStat');
-            const mainBalanceElement = document.getElementById('userBalance');
-            const usernameElement = document.getElementById('usernamePlaceholder');
-            const casesStat = document.getElementById('casesStat');
-            const itemsStat = document.getElementById('itemsStat');
-
-
-           console.log('Найденные элементы:', {greetingElement, balanceStatElement, mainBalanceElement, usernameElement});
-
-           const username = user.username || 'Игрок';
-           const balance = (user.balance || 0).toFixed(2);
-
-           if (greetingElement) { greetingElement.textContent = username; console.log('Обновлено userGreeting'); }
-           if (casesStat) { casesStat.textContent = user.countCases; }
-           if (itemsStat) { itemsStat.textContent = user.countInventory; }
-           if (usernameElement) { usernameElement.textContent = username; console.log('Обновлено usernamePlaceholder'); }
-           if (balanceStatElement) { balanceStatElement.textContent = balance; console.log('Обновлено balanceStat'); }
-           if (mainBalanceElement) { mainBalanceElement.textContent = balance; console.log('Обновлено userBalance'); }
-
-       } catch (e) { console.error('Ошибка при заполнении данных:', e); }
-   }
-</script>
-
-</body>
-</html>
 </script>
 </body>
 </html>

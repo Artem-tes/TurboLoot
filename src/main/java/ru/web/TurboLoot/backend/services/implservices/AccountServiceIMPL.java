@@ -1,0 +1,121 @@
+package ru.web.TurboLoot.backend.services.implservices;
+
+import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Primary;
+import org.springframework.stereotype.Service;
+import ru.web.TurboLoot.backend.models.User;
+import ru.web.TurboLoot.backend.models.UserTransaction;
+import ru.web.TurboLoot.backend.models.Weapon;
+import ru.web.TurboLoot.backend.models.dto.TransactionDTO;
+import ru.web.TurboLoot.backend.models.dto.UserDTO;
+import ru.web.TurboLoot.backend.repositories.TransactionRepository;
+import ru.web.TurboLoot.backend.repositories.UserRepository;
+import ru.web.TurboLoot.backend.repositories.WeaponRepository;
+import ru.web.TurboLoot.backend.services.interfaceservices.AccountService;
+
+import java.util.*;
+
+@Service
+public class AccountServiceIMPL implements AccountService {
+
+    @Autowired
+    @Qualifier("userRepository")
+    UserRepository userRepository;
+
+    @Autowired
+    @Qualifier("weaponRepository")
+    WeaponRepository weaponRepository;
+
+    @Autowired
+    @Qualifier("transactionRepository")
+    TransactionRepository transactionRepository;
+
+
+
+
+    /// /// реализация продажи предмета
+    @Primary
+    @Override
+    public Map<String, Object> sellItemOnInventory(Map<String, Object> data, HttpServletRequest request) {
+        Map<String,Object> response = new HashMap<>();
+        User user = (User) request.getSession().getAttribute("user");
+        operationSellItem(String.valueOf(data.get("nameWeapon")),user, String.valueOf(data.get("priceWeapon")));
+        response.put("status","success");
+        //response.put("inventory")
+        return response;
+    }
+
+    /// /// реализация получения транзакций
+    @Primary
+    @Override
+    public Map<String, Object> getTransactionsToPage(HttpServletRequest request) {
+        Map<String,Object> response = new HashMap<>();
+        User user =   (User) request.getSession().getAttribute("user");
+        response.put("transactions",transListToJson(user,response));
+        response.put("user", formUserDTO(user));
+        return response;
+    }
+
+
+
+    private UserDTO formUserDTO(User user){
+        return new UserDTO(user.getEmail(),
+                user.getUsername(),
+                user.getBalance(),
+                user.getInventory(),
+                user.getCountCases(),
+                user.getCountInventory(),
+                user.getTransactional());
+    }
+
+    private void operationSellItem(String nameWeapon, User user, String weaponPrice){
+        Weapon weapon = weaponRepository.findByNameWeapon(nameWeapon,Integer.parseInt(weaponPrice));
+        List<Integer> idItems = user.getInventory();
+        if(idItems.contains(weapon.getId())){
+            idItems.remove(weapon.getId());
+        }
+        UserTransaction transaction = new UserTransaction(
+                null,1,weapon.getPrice(),String.valueOf(new Date()),user.getUsername());
+        transactionRepository.save(transaction);
+        UserTransaction userTransaction = transactionRepository.findAll().get(transactionRepository.findAll().size()-1);
+        List<Integer> idTr = user.getTransactional();
+        idTr.add(userTransaction.getId());
+        user.setTransactional(idTr);
+        user.setBalance(user.getBalance()+weapon.getPrice());
+        user.setInventory(idItems);
+        userRepository.save(user);
+    }
+
+
+    private List<TransactionDTO> transListToJson(User user, Map<String,Object> response){
+        List<Integer> idTransactions = user.getTransactional();
+        List<UserTransaction> userTransactions = new ArrayList<>();
+        List<TransactionDTO> transactionDTOS = List.of();
+        for (Integer idTransaction : idTransactions) {
+             userTransactions.add(transactionRepository.getTransactionById(idTransaction));
+        }
+        if(userTransactions.isEmpty()){
+            response.put("status","nottransactions");
+        }else {
+             transactionDTOS = formTransToDTO(userTransactions);
+        }
+        response.put("status","success");
+        Collections.reverse(transactionDTOS);
+        return transactionDTOS;
+    }
+
+    private List<TransactionDTO> formTransToDTO(List<UserTransaction> userTransactions){
+        List<TransactionDTO> transactionDTOS = new ArrayList<>();
+        for (UserTransaction transaction : userTransactions) {
+            TransactionDTO transactionDTO =
+                    new TransactionDTO(transaction.getTypeTransaction(),transaction.getAmount(),transaction.getDate(),transaction.getOwner());
+            transactionDTOS.add(transactionDTO);
+        }
+        return transactionDTOS;
+    }
+
+
+
+}

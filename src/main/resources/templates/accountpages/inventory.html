@@ -952,8 +952,10 @@
 
         document.querySelectorAll('.weapon-btn.sell').forEach(btn => {
             btn.addEventListener('click', () => {
-                const weaponName = btn.closest('.weapon-card').dataset.weapon;
-                sellItem(weaponName, btn.closest('.weapon-card'));
+                const weaponCard = btn.closest('.weapon-card');
+                const weaponName = weaponCard.dataset.weapon;
+                const weaponPrice = weaponCard.dataset.price;
+                sellItem(weaponName, weaponPrice, weaponCard);
             });
         });
 
@@ -1005,77 +1007,78 @@
         return 'fa-gun';
     }
 
+    function sellItem(weaponName, weaponPrice, cardElement) {
+        fetch('/account/get-data/inventory-sell-item', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                nameWeapon: weaponName,
+                priceWeapon: weaponPrice
+            })
+        })
+        .then(res => res.ok ? res.json() : Promise.reject(`Ошибка: ${res.status}`))
+        .then(data => {
+            if (data.status !== 'success') {
+                showToast('Произошла ошибка при продаже.', 'error');
+                return;
+            }
 
-    function sellItem(weaponName, cardElement) {
-    fetch('/account/get-data/inventory-sell-item', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ nameWeapon: weaponName })
-    })
-    .then(res => res.ok ? res.json() : Promise.reject(`Ошибка: ${res.status}`))
-    .then(data => {
-        if (data.status !== 'success') {
-            showToast('Произошла ошибка при продаже.', 'error');
-            return;
-        }
+            showToast('Предмет успешно продан!', 'success');
 
-        showToast('Предмет успешно продан!', 'success');
+            // Обновление значений
+            updateText('userBalance', data.newBalance);
+            updateText('totalInventoryValue', data.newAllPrice);
+            updateText('legendaryCount', data.legendary);
+            updateText('commonCount', data.common);
 
-        // Обновление значений
-        updateText('userBalance', data.newBalance);
-        updateText('totalInventoryValue', data.newAllPrice);
-        updateText('legendaryCount', data.legendary);
-        updateText('commonCount', data.common);
+            if (data.newBestWeapon) {
+                updateText('mostExpensiveItem', data.newBestWeapon.nameWeapon || '-');
+                updateText('mostExpensivePrice', data.newBestWeapon.price);
+            } else {
+                updateText('mostExpensiveItem', '-');
+                updateText('mostExpensivePrice', 0);
+            }
 
-        if (data.newBestWeapon) {
-            updateText('mostExpensiveItem', data.newBestWeapon.nameWeapon || '-');
-            updateText('mostExpensivePrice', data.newBestWeapon.price);
-        } else {
-            updateText('mostExpensiveItem', '-');
-            updateText('mostExpensivePrice', 0);
-        }
+            // Удаление карточки проданного предмета
+            cardElement.remove();
 
-        // Удаление карточки проданного предмета
-        cardElement.remove();
+            // Подсчёт оставшихся предметов
+            const remaining = document.querySelectorAll('.weapon-card').length;
+            updateText('itemsCount', `${remaining} предметов`);
+            updateText('totalItems', remaining);
 
-        // Подсчёт оставшихся предметов
-        const remaining = document.querySelectorAll('.weapon-card').length;
-        updateText('itemsCount', `${remaining} предметов`);
-        updateText('totalItems', remaining);
-
-        // Если предметов не осталось — показать заглушку
-        if (remaining === 0) {
-            document.getElementById('inventoryItemsGrid').innerHTML = `
-                <div class="empty-inventory" style="grid-column: 1 / -1; text-align: center; padding: 50px;">
-                    <i class="fas fa-box-open fa-3x" style="margin-bottom: 20px;"></i>
-                    <h3>Ваш инвентарь пуст</h3>
-                    <p>Откройте кейсы, чтобы получить предметы</p>
-                    <a href="/shop" class="weapon-btn inspect" style="display: inline-block; margin-top: 20px; padding: 10px 20px;">В магазин</a>
-                </div>`;
-        }
-    })
-    .catch(err => {
-        console.error('Ошибка при продаже предмета:', err);
-        showToast('Сервер недоступен. Попробуйте позже.', 'error');
-    });
-}
-
-function updateText(id, value) {
-    if (value === undefined || value === null) return;
-    const el = document.getElementById(id);
-    if (!el) return;
-
-    if (typeof value === 'number') {
-        el.textContent = formatNumber(value);
-    } else {
-        el.textContent = value;
+            // Если предметов не осталось — показать заглушку
+            if (remaining === 0) {
+                document.getElementById('inventoryItemsGrid').innerHTML = `
+                    <div class="empty-inventory" style="grid-column: 1 / -1; text-align: center; padding: 50px;">
+                        <i class="fas fa-box-open fa-3x" style="margin-bottom: 20px;"></i>
+                        <h3>Ваш инвентарь пуст</h3>
+                        <p>Откройте кейсы, чтобы получить предметы</p>
+                        <a href="/shop" class="weapon-btn inspect" style="display: inline-block; margin-top: 20px; padding: 10px 20px;">В магазин</a>
+                    </div>`;
+            }
+        })
+        .catch(err => {
+            console.error('Ошибка при продаже предмета:', err);
+            showToast('Сервер недоступен. Попробуйте позже.', 'error');
+        });
     }
-}
 
-function formatNumber(value) {
-    return Number.isInteger(value) ? value : value.toFixed(2).replace(/\.00$/, '');
-}
+    function updateText(id, value) {
+        if (value === undefined || value === null) return;
+        const el = document.getElementById(id);
+        if (!el) return;
 
+        if (typeof value === 'number') {
+            el.textContent = formatNumber(value);
+        } else {
+            el.textContent = value;
+        }
+    }
+
+    function formatNumber(value) {
+        return Number.isInteger(value) ? value : value.toFixed(2).replace(/\.00$/, '');
+    }
 
     function showToast(message, type = 'info') {
         const toast = document.createElement('div');

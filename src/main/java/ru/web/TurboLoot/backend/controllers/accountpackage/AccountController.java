@@ -30,4 +30,9 @@ public class AccountController {
     public String getInventoryPage(){
         return "accountpages/inventory";
     }
+
+    @GetMapping("transactions")
+    public String getTransactionsPage(){
+        return "accountpages/transactions";
+    }
 }

@@ -1,15 +1,12 @@
 package ru.web.TurboLoot.backend.controllers.accountpackage;
 
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.websocket.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import ru.web.TurboLoot.backend.models.User;
 import ru.web.TurboLoot.backend.services.AccountService;
 
-import java.util.HashMap;
 import java.util.Map;
 
 @Controller
@@ -18,10 +15,22 @@ public class GetDataAccountController {
     @Autowired
     AccountService accountService;
 
+    @Autowired
+    ru.web.TurboLoot.backend.services.interfaceservices.AccountService accountServiceI;
+
+
+
+    @GetMapping("get-transactions")
+    @ResponseBody
+    public ResponseEntity<Map<String,Object>> getTransactions(HttpServletRequest request){
+        Map<String,Object> response = accountServiceI.getTransactionsToPage(request);
+        return ResponseEntity.status(200).body(response);
+    }
+
     @PostMapping("/inventory-sell-item")
     @ResponseBody
     public ResponseEntity<Map<String,Object>> sellItem(@RequestBody Map<String,Object> data, HttpServletRequest request){
-        Map<String,Object> response = accountService.sellItem(data,request);
+        Map<String,Object> response = accountServiceI.sellItemOnInventory(data,request);
         return ResponseEntity.ok(response);
     }
 
