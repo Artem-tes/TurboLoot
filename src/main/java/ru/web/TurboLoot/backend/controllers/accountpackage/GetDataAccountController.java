@@ -19,8 +19,8 @@ public class GetDataAccountController {
     @Autowired
     ru.web.TurboLoot.backend.services.interfaceservices.AccountService accountServiceI;
 
-    @PostMapping
-    public ResponseEntity<Map<String,Object>> soldItem(@RequestBody Map<String,Object> data, HttpServletRequest request){
+    @PostMapping("/sold-item")
+    public ResponseEntity<Map<String,Object>> soldAllItems(@RequestBody Map<String,Object> data, HttpServletRequest request){
         Map<String,Object> response = accountServiceI.soldAllItems(data,request);
         return ResponseEntity.ok(response);
     }
@@ -36,7 +36,7 @@ public class GetDataAccountController {
     @ResponseBody
     public ResponseEntity<Map<String,Object>> sellItem(@RequestBody Map<String,Object> data, HttpServletRequest request){
         Map<String,Object> response = accountServiceI.sellItemOnInventory(data,request);
-        return ResponseEntity.ok(response);
+        return ResponseEntity.status(200).body(response);
     }
 
     @GetMapping("/inventory-data")

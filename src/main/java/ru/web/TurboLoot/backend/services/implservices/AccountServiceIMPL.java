@@ -38,7 +38,11 @@ public class AccountServiceIMPL implements AccountService {
     @Primary
     @Override
     public Map<String, Object> soldAllItems(Map<String, Object> data, HttpServletRequest request) {
-
+        Map<String,Object> response = new HashMap<>();
+        User user = (User)request.getSession().getAttribute("user");
+        sellAllItemOperation(user);
+        response.put("status","success");
+        return response;
     }
 
     /// /// реализация получения транзакций
@@ -62,6 +66,24 @@ public class AccountServiceIMPL implements AccountService {
         response.put("status","success");
         response.put("userdata",formInventoryDTO(user));
         return response;
+    }
+
+
+    /// ///методы помощники
+    private void sellAllItemOperation(User user){
+        List<Integer> idItems = user.getInventory();
+        List<Weapon> weapons = new ArrayList<>();
+        Integer totalBalance = 0;
+        for (Integer idItem : idItems) {
+            weapons.add(weaponRepository.getWeaponById(idItem));
+        }
+        for (Weapon weapon : weapons) {
+            totalBalance+=weapon.getPrice();
+        }
+        idItems.clear();
+        user.setInventory(idItems);
+        user.setBalance(user.getBalance()+totalBalance);
+        userRepository.save(user);
     }
 
     private InventoryDTO formInventoryDTO(User user){
@@ -131,7 +153,7 @@ public class AccountServiceIMPL implements AccountService {
         user.setTransactional(idTr);
         user.setBalance(user.getBalance()+weapon.getPrice());
         user.setInventory(idItems);
-        userRepository.save(user);
+        User user1 = userRepository.save(user);
     }
 
 
