@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import ru.web.TurboLoot.backend.models.User;
 import ru.web.TurboLoot.backend.models.UserTransaction;
 import ru.web.TurboLoot.backend.models.Weapon;
+import ru.web.TurboLoot.backend.models.dto.InventoryDTO;
 import ru.web.TurboLoot.backend.models.dto.TransactionDTO;
 import ru.web.TurboLoot.backend.models.dto.UserDTO;
 import ru.web.TurboLoot.backend.repositories.TransactionRepository;
@@ -33,18 +34,11 @@ public class AccountServiceIMPL implements AccountService {
     TransactionRepository transactionRepository;
 
 
-
-
-    /// /// реализация продажи предмета
+    /// /// реализация продажи всех предметов
     @Primary
     @Override
-    public Map<String, Object> sellItemOnInventory(Map<String, Object> data, HttpServletRequest request) {
-        Map<String,Object> response = new HashMap<>();
-        User user = (User) request.getSession().getAttribute("user");
-        operationSellItem(String.valueOf(data.get("nameWeapon")),user, String.valueOf(data.get("priceWeapon")));
-        response.put("status","success");
-        //response.put("inventory")
-        return response;
+    public Map<String, Object> soldAllItems(Map<String, Object> data, HttpServletRequest request) {
+
     }
 
     /// /// реализация получения транзакций
@@ -58,7 +52,59 @@ public class AccountServiceIMPL implements AccountService {
         return response;
     }
 
+    /// /// реализация продажи предмета
+    @Primary
+    @Override
+    public Map<String, Object> sellItemOnInventory(Map<String, Object> data, HttpServletRequest request) {
+        Map<String,Object> response = new HashMap<>();
+        User user = (User) request.getSession().getAttribute("user");
+        operationSellItem(String.valueOf(data.get("nameWeapon")),user, String.valueOf(data.get("priceWeapon")));
+        response.put("status","success");
+        response.put("userdata",formInventoryDTO(user));
+        return response;
+    }
 
+    private InventoryDTO formInventoryDTO(User user){
+        InventoryDTO inventoryDTO = new InventoryDTO();
+        Map<String,Object> map = operateDataCount(user);
+        inventoryDTO.setBalance(user.getBalance());
+        inventoryDTO.setAllPrice((Integer) map.get("allPrice"));
+        inventoryDTO.setBestWeapon(String.valueOf(map.get("bestWeapon")));
+        inventoryDTO.setCountCommon((Integer) map.get("common"));
+        inventoryDTO.setCountLegendary((Integer) map.get("lrg"));
+        return inventoryDTO;
+    }
+
+    private Map<String,Object> operateDataCount(User user){
+        List<Integer> idItems = user.getInventory();
+        List<Weapon> weapons = new ArrayList<>();
+        Map<String,Object> map = new HashMap<>();
+        Weapon bestWeapon = new Weapon();
+        bestWeapon.setPrice(0);
+        Integer allPrice = 0;
+        Integer legCount = 0;
+        Integer commonCount = 0;
+        for (Integer i : idItems) {
+            weapons.add(weaponRepository.getWeaponById(i));
+        }
+        for (Weapon weapon : weapons) {
+            allPrice+=weapon.getPrice();
+            if(weapon.getPrice()>bestWeapon.getPrice()){
+                bestWeapon = weapon;
+            }
+            if(weapon.getRarity().equals("Legendary")){
+                legCount+=1;
+            }
+            if(weapon.getRarity().equals("Common")){
+                commonCount+=1;
+            }
+        }
+        map.put("allPrice",allPrice);
+        map.put("leg",legCount);
+        map.put("bestWeapon",bestWeapon);
+        map.put("common",commonCount);
+        return map;
+    }
 
     private UserDTO formUserDTO(User user){
         return new UserDTO(user.getEmail(),

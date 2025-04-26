@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import ru.web.TurboLoot.backend.services.AccountService;
 
+import java.util.List;
 import java.util.Map;
 
 @Controller
@@ -18,7 +19,11 @@ public class GetDataAccountController {
     @Autowired
     ru.web.TurboLoot.backend.services.interfaceservices.AccountService accountServiceI;
 
-
+    @PostMapping
+    public ResponseEntity<Map<String,Object>> soldItem(@RequestBody Map<String,Object> data, HttpServletRequest request){
+        Map<String,Object> response = accountServiceI.soldAllItems(data,request);
+        return ResponseEntity.ok(response);
+    }
 
     @GetMapping("get-transactions")
     @ResponseBody
