@@ -36,17 +36,6 @@ public class AccountServiceIMPL implements AccountService {
     TransactionRepository transactionRepository;
 
 
-    /// /// получение данных для страницы с настройки
-    @Primary
-    @Override
-    public Map<String, Object> userSettings(HttpServletRequest request) {
-        User user = (User) request.getSession().getAttribute("user");
-        Map<String,Object> response = new HashMap<>();
-        response.put("user",formUserDTO(user));
-        response.put("country","Россия");
-        return response;
-    }
-
     /// /// реализация продажи всех предметов
     @Primary
     @Override

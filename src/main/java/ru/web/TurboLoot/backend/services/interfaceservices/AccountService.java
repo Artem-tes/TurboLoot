@@ -7,8 +7,6 @@ import java.util.Map;
 
 public interface AccountService {
 
-    Map<String,Object> userSettings(HttpServletRequest request);
-
     Map<String,Object> soldAllItems(HttpServletRequest request);
 
     Map<String,Object> getTransactionsToPage(HttpServletRequest request);

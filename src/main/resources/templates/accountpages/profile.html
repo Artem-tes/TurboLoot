@@ -906,18 +906,18 @@
             const grid = document.getElementById('recentItemsGrid');
             grid.innerHTML = ''; // очистить текущие элементы
 
-            data.items.forEach(item => {
-                const itemDiv = document.createElement('div');
-                itemDiv.classList.add('inventory-item');
+            data.items.slice(-5).forEach(item => {
+    const itemDiv = document.createElement('div');
+    itemDiv.classList.add('inventory-item');
 
-                itemDiv.innerHTML = `
-                    <h3 class="weapon-name">${item.nameWeapon}</h3>
-                    <p class="weapon-rarity">Редкость: <span>${item.rarity}</span></p>
-                    <p class="weapon-price">Цена: <strong>${item.price} ₽</strong></p>
-                `;
+    itemDiv.innerHTML = `
+        <h3 class="weapon-name">${item.nameWeapon}</h3>
+        <p class="weapon-rarity">Редкость: <span>${item.rarity}</span></p>
+        <p class="weapon-price">Цена: <strong>${item.price} ₽</strong></p>
+    `;
 
-                grid.appendChild(itemDiv);
-            });
+    grid.appendChild(itemDiv);
+});
 
         } catch (error) {
             console.error('Ошибка при загрузке инвентаря:', error);
@@ -966,41 +966,44 @@
     }
 
     function renderTransactions(transactions) {
-        const transactionsList = document.getElementById('transactionsList');
-        transactionsList.innerHTML = '';
+    const transactionsList = document.getElementById('transactionsList');
+    transactionsList.innerHTML = '';
 
-        transactions.forEach(transaction => {
-            const row = document.createElement('tr');
+    // Получаем последние 5 транзакций
+    const recentTransactions = transactions.slice(-5);
 
-            // Определяем тип операции
-            let typeText, amountClass;
-            if (transaction.type === 'deposit') {
-                typeText = 'Пополнение';
-                amountClass = 'income';
-            } else if (transaction.type === 'withdraw') {
-                typeText = 'Вывод';
-                amountClass = 'outcome';
-            } else if (transaction.type === 'purchase') {
-                typeText = 'Покупка';
-                amountClass = 'outcome';
-            } else if (transaction.type === 'sale') {
-                typeText = 'Продажа';
-                amountClass = 'income';
-            } else {
-                typeText = 'Транзакция';
-                amountClass = transaction.amount >= 0 ? 'income' : 'outcome';
-            }
+    recentTransactions.forEach(transaction => {
+        const row = document.createElement('tr');
 
-            row.innerHTML = `
-                <td>${typeText}</td>
-                <td><span class="transaction-amount ${amountClass}">${transaction.amount >= 0 ? '+' : ''}${transaction.amount.toFixed(2)} ₽</span></td>
-                <td class="transaction-date">${transaction.date}</td>
-                <td class="transaction-status">${transaction.status || '-'}</td>
-            `;
+        // Определяем тип операции
+        let typeText, amountClass;
+        if (transaction.type === 'deposit') {
+            typeText = 'Пополнение';
+            amountClass = 'income';
+        } else if (transaction.type === 'withdraw') {
+            typeText = 'Вывод';
+            amountClass = 'outcome';
+        } else if (transaction.type === 'purchase') {
+            typeText = 'Покупка';
+            amountClass = 'outcome';
+        } else if (transaction.type === 'sale') {
+            typeText = 'Продажа';
+            amountClass = 'income';
+        } else {
+            typeText = 'Транзакция';
+            amountClass = transaction.amount >= 0 ? 'income' : 'outcome';
+        }
 
-            transactionsList.appendChild(row);
-        });
-    }
+        row.innerHTML = `
+            <td>${typeText}</td>
+            <td><span class="transaction-amount ${amountClass}">${transaction.amount >= 0 ? '+' : ''}${transaction.amount.toFixed(2)} ₽</span></td>
+            <td class="transaction-date">${transaction.date}</td>
+            <td class="transaction-status">${transaction.status || '-'}</td>
+        `;
+
+        transactionsList.appendChild(row);
+    });
+}
 
     function populateProfileData(user) {
         try {

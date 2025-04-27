@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import ru.web.TurboLoot.backend.services.AccountService;
+import ru.web.TurboLoot.backend.services.interfaceservices.SettingsService;
 
 import java.util.List;
 import java.util.Map;
@@ -19,9 +20,19 @@ public class GetDataAccountController {
     @Autowired
     ru.web.TurboLoot.backend.services.interfaceservices.AccountService accountServiceI;
 
+    @Autowired
+    SettingsService settingsService;
+
+    @PutMapping("/save-profile")
+    public ResponseEntity<Map<String,Object>> updateUserData(@RequestBody Map<String,Object> data,HttpServletRequest request){
+        Map<String, Object> response = settingsService.updateDataUserSettings(data,request);
+        return ResponseEntity.status(200).body(response);
+
+    }
+
     @GetMapping("/user-settings")
     public ResponseEntity<Map<String,Object>> userSettingsProfile(HttpServletRequest request){
-        Map<String,Object> response = accountServiceI.userSettings(request);
+        Map<String,Object> response = settingsService.sendUserDataToSettingsPage(request);
         return ResponseEntity.status(200).body(response);
     }
 

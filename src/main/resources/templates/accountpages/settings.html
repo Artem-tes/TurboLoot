@@ -1434,42 +1434,48 @@
         });
     });
 
-    // Функция загрузки данных пользователя
     function loadUserData() {
-        // Здесь должен быть запрос к API /account/get-data/user-settings
-        fetch('/account/get-data/user-settings')
-            .then(response => response.json())
-            .then(data => {
-                // Заполняем данные на странице
+    fetch('/account/get-data/user-settings')
+        .then(response => response.json())
+        .then(data => {
+            console.log('Полученные данные:', data); // Для отладки
+
+            // Основные данные пользователя
+            if (data.user?.username) {
                 document.getElementById('usernamePlaceholder').textContent = data.user.username;
-                document.getElementById('userGreeting').textContent = data.user.username;
-                document.getElementById('userBalance').textContent = data.user.balance.toFixed(2);
                 document.getElementById('username').value = data.user.username;
+            }
+
+            if (data.user?.email) {
                 document.getElementById('email').value = data.user.email;
+            }
+
+            if (data.user?.balance !== undefined) {
+                document.getElementById('userBalance').textContent = data.user.balance.toFixed(2);
+            }
+
+            // Дополнительные данные
+            if (data.steamId) {
                 document.getElementById('steamId').value = data.steamId;
+            }
+
+            if (data.country) {
                 document.getElementById('country').value = data.country;
-                document.getElementById('avatarPreview').src = data.avatarUrl || 'https://via.placeholder.com/100';
+            }
 
-                if (data.birthDate) {
-                    document.getElementById('birthDate').value = data.birthDate;
-                }
-
-                if (data.about) {
-                    document.getElementById('about').value = data.about;
-                }
-
-                // Обновляем статистику
-                document.getElementById('balanceStat').textContent = data.balance.toFixed(2);
-                document.getElementById('casesStat').textContent = data.casesOpened;
-                document.getElementById('itemsStat').textContent = data.itemsCount;
-                document.getElementById('refsStat').textContent = data.referralsCount;
+            // Статистика
+            if (data.casesOpened !== undefined) {
                 document.getElementById('casesOpened').textContent = data.casesOpened;
-                document.getElementById('bestDrop').textContent = data.bestDrop || '-';
-            })
-            .catch(error => {
-                console.error('Ошибка загрузки данных:', error);
-            });
-    }
+            }
+
+            if (data.bestDrop) {
+                document.getElementById('bestDrop').textContent = data.bestDrop;
+            }
+        })
+        .catch(error => {
+            console.error('Ошибка загрузки данных:', error);
+        });
+}
 
     // Обработка формы профиля
     document.getElementById('profileForm').addEventListener('submit', function(e) {
@@ -1482,8 +1488,8 @@
         };
 
         // Здесь должен быть запрос на сохранение данных
-        fetch('/account/save-profile', {
-            method: 'POST',
+        fetch('/account/get-data/save-profile', {
+            method: 'PUT',
             headers: {
                 'Content-Type': 'application/json'
             },
@@ -1491,7 +1497,7 @@
         })
         .then(response => response.json())
         .then(data => {
-            if (data.success) {
+            if (data.status === "success") {
                 alert('Данные успешно сохранены!');
                 document.getElementById('usernamePlaceholder').textContent = formData.username;
                 document.getElementById('userGreeting').textContent = formData.username;
