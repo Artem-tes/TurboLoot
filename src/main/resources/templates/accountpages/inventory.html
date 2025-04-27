@@ -882,7 +882,440 @@
     }
 </style>
 
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // Конфигурация API
+        const API = {
+            INVENTORY_DATA: '/account/get-data/inventory-data',
+            SELL_ITEM: '/account/get-data/inventory-sell-item',
+            SELL_ALL: '/account/get-data/sold-all-items'
+        };
 
+        // DOM элементы
+        const DOM = {
+            usernamePlaceholder: document.getElementById('usernamePlaceholder'),
+            userGreeting: document.getElementById('userGreeting'),
+            userBalance: document.getElementById('userBalance'),
+            casesOpened: document.getElementById('casesOpened'),
+            bestDrop: document.getElementById('bestDrop'),
+            itemsCount: document.getElementById('itemsCount'),
+            totalItems: document.getElementById('totalItems'),
+            totalInventoryValue: document.getElementById('totalInventoryValue'),
+            mostExpensiveItem: document.getElementById('mostExpensiveItem'),
+            mostExpensivePrice: document.getElementById('mostExpensivePrice'),
+            legendaryCount: document.getElementById('legendaryCount'),
+            commonCount: document.getElementById('commonCount'),
+            inventoryItemsGrid: document.getElementById('inventoryItemsGrid'),
+            sortSelect: document.getElementById('sortSelect')
+        };
+
+        // Состояние приложения
+        let appState = {
+            inventory: [],
+            user: null,
+            stats: {
+                totalValue: 0,
+                legendaryCount: 0,
+                commonCount: 0
+            }
+        };
+
+        // Инициализация приложения
+        function init() {
+            loadInventoryData();
+            setupEventListeners();
+        }
+
+        // Загрузка данных инвентаря
+        async function loadInventoryData() {
+            try {
+                const response = await fetch(API.INVENTORY_DATA);
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+
+                const data = await response.json();
+                appState = {
+                    ...appState,
+                    inventory: data.inventory || [],
+                    user: data.user || null,
+                    stats: {
+                        totalValue: data.allPrice || 0,
+                        legendaryCount: data.legendaryCount || 0,
+                        commonCount: data.commonCount || 0
+                    }
+                };
+
+                updateUserData();
+                renderInventory();
+            } catch (error) {
+                console.error('Ошибка загрузки инвентаря:', error);
+                showInventoryError();
+            }
+        }
+
+        // Обновление данных пользователя
+        function updateUserData() {
+            if (!appState.user) return;
+
+            DOM.usernamePlaceholder.textContent = appState.user.username;
+            DOM.userGreeting.textContent = appState.user.username;
+            DOM.userBalance.textContent = formatCurrency(appState.user.balance);
+            DOM.casesOpened.textContent = appState.user.countCases || 0;
+            DOM.bestDrop.textContent = appState.user.bestDrop || '-';
+        }
+
+        // Рендеринг инвентаря
+        function renderInventory() {
+            if (!appState.inventory.length) {
+                showEmptyInventory();
+                return;
+            }
+
+            DOM.inventoryItemsGrid.innerHTML = '';
+
+            // Кнопка "Продать все"
+            const sellAllBtn = createElement('button', {
+                className: 'sell-all-btn',
+                innerHTML: '<i class="fas fa-coins"></i> Продать все предметы',
+                onclick: confirmSellAll
+            });
+            DOM.inventoryItemsGrid.appendChild(sellAllBtn);
+
+            // Рендер предметов
+            appState.inventory.forEach((item, index) => {
+                const weaponCard = createWeaponCard(item, index);
+                DOM.inventoryItemsGrid.appendChild(weaponCard);
+            });
+
+            updateInventoryStats();
+        }
+
+        // Создание карточки оружия
+        function createWeaponCard(item, index) {
+            const rarityClass = getRarityClass(item.rarity);
+            const card = createElement('div', {
+                className: `weapon-card animated-card ${rarityClass}`,
+                dataset: {
+                    id: index,
+                    price: item.price,
+                    rarity: item.rarity.toLowerCase(),
+                    weapon: item.nameWeapon
+                }
+            });
+
+            card.innerHTML = `
+                <div class="weapon-image">
+                    <i class="fas ${getWeaponIcon(item.nameWeapon)}"></i>
+                </div>
+                <div class="weapon-details">
+                    <h3 class="weapon-name">${item.nameWeapon}</h3>
+                    <div class="weapon-rarity">${getRarityName(item.rarity)}</div>
+                    <div class="weapon-price">${formatCurrency(item.price)}</div>
+                    <div class="weapon-actions">
+                        <button class="weapon-btn sell" data-id="${index}">Продать</button>
+                        <button class="weapon-btn inspect" data-id="${index}">Осмотреть</button>
+                    </div>
+                </div>
+            `;
+
+            return card;
+        }
+
+        // Обновление статистики инвентаря
+        function updateInventoryStats() {
+            DOM.itemsCount.textContent = `${appState.inventory.length} предметов`;
+            DOM.totalItems.textContent = appState.inventory.length;
+            DOM.totalInventoryValue.textContent = formatCurrency(appState.stats.totalValue);
+
+            if (appState.inventory.length > 0) {
+                const mostExpensive = appState.inventory.reduce((max, item) =>
+                    item.price > max.price ? item : max, appState.inventory[0]);
+                DOM.mostExpensiveItem.textContent = mostExpensive.nameWeapon;
+                DOM.mostExpensivePrice.textContent = formatCurrency(mostExpensive.price);
+            } else {
+                DOM.mostExpensiveItem.textContent = '-';
+                DOM.mostExpensivePrice.textContent = formatCurrency(0);
+            }
+
+            DOM.legendaryCount.textContent = appState.stats.legendaryCount;
+            DOM.commonCount.textContent = appState.stats.commonCount;
+        }
+
+        // Продажа предмета
+        async function sellItem(weaponName, weaponPrice) {
+            try {
+                const response = await fetch(API.SELL_ITEM, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ nameWeapon: weaponName, priceWeapon: weaponPrice })
+                });
+
+                const data = await response.json();
+                if (data.status !== 'success') throw new Error('Ошибка при продаже');
+
+                // Обновляем состояние
+                appState.user.balance = data.newBalance;
+                appState.stats.totalValue = data.newAllPrice;
+                appState.stats.legendaryCount = data.legendary;
+                appState.stats.commonCount = data.common;
+                appState.inventory = appState.inventory.filter(item => item.nameWeapon !== weaponName);
+
+                // Обновляем UI
+                updateUserData();
+                updateInventoryStats();
+                showToast('Предмет успешно продан!', 'success');
+
+                if (!appState.inventory.length) {
+                    showEmptyInventory();
+                }
+            } catch (error) {
+                console.error('Ошибка при продаже:', error);
+                showToast('Ошибка при продаже предмета', 'error');
+            }
+        }
+
+        // Продажа всех предметов
+        async function sellAllItems() {
+            try {
+                const response = await fetch(API.SELL_ALL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+
+                const data = await response.json();
+                if (data.status !== 'success') throw new Error('Ошибка при массовой продаже');
+
+                // Обновляем состояние
+                appState.user.balance = data.newBalance;
+                appState.inventory = [];
+                appState.stats = {
+                    totalValue: 0,
+                    legendaryCount: 0,
+                    commonCount: 0
+                };
+
+                // Обновляем UI
+                updateUserData();
+                showEmptyInventory();
+                updateInventoryStats();
+                showModal('Все предметы проданы!', `Вы получили ${formatCurrency(data.totalEarned)}`);
+            } catch (error) {
+                console.error('Ошибка при продаже всех предметов:', error);
+                showToast('Ошибка при массовой продаже', 'error');
+            }
+        }
+
+        // Подтверждение продажи всех предметов
+        function confirmSellAll() {
+            if (!appState.inventory.length) return;
+
+            const modalContent = `
+                <div class="modal-content">
+                    <h2>Подтверждение</h2>
+                    <p>Вы уверены, что хотите продать все предметы (${appState.inventory.length})?</p>
+                    <div class="modal-actions">
+                        <button id="confirmSellAll">Да, продать</button>
+                        <button id="cancelSellAll">Отмена</button>
+                    </div>
+                </div>
+            `;
+
+            const modal = showModal('', modalContent, false);
+
+            modal.querySelector('#confirmSellAll').addEventListener('click', () => {
+                modal.remove();
+                sellAllItems();
+            });
+
+            modal.querySelector('#cancelSellAll').addEventListener('click', () => {
+                modal.remove();
+            });
+        }
+
+        // Показать пустой инвентарь
+        function showEmptyInventory() {
+            DOM.inventoryItemsGrid.innerHTML = `
+                <div class="empty-inventory">
+                    <i class="fas fa-box-open fa-3x"></i>
+                    <h3>Ваш инвентарь пуст</h3>
+                    <p>Откройте кейсы, чтобы получить предметы</p>
+                    <a href="/shop" class="weapon-btn inspect">В магазин</a>
+                </div>`;
+        }
+
+        // Показать ошибку загрузки
+        function showInventoryError() {
+            DOM.inventoryItemsGrid.innerHTML = `
+                <div class="error-message">
+                    <i class="fas fa-exclamation-triangle fa-3x"></i>
+                    <h3>Ошибка загрузки инвентаря</h3>
+                    <p>Попробуйте обновить страницу</p>
+                </div>`;
+        }
+
+        // Настройка обработчиков событий
+        function setupEventListeners() {
+            // Сортировка
+            DOM.sortSelect?.addEventListener('change', handleSortChange);
+
+            // Делегирование событий для кнопок продажи/осмотра
+            DOM.inventoryItemsGrid?.addEventListener('click', (e) => {
+                const sellBtn = e.target.closest('.weapon-btn.sell');
+                const inspectBtn = e.target.closest('.weapon-btn.inspect');
+
+                if (sellBtn) {
+                    const weaponCard = sellBtn.closest('.weapon-card');
+                    const weaponName = weaponCard.dataset.weapon;
+                    const weaponPrice = weaponCard.dataset.price;
+                    sellItem(weaponName, weaponPrice);
+                }
+
+                if (inspectBtn) {
+                    inspectItem(inspectBtn.dataset.id);
+                }
+            });
+        }
+
+        // Обработчик сортировки
+        function handleSortChange() {
+            const sortValue = this.value;
+
+            appState.inventory.sort((a, b) => {
+                const rarityOrder = { legendary: 4, epic: 3, rare: 2, common: 1 };
+
+                switch(sortValue) {
+                    case 'newest': return b.id - a.id;
+                    case 'oldest': return a.id - b.id;
+                    case 'price-high': return b.price - a.price;
+                    case 'price-low': return a.price - b.price;
+                    case 'rarity':
+                        return (rarityOrder[b.rarity.toLowerCase()] || 0) -
+                               (rarityOrder[a.rarity.toLowerCase()] || 0);
+                    default: return 0;
+                }
+            });
+
+            renderInventory();
+        }
+
+        // Вспомогательные функции
+        function getRarityClass(rarity) {
+            return rarity.toLowerCase();
+        }
+
+        function getRarityName(rarity) {
+            const names = {
+                common: 'Обычный',
+                rare: 'Редкий',
+                epic: 'Эпический',
+                legendary: 'Легендарный'
+            };
+            return names[rarity.toLowerCase()] || 'Неизвестно';
+        }
+
+        function getWeaponIcon(name) {
+            const lower = name.toLowerCase();
+            const icons = {
+                knife: 'fa-cut',
+                p250: 'fa-gun',
+                usp: 'fa-gun',
+                deagle: 'fa-gun',
+                tec: 'fa-gun',
+                ak: 'fa-gun',
+                m4: 'fa-gun',
+                galil: 'fa-gun',
+                famas: 'fa-gun',
+                sniper: 'fa-bullseye',
+                awp: 'fa-bullseye',
+                awm: 'fa-bullseye',
+                mp: 'fa-gun',
+                bizon: 'fa-gun',
+                smg: 'fa-gun',
+                scar: 'fa-bomb',
+                heavy: 'fa-bomb',
+                xm1014: 'fa-bomb'
+            };
+
+            for (const [key, icon] of Object.entries(icons)) {
+                if (lower.includes(key)) return icon;
+            }
+
+            return 'fa-gun';
+        }
+
+        function formatCurrency(value) {
+            const num = Number(value || 0);
+            return 'R' + (Number.isInteger(num) ? num : num.toFixed(2));
+        }
+
+        function createElement(tag, { className, innerHTML, dataset, onclick } = {}) {
+            const el = document.createElement(tag);
+            if (className) el.className = className;
+            if (innerHTML) el.innerHTML = innerHTML;
+            if (dataset) Object.assign(el.dataset, dataset);
+            if (onclick) el.onclick = onclick;
+            return el;
+        }
+
+        function showToast(message, type = 'info') {
+            const toast = createElement('div', {
+                className: `toast-message ${type}`,
+                innerHTML: message
+            });
+
+            document.body.appendChild(toast);
+
+            setTimeout(() => {
+                toast.classList.add('show');
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                    setTimeout(() => toast.remove(), 300);
+                }, 3000);
+            }, 100);
+        }
+
+        function showModal(title, content, showCloseBtn = true) {
+            const modal = createElement('div', { className: 'modal' });
+            const closeBtn = showCloseBtn ? '<span class="close-button">&times;</span>' : '';
+
+            modal.innerHTML = `
+                <div class="modal-content">
+                    ${closeBtn}
+                    ${title ? `<h2>${title}</h2>` : ''}
+                    <div class="modal-body">${content}</div>
+                </div>
+            `;
+
+            document.body.appendChild(modal);
+
+            if (showCloseBtn) {
+                modal.querySelector('.close-button').addEventListener('click', () => modal.remove());
+            }
+
+            return modal;
+        }
+
+        function inspectItem(itemId) {
+            const item = appState.inventory[itemId];
+            if (!item) return;
+
+            const modalContent = `
+                <div class="item-details">
+                    <div class="weapon-image large">
+                        <i class="fas ${getWeaponIcon(item.nameWeapon)}"></i>
+                    </div>
+                    <h3>${item.nameWeapon}</h3>
+                    <p><strong>Редкость:</strong> ${getRarityName(item.rarity)}</p>
+                    <p><strong>Цена:</strong> ${formatCurrency(item.price)}</p>
+                </div>
+            `;
+
+            showModal('Просмотр предмета', modalContent);
+        }
+
+        // Запуск приложения
+        init();
+    });
+</script>
 
 <body>
 <html>

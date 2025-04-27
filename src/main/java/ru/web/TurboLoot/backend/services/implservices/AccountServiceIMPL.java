@@ -1,6 +1,7 @@
 package ru.web.TurboLoot.backend.services.implservices;
 
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Primary;
@@ -18,6 +19,7 @@ import ru.web.TurboLoot.backend.services.interfaceservices.AccountService;
 
 import java.util.*;
 
+@Slf4j
 @Service
 public class AccountServiceIMPL implements AccountService {
 
@@ -34,14 +36,27 @@ public class AccountServiceIMPL implements AccountService {
     TransactionRepository transactionRepository;
 
 
+    /// /// получение данных для страницы с настройки
+    @Primary
+    @Override
+    public Map<String, Object> userSettings(HttpServletRequest request) {
+        User user = (User) request.getSession().getAttribute("user");
+        Map<String,Object> response = new HashMap<>();
+        response.put("user",formUserDTO(user));
+        response.put("country","Россия");
+        return response;
+    }
+
     /// /// реализация продажи всех предметов
     @Primary
     @Override
-    public Map<String, Object> soldAllItems(Map<String, Object> data, HttpServletRequest request) {
+    public Map<String, Object> soldAllItems(HttpServletRequest request) {
         Map<String,Object> response = new HashMap<>();
         User user = (User)request.getSession().getAttribute("user");
+        response.put("totalEarned",formAllEarned(user));
         sellAllItemOperation(user);
         response.put("status","success");
+        response.put("newBalance",user.getBalance());
         return response;
     }
 
@@ -84,6 +99,19 @@ public class AccountServiceIMPL implements AccountService {
         user.setInventory(idItems);
         user.setBalance(user.getBalance()+totalBalance);
         userRepository.save(user);
+    }
+
+    private Integer formAllEarned(User user){
+        List<Integer> idItems = user.getInventory();
+        List<Weapon> weapons = new ArrayList<>();
+        Integer totalEarned = 0;
+        for (Integer idItem : idItems) {
+            weapons.add(weaponRepository.getWeaponById(idItem));
+        }
+        for (Weapon weapon : weapons) {
+            totalEarned+=weapon.getPrice();
+        }
+        return totalEarned;
     }
 
     private InventoryDTO formInventoryDTO(User user){

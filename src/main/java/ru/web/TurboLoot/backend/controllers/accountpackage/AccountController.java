@@ -35,4 +35,9 @@ public class AccountController {
     public String getTransactionsPage(){
         return "accountpages/transactions";
     }
+
+    @GetMapping("/settings")
+    public String getSettingsPage(){
+        return "accountpages/settings";
+    }
 }
