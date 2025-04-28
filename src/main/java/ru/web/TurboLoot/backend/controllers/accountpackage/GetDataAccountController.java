@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.web.TurboLoot.backend.services.AccountService;
 import ru.web.TurboLoot.backend.services.interfaceservices.SettingsService;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -22,6 +23,12 @@ public class GetDataAccountController {
 
     @Autowired
     SettingsService settingsService;
+
+    @PutMapping("/update-password")
+    @ResponseBody
+    public Map<String,Object> updatePassword(){
+        return (Map<String, Object>) new HashMap<>().put("status","success");
+    }
 
     @PutMapping("/save-profile")
     public ResponseEntity<Map<String,Object>> updateUserData(@RequestBody Map<String,Object> data,HttpServletRequest request){

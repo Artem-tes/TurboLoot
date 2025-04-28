@@ -77,15 +77,26 @@ public class AccountServiceIMPL implements AccountService {
     private void sellAllItemOperation(User user){
         List<Integer> idItems = user.getInventory();
         List<Weapon> weapons = new ArrayList<>();
+        List<Integer> idTransactions = user.getTransactional();
         Integer totalBalance = 0;
         for (Integer idItem : idItems) {
             weapons.add(weaponRepository.getWeaponById(idItem));
         }
         for (Weapon weapon : weapons) {
             totalBalance+=weapon.getPrice();
+            UserTransaction userTransaction = new UserTransaction(
+                    null,
+                    1,
+                    weapon.getPrice(),
+                    String.valueOf(new Date()),
+                    user.getUsername()
+            );
+            UserTransaction NewuserTransaction = transactionRepository.save(userTransaction);
+            idTransactions.add(NewuserTransaction.getId());
         }
         idItems.clear();
         user.setInventory(idItems);
+        user.setTransactional(idTransactions);
         user.setBalance(user.getBalance()+totalBalance);
         userRepository.save(user);
     }
