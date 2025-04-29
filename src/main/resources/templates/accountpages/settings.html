@@ -596,8 +596,6 @@
             <div class="settings-tabs">
                 <div class="settings-tab active" data-tab="profile">Профиль</div>
                 <div class="settings-tab" data-tab="security">Безопасность</div>
-                <div class="settings-tab" data-tab="api">API Ключи</div>
-                <div class="settings-tab" data-tab="two-factor">Двухфакторная аутентификация</div>
             </div>
 
             <!-- Вкладка профиля -->
@@ -654,31 +652,6 @@
                     </button>
                 </form>
             </div>
-
-            <!-- Вкладка API ключей -->
-            <div id="api-tab" class="tab-content">
-                <button id="generateApiKey" class="btn btn-primary">
-                    <i class="fas fa-key"></i> Создать новый API ключ
-                </button>
-                <div class="api-key-list"></div>
-            </div>
-
-            <!-- Вкладка двухфакторной аутентификации -->
-            <div id="two-factor-tab" class="tab-content">
-                <div class="form-group">
-                    <label class="form-label">Статус двухфакторной аутентификации</label>
-                    <div class="two-factor-status inactive">
-                        <i class="fas fa-times-circle"></i><span>Не активна</span>
-                    </div>
-                </div>
-                <button id="toggleTwoFactor" class="btn btn-primary">
-                    <i class="fas fa-shield-alt"></i> Включить двухфакторную аутентификацию
-                </button>
-                <img id="twoFactorQr" class="qr-code" src="https://via.placeholder.com/150" alt="QR Code">
-                <label id="twoFactorCodeLabel" class="form-label" style="display: none;">Код подтверждения</label>
-                <input type="text" id="twoFactorCode" class="form-control" placeholder="Введите код" style="display: none;">
-            </div>
-        </section>
     </main>
 </div>
 
@@ -814,11 +787,6 @@
 
                 console.log('Данные формы:', { currentPassword, newPassword, confirmPassword });
 
-                if (newPassword.length < 8) {
-                    console.log('Ошибка: Пароль короче 8 символов');
-                    showErrorModal('Пароль должен содержать не менее 8 символов.');
-                    return;
-                }
 
                 if (newPassword !== confirmPassword) {
                     console.log('Ошибка: Пароли не совпадают');
@@ -973,7 +941,6 @@
                 })
                 .catch(error => {
                     console.error('Ошибка загрузки данных:', error);
-                    showErrorModal('Ошибка загрузки данных пользователя.');
                 });
         }
 

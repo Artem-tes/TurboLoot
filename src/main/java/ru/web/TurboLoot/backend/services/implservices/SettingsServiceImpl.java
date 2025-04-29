@@ -18,6 +18,17 @@ public class SettingsServiceImpl implements SettingsService {
     @Autowired
     UserRepository userRepository;
 
+    /// /// обновление пароля
+    @Override
+    public Map<String, Object> updateUserPassword(Map<String, Object> data, HttpServletRequest request) {
+        String newPassword = String.valueOf(data.get("newPassword"));
+        User user = (User)request.getSession().getAttribute("user");
+        updatePasswordOperation(newPassword, user);
+        Map<String,Object> response = new HashMap<>();
+        response.put("status","success");
+        return response;
+    }
+
     /// /// реализация получения данных о пользователе на страничку настроек
     @Primary
     @Override
@@ -28,6 +39,8 @@ public class SettingsServiceImpl implements SettingsService {
         response.put("country","Россия");
         return response;
     }
+
+
 
     @Primary
     @Override
@@ -41,6 +54,12 @@ public class SettingsServiceImpl implements SettingsService {
     }
 
     /// //////////////////// /////////////////////// //////////////////////////// ///// //
+
+
+    private void updatePasswordOperation(String newPAss, User user){
+        user.setPassword(newPAss);
+        userRepository.save(user);
+    }
 
     private Map<String,Object> updateUserOperation(Map<String,Object> data,User user){
         String username = String.valueOf(data.get("username"));

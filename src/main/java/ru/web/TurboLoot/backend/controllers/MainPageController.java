@@ -41,6 +41,11 @@ public class MainPageController {
         return mainPageService.returnPage(model, request);
     }
 
+    @GetMapping("/upgrade")
+    private String getUpgradePage(){
+        return "upgrade";
+    }
+
     @GetMapping("/get-data/main-page")
     public ResponseEntity<Map<String, Object>> getUserData(HttpServletRequest request){
         Map<String,Object> map = new HashMap<>();

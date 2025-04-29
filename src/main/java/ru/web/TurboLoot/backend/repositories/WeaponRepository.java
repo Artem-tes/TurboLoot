@@ -9,6 +9,12 @@ import java.util.List;
 
 public interface WeaponRepository extends JpaRepository<Weapon,Integer> {
 
+    @Query(value = "select * from weapons where price >= :price")
+    List<Weapon> getWeaponsMore(@Param("price") Integer price);
+
+    @Query(value = "select * from weapons where price =< :price")
+    List<Weapon> getWeaponsNotMore(@Param("price") Integer price);
+
     @Query(value = "select * from weapons where weapon_id = :id_weapon", nativeQuery = true)
     Weapon getWeaponById(@Param("id_weapon") Integer id_weapon);
 

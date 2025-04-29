@@ -1,0 +1,1059 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>TurboLoot - Апгрейд</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        header {
+            background: rgba(0, 0, 0, 0.8);
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+
+        .nav-left {
+            display: flex;
+            gap: 30px;
+        }
+
+        .nav-button {
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: all 0.3s;
+            padding: 5px 0;
+            position: relative;
+        }
+
+        .nav-button i {
+            color: #ffcc00;
+            font-size: 20px;
+            margin-bottom: 5px;
+            transition: all 0.3s;
+        }
+
+        .nav-button:hover i {
+            transform: translateY(-3px);
+            text-shadow: 0 0 10px rgba(255, 204, 0, 0.7);
+        }
+
+        .nav-button::after {
+            content: '';
+            width: 0;
+            height: 2px;
+            background: #ffcc00;
+            transition: width 0.3s;
+            position: absolute;
+            bottom: 0;
+        }
+
+        .nav-button:hover::after {
+            width: 100%;
+        }
+
+        .logo h1 {
+            font-size: 24px;
+            background: linear-gradient(to right, #ff8a00, #ffcc00);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 800;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .account-button {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(90deg, #ff8a00, #ffcc00);
+            color: #222;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .account-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 204, 0, 0.4);
+        }
+
+        .account-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: rgba(0, 0, 0, 0.9);
+            border-radius: 8px;
+            padding: 10px 0;
+            min-width: 180px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+            transform: translateY(10px);
+        }
+
+        .account-button:hover .account-dropdown {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(5px);
+        }
+
+        .account-dropdown a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: white;
+            padding: 8px 15px;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .account-dropdown a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #ffcc00;
+        }
+
+        .wheel-section {
+            text-align: center;
+            padding: 60px 30px;
+            background: rgba(255, 255, 255, 0.05);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .wheel-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 204, 0, 0.1) 0%, transparent 70%);
+            animation: pulse 10s infinite;
+            z-index: 0;
+        }
+
+        .wheel-container {
+            position: relative;
+            margin: 0 auto;
+            width: 350px;
+            height: 350px;
+            z-index: 1;
+        }
+
+        .wheel {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            position: relative;
+            overflow: hidden;
+            border: 8px solid #ffcc00;
+            box-shadow: 0 0 30px rgba(255, 204, 0, 0.5), inset 0 0 20px rgba(0, 0, 0, 0.5);
+            transition: transform 5s cubic-bezier(0.19, 1, 0.22, 1);
+            animation: glow 2s infinite alternate;
+        }
+
+        .wheel::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.2) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .wheel-arrow {
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 20px solid transparent;
+            border-right: 20px solid transparent;
+            border-top: 40px solid #ffcc00;
+            z-index: 10;
+            filter: drop-shadow(0 0 10px rgba(255, 204, 0, 0.7));
+            animation: arrow-bounce 1.5s infinite;
+        }
+
+        .chance-selector {
+            margin-top: 30px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            z-index: 1;
+            position: relative;
+        }
+
+        .chance-btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            background: #444;
+            color: white;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .chance-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 204, 0, 0.3), transparent);
+            transition: all 0.5s;
+        }
+
+        .chance-btn:hover::before {
+            left: 100%;
+        }
+
+        .chance-btn.active, .chance-btn:hover {
+            background: #ffcc00;
+            color: #222;
+            box-shadow: 0 0 15px rgba(255, 204, 0, 0.5);
+            transform: translateY(-2px);
+        }
+
+        .roll-button {
+            margin-top: 30px;
+            padding: 15px 40px;
+            background: linear-gradient(90deg, #ff8a00, #ffcc00);
+            color: #222;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            z-index: 1;
+            overflow: hidden;
+        }
+
+        .roll-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: all 0.5s;
+        }
+
+        .roll-button:hover::before {
+            left: 100%;
+        }
+
+        .roll-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(255, 204, 0, 0.5);
+        }
+
+        .roll-button:disabled {
+            background: #666;
+            cursor: not-allowed;
+            box-shadow: none;
+            transform: none;
+        }
+
+        .content-section {
+            display: flex;
+            max-width: 1400px;
+            margin: 40px auto;
+            padding: 0 30px;
+            gap: 30px;
+        }
+
+        .inventory-section, .upgrade-section {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 30px;
+            animation: fadeInUp 0.5s ease-out;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .section-header h2 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .inventory-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 20px;
+        }
+
+        .weapon-card {
+            background: #1e1e1e;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 2px solid #333;
+            transition: all 0.3s;
+            position: relative;
+            animation: cardAppear 0.5s ease-out;
+        }
+
+        .weapon-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .weapon-image {
+            width: 100%;
+            height: 140px;
+            background: linear-gradient(135deg, #2c3e50 0%, #4ca1af 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 40px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .weapon-image::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: all 0.5s;
+            transform: translateX(-100%);
+        }
+
+        .weapon-card:hover .weapon-image::after {
+            transform: translateX(100%);
+        }
+
+        .weapon-details {
+            padding: 15px;
+        }
+
+        .weapon-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .weapon-rarity {
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+        }
+
+        .weapon-price {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #ffcc00;
+        }
+
+        .common { border-color: #b0b0b0; }
+        .common .weapon-name, .common .weapon-rarity { color: #b0b0b0; }
+        .rare { border-color: #4fa3ff; }
+        .rare .weapon-name, .rare .weapon-rarity { color: #4fa3ff; }
+        .epic { border-color: #b54fff; }
+        .epic .weapon-name, .epic .weapon-rarity { color: #b54fff; }
+        .legendary { border-color: #ffd700; }
+        .legendary .weapon-name, .legendary .weapon-rarity { color: #ffd700; }
+
+        footer {
+            background: rgba(0, 0, 0, 0.9);
+            padding: 40px 30px 20px;
+            text-align: center;
+            margin-top: auto;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            text-align: left;
+        }
+
+        .footer-column h3 {
+            color: #ffcc00;
+            margin-bottom: 20px;
+            font-size: 18px;
+        }
+
+        .footer-links a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            display: block;
+            margin-bottom: 12px;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: #ffcc00;
+        }
+
+        .social-links a {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 20px;
+            margin-right: 15px;
+            transition: color 0.3s;
+        }
+
+        .social-links a:hover {
+            color: #ffcc00;
+        }
+
+        .copyright {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 14px;
+            margin-top: 40px;
+        }
+
+        .toast-message {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background-color: #323232;
+            color: #fff;
+            padding: 15px 20px;
+            border-radius: 6px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.3s ease;
+            z-index: 10000;
+            font-size: 16px;
+        }
+
+        .toast-message.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .toast-message.success { background-color: #28a745; }
+        .toast-message.error { background-color: #dc3545; }
+        .toast-message.info { background-color: #17a2b8; }
+
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: #1e1e1e;
+            padding: 20px;
+            border-radius: 10px;
+            max-width: 400px;
+            width: 90%;
+            position: relative;
+            animation: modalAppear 0.3s ease-out;
+        }
+
+        .close-button {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 24px;
+            cursor: pointer;
+            color: #ffcc00;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 0.3; }
+            50% { transform: scale(1.2); opacity: 0.1; }
+            100% { transform: scale(1); opacity: 0.3; }
+        }
+
+        @keyframes glow {
+            0% { box-shadow: 0 0 20px rgba(255, 204, 0, 0.3); }
+            100% { box-shadow: 0 0 30px rgba(255, 204, 0, 0.7); }
+        }
+
+        @keyframes arrow-bounce {
+            0%, 100% { transform: translateX(-50%) translateY(0); }
+            50% { transform: translateX(-50%) translateY(-5px); }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes cardAppear {
+            from { opacity: 0; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        @keyframes modalAppear {
+            from { opacity: 0; transform: scale(0.7); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        @media (max-width: 1024px) {
+            .content-section {
+                flex-direction: column;
+            }
+            .wheel-container {
+                width: 300px;
+                height: 300px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .inventory-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            .wheel-section {
+                padding: 40px 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .inventory-grid {
+                grid-template-columns: 1fr;
+            }
+            .wheel-container {
+                width: 250px;
+                height: 250px;
+            }
+            .chance-btn {
+                padding: 10px 15px;
+                font-size: 14px;
+            }
+            .roll-button {
+                padding: 12px 25px;
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+<header>
+    <div class="nav-left">
+        <a href="/" class="nav-button">
+            <i class="fas fa-home"></i>
+            <span>Главная</span>
+        </a>
+        <a href="/upgrade" class="nav-button">
+            <i class="fas fa-level-up-alt"></i>
+            <span>Апгрейд</span>
+        </a>
+        <a href="/shop" class="nav-button">
+            <i class="fas fa-shopping-cart"></i>
+            <span>Магазин</span>
+        </a>
+    </div>
+    <div class="logo">
+        <h1>TurboLoot</h1>
+    </div>
+    <div class="account-button">
+        <i class="fas fa-user-circle"></i>
+        <span id="usernamePlaceholder">Username</span>
+        <div class="account-dropdown">
+            <a href="/account/inventory"><i class="fas fa-box-open"></i> Инвентарь</a>
+            <a href="/account/transactions"><i class="fas fa-history"></i> История</a>
+            <a href="/account/settings"><i class="fas fa-cog"></i> Настройки</a>
+            <a href="/logout"><i class="fas fa-sign-out-alt"></i> Выйти</a>
+        </div>
+    </div>
+</header>
+
+<section class="wheel-section">
+    <div class="wheel-container">
+        <div class="wheel" id="wheel"></div>
+        <div class="wheel-arrow"></div>
+    </div>
+    <div class="chance-selector">
+        <button class="chance-btn" data-chance="10">10%</button>
+        <button class="chance-btn" data-chance="30">30%</button>
+        <button class="chance-btn" data-chance="60">60%</button>
+    </div>
+    <button class="roll-button" id="rollButton" disabled>Крутить колесо</button>
+</section>
+
+<div class="content-section">
+    <section class="inventory-section">
+        <div class="section-header">
+            <h2>Ваш инвентарь</h2>
+            <span id="inventoryCount">0 предметов</span>
+        </div>
+        <div class="inventory-grid" id="inventoryGrid">
+            <div class="loading" style="grid-column: 1 / -1; text-align: center; padding: 50px;">
+                <i class="fas fa-spinner fa-spin fa-3x"></i>
+                Загрузка инвентаря...
+            </div>
+        </div>
+    </section>
+
+    <section class="upgrade-section">
+        <div class="section-header">
+            <h2>Предметы для апгрейда</h2>
+            <span id="upgradeCount">0 предметов</span>
+        </div>
+        <div class="inventory-grid" id="upgradeGrid">
+            <div class="loading" style="grid-column: 1 / -1; text-align: center; padding: 50px;">
+                <i class="fas fa-spinner fa-spin fa-3x"></i>
+                Загрузка предметов...
+            </div>
+        </div>
+    </section>
+</div>
+
+<footer>
+    <div class="footer-content">
+        <div class="footer-column">
+            <h3>TurboLoot</h3>
+            <div class="footer-links">
+                <a href="/about">О нас</a>
+                <a href="/blog">Блог</a>
+                <a href="/careers">Карьера</a>
+                <a href="/press">Пресса</a>
+            </div>
+        </div>
+        <div class="footer-column">
+            <h3>Помощь</h3>
+            <div class="footer-links">
+                <a href="/support">Поддержка</a>
+                <a href="/rules">Правила</a>
+                <a href="/safety">Безопасность</a>
+                <a href="/refund">Возврат средств</a>
+            </div>
+        </div>
+        <div class="footer-column">
+            <h3>Правовая информация</h3>
+            <div class="footer-links">
+                <a href="/terms">Условия использования</a>
+                <a href="/privacy">Политика конфиденциальности</a>
+                <a href="/cookies">Cookie-файлы</a>
+                <a href="/aml">AML политика</a>
+            </div>
+        </div>
+        <div class="footer-column">
+            <h3>Социальные сети</h3>
+            <div class="social-links">
+                <a href="#"><i class="fab fa-vk"></i></a>
+                <a href="#"><i class="fab fa-telegram"></i></a>
+                <a href="#"><i class="fab fa-youtube"></i></a>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+            </div>
+        </div>
+    </div>
+    <div class="copyright">
+        © 2025 TurboLoot. Все права защищены.
+    </div>
+</footer>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // API Endpoints
+        const API = {
+            INVENTORY: '/account/get-data/inventory-data',
+            UPGRADE_INVENTORY: '/upgrade/operation/up-inventory',
+            ROLL_UPGRADE: '/upgrade/operation/roll-upgrade'
+        };
+
+        // DOM Elements
+        const DOM = {
+            wheel: document.querySelector('#wheel'),
+            rollButton: document.querySelector('#rollButton'),
+            inventoryGrid: document.querySelector('#inventoryGrid'),
+            upgradeGrid: document.querySelector('#upgradeGrid'),
+            inventoryCount: document.querySelector('#inventoryCount'),
+            upgradeCount: document.querySelector('#upgradeCount'),
+            usernamePlaceholder: document.querySelector('#usernamePlaceholder'),
+            chanceButtons: document.querySelectorAll('.chance-btn')
+        };
+
+        // Application State
+        const state = {
+            inventory: [],
+            upgradeItems: [],
+            user: null,
+            selectedChance: 10,
+            isRolling: false
+        };
+
+        // Initialize Application
+        function init() {
+            loadInventory();
+            loadUpgradeInventory();
+            setupEventListeners();
+            updateWheel();
+        }
+
+        // Fetch Inventory Data
+        async function loadInventory() {
+            try {
+                const response = await fetch(API.INVENTORY, {
+                    method: 'GET',
+                    headers: { 'Accept': 'application/json' }
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+
+                const data = await response.json();
+                state.inventory = data.inventory || [];
+                state.user = data.user || null;
+                renderInventory();
+                updateUserData();
+            } catch (error) {
+                console.error('Inventory fetch error:', error);
+                showError(DOM.inventoryGrid, 'Ошибка загрузки инвентаря');
+            }
+        }
+
+        // Fetch Upgrade Inventory Data
+        async function loadUpgradeInventory() {
+            try {
+                const response = await fetch(API.UPGRADE_INVENTORY, {
+                    method: 'GET',
+                    headers: { 'Accept': 'application/json' }
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+
+                const data = await response.json();
+                state.upgradeItems = data.items || [];
+                renderUpgradeInventory();
+            } catch (error) {
+                console.error('Upgrade inventory fetch error:', error);
+                showError(DOM.upgradeGrid, 'Ошибка загрузки предметов');
+            }
+        }
+
+        // Roll Wheel
+        async function rollWheel() {
+            if (state.isRolling) return;
+
+            state.isRolling = true;
+            DOM.rollButton.disabled = true;
+            DOM.wheel.classList.add('spinning');
+
+            try {
+                const response = await fetch(API.ROLL_UPGRADE, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({ chance: state.selectedChance })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+
+                const data = await response.json();
+                if (data.status !== 'success') {
+                    throw new Error('Invalid response status');
+                }
+
+                // Simulate wheel spin
+                const randomAngle = 720 + (Math.random() * 360);
+                DOM.wheel.style.transform = `rotate(${randomAngle}deg)`;
+
+                setTimeout(() => {
+                    DOM.wheel.classList.remove('spinning');
+                    showToast(
+                        data.won ? 'Победа! Вы выиграли!' : 'Увы, попробуйте снова!',
+                        data.won ? 'success' : 'error'
+                    );
+                    state.isRolling = false;
+                    DOM.rollButton.disabled = false;
+                    // Refresh inventories after roll
+                    loadInventory();
+                    loadUpgradeInventory();
+                }, 5000);
+            } catch (error) {
+                console.error('Roll error:', error);
+                DOM.wheel.classList.remove('spinning');
+                showToast('Ошибка при вращении колеса', 'error');
+                state.isRolling = false;
+                DOM.rollButton.disabled = false;
+            }
+        }
+
+        // Render Inventory
+        function renderInventory() {
+            DOM.inventoryGrid.innerHTML = '';
+            if (!state.inventory.length) {
+                showEmpty(DOM.inventoryGrid, 'Ваш инвентарь пуст');
+                return;
+            }
+
+            state.inventory.forEach((item, index) => {
+                const card = createWeaponCard(item, index, 'inventory');
+                DOM.inventoryGrid.appendChild(card);
+            });
+
+            DOM.inventoryCount.textContent = `${state.inventory.length} предметов`;
+        }
+
+        // Render Upgrade Inventory
+        function renderUpgradeInventory() {
+            DOM.upgradeGrid.innerHTML = '';
+            if (!state.upgradeItems.length) {
+                showEmpty(DOM.upgradeGrid, 'Нет предметов для апгрейда');
+                return;
+            }
+
+            state.upgradeItems.forEach((item, index) => {
+                const card = createWeaponCard(item, index, 'upgrade');
+                DOM.upgradeGrid.appendChild(card);
+            });
+
+            DOM.upgradeCount.textContent = `${state.upgradeItems.length} предметов`;
+        }
+
+        // Create Weapon Card
+        function createWeaponCard(item, index, type) {
+            const rarityClass = getRarityClass(item.rarity);
+            const card = createElement('div', {
+                className: `weapon-card ${rarityClass}`,
+                dataset: { id: index, type }
+            });
+
+            card.innerHTML = `
+                <div class="weapon-image">
+                    <i class="fas ${getWeaponIcon(item.nameWeapon)}"></i>
+                </div>
+                <div class="weapon-details">
+                    <h3 class="weapon-name">${item.nameWeapon}</h3>
+                    <div class="weapon-rarity">${getRarityName(item.rarity)}</div>
+                    <div class="weapon-price">${formatCurrency(item.price)}</div>
+                </div>
+            `;
+
+            return card;
+        }
+
+        // Update Wheel Appearance
+        function updateWheel() {
+            const winPercent = state.selectedChance;
+            DOM.wheel.style.background = `conic-gradient(#28a745 ${winPercent}%, #dc3545 ${winPercent}% 100%)`;
+        }
+
+        // Setup Event Listeners
+        function setupEventListeners() {
+            DOM.chanceButtons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    DOM.chanceButtons.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    state.selectedChance = parseInt(btn.dataset.chance);
+                    updateWheel();
+                    DOM.rollButton.disabled = false;
+                });
+            });
+
+            DOM.rollButton.addEventListener('click', rollWheel);
+
+            DOM.inventoryGrid.addEventListener('click', (e) => {
+                const card = e.target.closest('.weapon-card');
+                if (card && card.dataset.type === 'inventory') {
+                    inspectItem(state.inventory[card.dataset.id]);
+                }
+            });
+
+            DOM.upgradeGrid.addEventListener('click', (e) => {
+                const card = e.target.closest('.weapon-card');
+                if (card && card.dataset.type === 'upgrade') {
+                    inspectItem(state.upgradeItems[card.dataset.id]);
+                }
+            });
+        }
+
+        // Update User Data
+        function updateUserData() {
+            if (state.user) {
+                DOM.usernamePlaceholder.textContent = state.user.username || 'Username';
+            }
+        }
+
+        // Utility Functions
+        function getRarityClass(rarity) {
+            return rarity.toLowerCase();
+        }
+
+        function getRarityName(rarity) {
+            const names = {
+                common: 'Обычный',
+                rare: 'Редкий',
+                epic: 'Эпический',
+                legendary: 'Легендарный'
+            };
+            return names[rarity.toLowerCase()] || 'Неизвестно';
+        }
+
+        function getWeaponIcon(name) {
+            const lower = name.toLowerCase();
+            const icons = {
+                knife: 'fa-cut',
+                p250: 'fa-gun',
+                usp: 'fa-gun',
+                deagle: 'fa-gun',
+                tec: 'fa-gun',
+                ak: 'fa-gun',
+                m4: 'fa-gun',
+                galil: 'fa-gun',
+                famas: 'fa-gun',
+                sniper: 'fa-bullseye',
+                awp: 'fa-bullseye',
+                awm: 'fa-bullseye',
+                mp: 'fa-gun',
+                bizon: 'fa-gun',
+                smg: 'fa-gun',
+                scar: 'fa-bomb',
+                heavy: 'fa-bomb',
+                xm1014: 'fa-bomb'
+            };
+
+            for (const [key, icon] of Object.entries(icons)) {
+                if (lower.includes(key)) return icon;
+            }
+            return 'fa-gun';
+        }
+
+        function formatCurrency(value) {
+            const num = Number(value || 0);
+            return 'R' + (Number.isInteger(num) ? num : num.toFixed(2));
+        }
+
+        function createElement(tag, { className, innerHTML, dataset } = {}) {
+            const el = document.createElement(tag);
+            if (className) el.className = className;
+            if (innerHTML) el.innerHTML = innerHTML;
+            if (dataset) Object.assign(el.dataset, dataset);
+            return el;
+        }
+
+        function showToast(message, type = 'info') {
+            const toast = createElement('div', {
+                className: `toast-message ${type}`,
+                innerHTML: message
+            });
+            document.body.appendChild(toast);
+            setTimeout(() => {
+                toast.classList.add('show');
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                    setTimeout(() => toast.remove(), 300);
+                }, 3000);
+            }, 100);
+        }
+
+        function showModal(title, content, showCloseBtn = true) {
+            const modal = createElement('div', { className: 'modal' });
+            const closeBtn = showCloseBtn ? '<span class="close-button">×</span>' : '';
+            modal.innerHTML = `
+                <div class="modal-content">
+                    ${closeBtn}
+                    ${title ? `<h2>${title}</h2>` : ''}
+                    <div class="modal-body">${content}</div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+            if (showCloseBtn) {
+                modal.querySelector('.close-button').addEventListener('click', () => modal.remove());
+            }
+            return modal;
+        }
+
+        function inspectItem(item) {
+            if (!item) return;
+            const modalContent = `
+                <div class="item-details">
+                    <div class="weapon-image large">
+                        <i class="fas ${getWeaponIcon(item.nameWeapon)}"></i>
+                    </div>
+                    <h3>${item.nameWeapon}</h3>
+                    <p><strong>Редкость:</strong> ${getRarityName(item.rarity)}</p>
+                    <p><strong>Цена:</strong> ${formatCurrency(item.price)}</p>
+                </div>
+            `;
+            showModal('Просмотр предмета', modalContent);
+        }
+
+        function showEmpty(container, message) {
+            container.innerHTML = `
+                <div class="empty-inventory">
+                    <i class="fas fa-box-open fa-3x"></i>
+                    <h3>${message}</h3>
+                    <a href="/shop" class="weapon-btn inspect">В магазин</a>
+                </div>`;
+        }
+
+        function showError(container, message) {
+            container.innerHTML = `
+                <div class="error-message">
+                    <i class="fas fa-exclamation-triangle fa-3x"></i>
+                    <h3>${message}</h3>
+                    <p>Попробуйте обновить страницу</p>
+                </div>`;
+        }
+
+        // Start Application
+        init();
+    });
+</script>
+</body>
+</html>

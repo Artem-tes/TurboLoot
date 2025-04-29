@@ -26,8 +26,9 @@ public class GetDataAccountController {
 
     @PutMapping("/update-password")
     @ResponseBody
-    public Map<String,Object> updatePassword(){
-        return (Map<String, Object>) new HashMap<>().put("status","success");
+    public ResponseEntity<Map<String,Object>> updatePassword(@RequestBody Map<String,Object> data, HttpServletRequest request){
+        Map<String,Object> response = settingsService.updateUserPassword(data,request);
+        return ResponseEntity.status(200).body(response);
     }
 
     @PutMapping("/save-profile")
