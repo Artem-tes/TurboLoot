@@ -295,6 +295,60 @@
             transform: none;
         }
 
+        .upgrade-preview {
+            margin-top: 40px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 20px;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+            animation: fadeInUp 0.5s ease-out;
+        }
+
+        .preview-column {
+            flex: 1;
+            text-align: center;
+        }
+
+        .preview-column h3 {
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            color: #ffcc00;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .preview-weapon {
+            background: #1e1e1e;
+            border-radius: 8px;
+            padding: 10px;
+            min-height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .preview-weapon:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .preview-weapon.empty {
+            background: rgba(255, 255, 255, 0.03);
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .preview-arrow {
+            display: flex;
+            align-items: center;
+            font-size: 24px;
+            color: #ffcc00;
+        }
+
         .content-section {
             display: flex;
             max-width: 1400px;
@@ -340,6 +394,7 @@
             transition: all 0.3s;
             position: relative;
             animation: cardAppear 0.5s ease-out;
+            cursor: pointer;
         }
 
         .weapon-card:hover {
@@ -545,6 +600,23 @@
             to { opacity: 1; transform: scale(1); }
         }
 
+        .modal-result {
+    text-align: center;
+    padding: 20px;
+}
+
+.modal-result i {
+    margin-bottom: 20px;
+}
+
+.modal-result.success i {
+    color: #28a745;
+}
+
+.modal-result.error i {
+    color: #dc3545;
+}
+
         @media (max-width: 1024px) {
             .content-section {
                 flex-direction: column;
@@ -552,6 +624,14 @@
             .wheel-container {
                 width: 300px;
                 height: 300px;
+            }
+            .upgrade-preview {
+                flex-direction: column;
+                align-items: center;
+            }
+            .preview-arrow {
+                transform: rotate(90deg);
+                margin: 10px 0;
             }
         }
 
@@ -620,9 +700,26 @@
         <div class="wheel-arrow"></div>
     </div>
     <div class="chance-selector">
-        <button class="chance-btn" data-chance="10">10%</button>
-        <button class="chance-btn" data-chance="30">30%</button>
         <button class="chance-btn" data-chance="60">60%</button>
+        <button class="chance-btn" data-chance="30">30%</button>
+        <button class="chance-btn" data-chance="20">20%</button>
+    </div>
+    <div class="upgrade-preview">
+        <div class="preview-column">
+            <h3>Выбрано</h3>
+            <div class="preview-weapon empty" id="selectedWeaponPreview">
+                Выберите предмет
+            </div>
+        </div>
+        <div class="preview-arrow">
+            <i class="fas fa-arrow-right"></i>
+        </div>
+        <div class="preview-column">
+            <h3>Может выпасть</h3>
+            <div class="preview-weapon empty" id="upgradeWeaponPreview">
+                Выберите предмет
+            </div>
+        </div>
     </div>
     <button class="roll-button" id="rollButton" disabled>Крутить колесо</button>
 </section>
@@ -643,13 +740,13 @@
 
     <section class="upgrade-section">
         <div class="section-header">
-            <h2>Предметы для апгрейда</h2>
+            <h2>Возможные апгрейды</h2>
             <span id="upgradeCount">0 предметов</span>
         </div>
         <div class="inventory-grid" id="upgradeGrid">
             <div class="loading" style="grid-column: 1 / -1; text-align: center; padding: 50px;">
                 <i class="fas fa-spinner fa-spin fa-3x"></i>
-                Загрузка предметов...
+                Выберите предмет для апгрейда
             </div>
         </div>
     </section>
@@ -701,14 +798,12 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', () => {
-        // API Endpoints
         const API = {
             INVENTORY: '/account/get-data/inventory-data',
             UPGRADE_INVENTORY: '/upgrade/operation/up-inventory',
             ROLL_UPGRADE: '/upgrade/operation/roll-upgrade'
         };
 
-        // DOM Elements
         const DOM = {
             wheel: document.querySelector('#wheel'),
             rollButton: document.querySelector('#rollButton'),
@@ -717,183 +812,155 @@
             inventoryCount: document.querySelector('#inventoryCount'),
             upgradeCount: document.querySelector('#upgradeCount'),
             usernamePlaceholder: document.querySelector('#usernamePlaceholder'),
-            chanceButtons: document.querySelectorAll('.chance-btn')
+            chanceButtons: document.querySelectorAll('.chance-btn'),
+            selectedWeaponPreview: document.querySelector('#selectedWeaponPreview'),
+            upgradeWeaponPreview: document.querySelector('#upgradeWeaponPreview')
         };
 
-        // Application State
         const state = {
             inventory: [],
             upgradeItems: [],
             user: null,
-            selectedChance: 10,
-            isRolling: false
+            selectedChance: 60,
+            isRolling: false,
+            selectedWeapon: null,
+            upgradeWeapon: null
         };
 
-        // Initialize Application
         function init() {
             loadInventory();
-            loadUpgradeInventory();
             setupEventListeners();
             updateWheel();
+
+            DOM.chanceButtons.forEach(btn => {
+                if (parseInt(btn.dataset.chance) === state.selectedChance) {
+                    btn.classList.add('active');
+                }
+            });
         }
 
-        // Fetch Inventory Data
         async function loadInventory() {
             try {
-                const response = await fetch(API.INVENTORY, {
-                    method: 'GET',
-                    headers: { 'Accept': 'application/json' }
-                });
-
-                if (!response.ok) {
-                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-                }
-
+                const response = await fetch(API.INVENTORY);
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
                 const data = await response.json();
                 state.inventory = data.inventory || [];
                 state.user = data.user || null;
                 renderInventory();
                 updateUserData();
             } catch (error) {
-                console.error('Inventory fetch error:', error);
+                console.error('Ошибка загрузки инвентаря:', error);
                 showError(DOM.inventoryGrid, 'Ошибка загрузки инвентаря');
             }
         }
 
-        // Fetch Upgrade Inventory Data
-        async function loadUpgradeInventory() {
+        async function loadUpgradeOptions(weapon) {
+            if (!weapon) return;
+
+            DOM.upgradeGrid.innerHTML = `
+                <div class="loading" style="grid-column: 1 / -1; text-align: center; padding: 50px;">
+                    <i class="fas fa-spinner fa-spin fa-3x"></i>
+                    Загрузка возможных апгрейдов...
+                </div>`;
+
             try {
                 const response = await fetch(API.UPGRADE_INVENTORY, {
-                    method: 'GET',
-                    headers: { 'Accept': 'application/json' }
-                });
-
-                if (!response.ok) {
-                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-                }
-
-                const data = await response.json();
-                state.upgradeItems = data.items || [];
-                renderUpgradeInventory();
-            } catch (error) {
-                console.error('Upgrade inventory fetch error:', error);
-                showError(DOM.upgradeGrid, 'Ошибка загрузки предметов');
-            }
-        }
-
-        // Roll Wheel
-        async function rollWheel() {
-            if (state.isRolling) return;
-
-            state.isRolling = true;
-            DOM.rollButton.disabled = true;
-            DOM.wheel.classList.add('spinning');
-
-            try {
-                const response = await fetch(API.ROLL_UPGRADE, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                         'Accept': 'application/json'
                     },
-                    body: JSON.stringify({ chance: state.selectedChance })
+                    body: JSON.stringify({
+                        weaponName: weapon.name || weapon.nameWeapon,
+                        price: weapon.price,
+                        chance: state.selectedChance
+                    })
                 });
 
-                if (!response.ok) {
-                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-                }
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
 
                 const data = await response.json();
-                if (data.status !== 'success') {
-                    throw new Error('Invalid response status');
+
+                let upgradeList = [];
+
+                if (Array.isArray(data)) {
+                    upgradeList = data;
+                } else if (data && Array.isArray(data.items)) {
+                    upgradeList = data.items;
+                } else if (data && Array.isArray(data.payload)) {
+                    upgradeList = data.payload;
+                } else {
+                    throw new Error('Некорректный формат данных');
                 }
 
-                // Simulate wheel spin
-                const randomAngle = 720 + (Math.random() * 360);
-                DOM.wheel.style.transform = `rotate(${randomAngle}deg)`;
+                state.upgradeItems = upgradeList;
+                renderUpgradeInventory();
 
-                setTimeout(() => {
-                    DOM.wheel.classList.remove('spinning');
-                    showToast(
-                        data.won ? 'Победа! Вы выиграли!' : 'Увы, попробуйте снова!',
-                        data.won ? 'success' : 'error'
-                    );
-                    state.isRolling = false;
+                if (state.upgradeItems.length > 0) {
+                    state.upgradeWeapon = state.upgradeItems[0];
+                    updateUpgradePreview();
                     DOM.rollButton.disabled = false;
-                    // Refresh inventories after roll
-                    loadInventory();
-                    loadUpgradeInventory();
-                }, 5000);
+                    showToast('Найдены возможные варианты для апгрейда!', 'success');
+                } else {
+                    showError(DOM.upgradeGrid, 'Нет доступных вариантов апгрейда для этого оружия.');
+                }
+
             } catch (error) {
-                console.error('Roll error:', error);
-                DOM.wheel.classList.remove('spinning');
-                showToast('Ошибка при вращении колеса', 'error');
-                state.isRolling = false;
-                DOM.rollButton.disabled = false;
+                console.error('Ошибка загрузки апгрейдов:', error);
+                showError(DOM.upgradeGrid, 'Ошибка загрузки апгрейдов');
+                showToast(`Ошибка при загрузке апгрейдов: ${error.message}`, 'error');
             }
         }
 
-        // Render Inventory
         function renderInventory() {
             DOM.inventoryGrid.innerHTML = '';
             if (!state.inventory.length) {
-                showEmpty(DOM.inventoryGrid, 'Ваш инвентарь пуст');
+                showEmpty(DOM.inventoryGrid, 'Инвентарь пуст');
                 return;
             }
-
             state.inventory.forEach((item, index) => {
                 const card = createWeaponCard(item, index, 'inventory');
                 DOM.inventoryGrid.appendChild(card);
             });
-
             DOM.inventoryCount.textContent = `${state.inventory.length} предметов`;
         }
 
-        // Render Upgrade Inventory
         function renderUpgradeInventory() {
             DOM.upgradeGrid.innerHTML = '';
             if (!state.upgradeItems.length) {
-                showEmpty(DOM.upgradeGrid, 'Нет предметов для апгрейда');
+                showEmpty(DOM.upgradeGrid, 'Нет доступных апгрейдов');
                 return;
             }
-
             state.upgradeItems.forEach((item, index) => {
                 const card = createWeaponCard(item, index, 'upgrade');
+                card.addEventListener('click', () => {
+                    state.upgradeWeapon = item;
+                    updateUpgradePreview();
+                    showToast('Предмет выбран для апгрейда!', 'success');
+                });
                 DOM.upgradeGrid.appendChild(card);
             });
-
             DOM.upgradeCount.textContent = `${state.upgradeItems.length} предметов`;
         }
 
-        // Create Weapon Card
-        function createWeaponCard(item, index, type) {
-            const rarityClass = getRarityClass(item.rarity);
-            const card = createElement('div', {
-                className: `weapon-card ${rarityClass}`,
-                dataset: { id: index, type }
-            });
-
+        function createWeaponCard(item, id, type) {
+            const name = item.name || item.nameWeapon;
+            const card = document.createElement('div');
+            card.className = `weapon-card ${getRarityClass(item.rarity)} ${type === 'upgrade' ? 'selectable' : ''}`;
+            card.dataset.id = id;
+            card.dataset.type = type;
             card.innerHTML = `
                 <div class="weapon-image">
-                    <i class="fas ${getWeaponIcon(item.nameWeapon)}"></i>
+                    <i class="fas ${getWeaponIcon(name)}"></i>
                 </div>
                 <div class="weapon-details">
-                    <h3 class="weapon-name">${item.nameWeapon}</h3>
-                    <div class="weapon-rarity">${getRarityName(item.rarity)}</div>
+                    <h4>${name}</h4>
+                    <div class="rarity">${getRarityName(item.rarity)}</div>
                     <div class="weapon-price">${formatCurrency(item.price)}</div>
-                </div>
-            `;
-
+                </div>`;
             return card;
         }
 
-        // Update Wheel Appearance
-        function updateWheel() {
-            const winPercent = state.selectedChance;
-            DOM.wheel.style.background = `conic-gradient(#28a745 ${winPercent}%, #dc3545 ${winPercent}% 100%)`;
-        }
-
-        // Setup Event Listeners
         function setupEventListeners() {
             DOM.chanceButtons.forEach(btn => {
                 btn.addEventListener('click', () => {
@@ -901,7 +968,9 @@
                     btn.classList.add('active');
                     state.selectedChance = parseInt(btn.dataset.chance);
                     updateWheel();
-                    DOM.rollButton.disabled = false;
+                    if (state.selectedWeapon) {
+                        loadUpgradeOptions(state.selectedWeapon);
+                    }
                 });
             });
 
@@ -910,26 +979,150 @@
             DOM.inventoryGrid.addEventListener('click', (e) => {
                 const card = e.target.closest('.weapon-card');
                 if (card && card.dataset.type === 'inventory') {
-                    inspectItem(state.inventory[card.dataset.id]);
+                    const weapon = state.inventory[card.dataset.id];
+                    state.selectedWeapon = weapon;
+                    loadUpgradeOptions(weapon);
+                    updateUpgradePreview();
+                    inspectItem(weapon);
                 }
             });
 
             DOM.upgradeGrid.addEventListener('click', (e) => {
-                const card = e.target.closest('.weapon-card');
-                if (card && card.dataset.type === 'upgrade') {
-                    inspectItem(state.upgradeItems[card.dataset.id]);
+                const card = e.target.closest('.weapon-card.selectable');
+                if (card) {
+                    const weapon = state.upgradeItems[card.dataset.id];
+                    state.upgradeWeapon = weapon;
+                    updateUpgradePreview();
+                    showToast('Предмет выбран для апгрейда!', 'success');
                 }
             });
         }
 
-        // Update User Data
-        function updateUserData() {
-            if (state.user) {
-                DOM.usernamePlaceholder.textContent = state.user.username || 'Username';
+        async function rollWheel() {
+            if (state.isRolling || !state.selectedWeapon || !state.upgradeWeapon) {
+                showToast('Выберите оба предмета для апгрейда!', 'error');
+                return;
+            }
+
+            state.isRolling = true;
+            DOM.rollButton.disabled = true;
+            DOM.wheel.classList.add('spinning');
+
+            try {
+                const response = await fetch(API.ROLL_UPGRADE, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        weaponName: state.selectedWeapon.name || state.selectedWeapon.nameWeapon,
+                        price: state.selectedWeapon.price,
+                        upgradeWeaponName: state.upgradeWeapon.name || state.upgradeWeapon.nameWeapon,
+                        upgradePrice: state.upgradeWeapon.price,
+                        chance: state.selectedChance
+                    })
+                });
+
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+                const data = await response.json();
+
+                // Рассчитываем угол по статусу
+                const randomAngle = calculateLandingAngle(data.status, state.selectedChance);
+                DOM.wheel.style.transform = `rotate(${randomAngle}deg)`;
+
+                setTimeout(() => {
+                    DOM.wheel.classList.remove('spinning');
+
+                    state.selectedWeapon = null;
+                    state.upgradeWeapon = null;
+                    state.upgradeItems = [];
+                    renderUpgradeInventory();
+                    DOM.rollButton.disabled = true;
+
+                    loadInventory();
+
+                    if (data.status === 'success') {
+                        showModal('Поздравляем!', `
+                            <div class="modal-result success">
+                                <i class="fas fa-trophy fa-5x"></i>
+                                <h3>Вы выиграли!</h3>
+                                <p>${data.message || 'Успешный апгрейд!'}</p>
+                            </div>
+                        `, true);
+                        showToast('Апгрейд прошёл успешно!', 'success');
+                    } else if (data.status === 'lose') {
+                        showModal('Неудача!', `
+                            <div class="modal-result error">
+                                <i class="fas fa-times-circle fa-5x"></i>
+                                <h3>Вы проиграли.</h3>
+                                <p>${data.message || 'Попробуйте снова.'}</p>
+                            </div>
+                        `, true);
+                        showToast('К сожалению, апгрейд не удался.', 'error');
+                    }
+
+                    state.isRolling = false;
+
+                }, 5000);
+
+            } catch (error) {
+                console.error('Ошибка при вращении:', error);
+                showToast('Ошибка при вращении колеса', 'error');
+                state.isRolling = false;
+                DOM.rollButton.disabled = false;
             }
         }
 
-        // Utility Functions
+        function calculateLandingAngle(status, chance) {
+            const baseRotation = 720 + Math.random() * 360;
+            const greenZoneStart = 360 - 180 * (chance / 100);
+            const greenZoneEnd = 360;
+            const redZoneStart = 0;
+            const redZoneEnd = greenZoneStart;
+
+            let targetAngle;
+
+            if (status === 'success') {
+                targetAngle = greenZoneStart + Math.random() * (greenZoneEnd - greenZoneStart);
+            } else {
+                targetAngle = redZoneStart + Math.random() * (redZoneEnd - redZoneStart);
+            }
+
+            return baseRotation + (360 - targetAngle % 360);
+        }
+
+        function updateUpgradePreview() {
+            if (!state.selectedWeapon || !state.upgradeWeapon) return;
+
+            DOM.selectedWeaponPreview.classList.remove('empty');
+            DOM.upgradeWeaponPreview.classList.remove('empty');
+
+            const weaponName = state.selectedWeapon.name || state.selectedWeapon.nameWeapon;
+            const upgradeName = state.upgradeWeapon.name || state.upgradeWeapon.nameWeapon;
+
+            DOM.selectedWeaponPreview.innerHTML = `
+                <div class="weapon-image small">
+                    <i class="fas ${getWeaponIcon(weaponName)}"></i>
+                </div>
+                <div class="weapon-details">
+                    <h4>${weaponName}</h4>
+                    <div>${formatCurrency(state.selectedWeapon.price)}</div>
+                </div>`;
+
+            DOM.upgradeWeaponPreview.innerHTML = `
+                <div class="weapon-image small">
+                    <i class="fas ${getWeaponIcon(upgradeName)}"></i>
+                </div>
+                <div class="weapon-details">
+                    <h4>${upgradeName}</h4>
+                    <div>${formatCurrency(state.upgradeWeapon.price)}</div>
+                </div>`;
+        }
+
+        function updateWheel() {
+            const winPercent = state.selectedChance;
+            DOM.wheel.style.background = `conic-gradient(#dc3545 ${winPercent}%, #28a745 ${winPercent}% 100%)`;
+        }
+
         function getRarityClass(rarity) {
             return rarity.toLowerCase();
         }
@@ -945,7 +1138,7 @@
         }
 
         function getWeaponIcon(name) {
-            const lower = name.toLowerCase();
+            const lower = (name || '').toLowerCase();
             const icons = {
                 knife: 'fa-cut',
                 p250: 'fa-gun',
@@ -966,7 +1159,6 @@
                 heavy: 'fa-bomb',
                 xm1014: 'fa-bomb'
             };
-
             for (const [key, icon] of Object.entries(icons)) {
                 if (lower.includes(key)) return icon;
             }
@@ -974,15 +1166,14 @@
         }
 
         function formatCurrency(value) {
-            const num = Number(value || 0);
-            return 'R' + (Number.isInteger(num) ? num : num.toFixed(2));
+            return 'R' + parseFloat(value || 0).toFixed(2);
         }
 
-        function createElement(tag, { className, innerHTML, dataset } = {}) {
+        function createElement(tag, props = {}) {
             const el = document.createElement(tag);
-            if (className) el.className = className;
-            if (innerHTML) el.innerHTML = innerHTML;
-            if (dataset) Object.assign(el.dataset, dataset);
+            if (props.className) el.className = props.className;
+            if (props.innerHTML !== undefined) el.innerHTML = props.innerHTML;
+            if (props.dataset) Object.assign(el.dataset, props.dataset);
             return el;
         }
 
@@ -1001,35 +1192,29 @@
             }, 100);
         }
 
-        function showModal(title, content, showCloseBtn = true) {
+        function showModal(title, content, closable = true) {
             const modal = createElement('div', { className: 'modal' });
-            const closeBtn = showCloseBtn ? '<span class="close-button">×</span>' : '';
-            modal.innerHTML = `
-                <div class="modal-content">
-                    ${closeBtn}
-                    ${title ? `<h2>${title}</h2>` : ''}
-                    <div class="modal-body">${content}</div>
-                </div>
-            `;
+            const closeBtn = closable ? '<span class="close-button">×</span>' : '';
+            modal.innerHTML = `<div class="modal-content">${closeBtn}<h2>${title}</h2><div class="modal-body">${content}</div></div>`;
             document.body.appendChild(modal);
-            if (showCloseBtn) {
+            if (closable) {
                 modal.querySelector('.close-button').addEventListener('click', () => modal.remove());
+                modal.addEventListener('click', (e) => {
+                    if (e.target === modal) modal.remove();
+                });
             }
-            return modal;
         }
 
         function inspectItem(item) {
             if (!item) return;
+            const name = item.name || item.nameWeapon;
             const modalContent = `
                 <div class="item-details">
-                    <div class="weapon-image large">
-                        <i class="fas ${getWeaponIcon(item.nameWeapon)}"></i>
-                    </div>
-                    <h3>${item.nameWeapon}</h3>
+                    <div class="weapon-image large"><i class="fas ${getWeaponIcon(name)}"></i></div>
+                    <h3>${name}</h3>
                     <p><strong>Редкость:</strong> ${getRarityName(item.rarity)}</p>
                     <p><strong>Цена:</strong> ${formatCurrency(item.price)}</p>
-                </div>
-            `;
+                </div>`;
             showModal('Просмотр предмета', modalContent);
         }
 
@@ -1038,7 +1223,6 @@
                 <div class="empty-inventory">
                     <i class="fas fa-box-open fa-3x"></i>
                     <h3>${message}</h3>
-                    <a href="/shop" class="weapon-btn inspect">В магазин</a>
                 </div>`;
         }
 
@@ -1051,7 +1235,28 @@
                 </div>`;
         }
 
-        // Start Application
+        function updateUserData() {
+            if (state.user) {
+                DOM.usernamePlaceholder.textContent = state.user.username || 'Username';
+            }
+        }
+
+        function init() {
+            loadInventory();
+            setupEventListeners();
+            updateWheel();
+            DOM.chanceButtons.forEach(btn => {
+                if (parseInt(btn.dataset.chance) === state.selectedChance) {
+                    btn.classList.add('active');
+                }
+            });
+        }
+
+        function updateWheel() {
+            const winPercent = state.selectedChance;
+            DOM.wheel.style.background = `conic-gradient(#dc3545 ${winPercent}%, #28a745 ${winPercent}% 100%)`;
+        }
+
         init();
     });
 </script>
