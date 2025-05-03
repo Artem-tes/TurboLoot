@@ -461,6 +461,127 @@
         .legendary { border-color: #ffd700; }
         .legendary .weapon-name, .legendary .weapon-rarity { color: #ffd700; }
 
+        .recent-upgrades {
+            max-width: 1400px;
+            margin: 40px auto;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            animation: fadeInUp 0.5s ease-out;
+        }
+
+        .recent-upgrades h2 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            font-family: 'Montserrat', sans-serif;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .upgrades-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .upgrade-item {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transition: all 0.3s;
+        }
+
+        .upgrade-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .upgrade-icon {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        .upgrade-success .upgrade-icon {
+            background: rgba(40, 167, 69, 0.2);
+            color: #28a745;
+        }
+
+        .upgrade-fail .upgrade-icon {
+            background: rgba(220, 53, 69, 0.2);
+            color: #dc3545;
+        }
+
+        .upgrade-details {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .upgrade-weapons {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 5px;
+        }
+
+        .upgrade-arrow {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 14px;
+        }
+
+        .upgrade-weapon {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .upgrade-weapon-icon {
+            font-size: 16px;
+        }
+
+        .upgrade-weapon-name {
+            font-weight: 500;
+        }
+
+        .upgrade-price {
+            font-weight: 600;
+            color: #ffcc00;
+        }
+
+        .upgrade-date {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .upgrade-result {
+            font-weight: 600;
+            margin-left: 10px;
+        }
+
+        .upgrade-success .upgrade-result {
+            color: #28a745;
+        }
+
+        .upgrade-fail .upgrade-result {
+            color: #dc3545;
+        }
+
+        .no-upgrades {
+            text-align: center;
+            padding: 30px;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
         footer {
             background: rgba(0, 0, 0, 0.9);
             padding: 40px 30px 20px;
@@ -569,6 +690,23 @@
             color: #ffcc00;
         }
 
+        .modal-result {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .modal-result i {
+            margin-bottom: 20px;
+        }
+
+        .modal-result.success i {
+            color: #28a745;
+        }
+
+        .modal-result.error i {
+            color: #dc3545;
+        }
+
         @keyframes pulse {
             0% { transform: scale(1); opacity: 0.3; }
             50% { transform: scale(1.2); opacity: 0.1; }
@@ -600,23 +738,6 @@
             to { opacity: 1; transform: scale(1); }
         }
 
-        .modal-result {
-    text-align: center;
-    padding: 20px;
-}
-
-.modal-result i {
-    margin-bottom: 20px;
-}
-
-.modal-result.success i {
-    color: #28a745;
-}
-
-.modal-result.error i {
-    color: #dc3545;
-}
-
         @media (max-width: 1024px) {
             .content-section {
                 flex-direction: column;
@@ -633,6 +754,14 @@
                 transform: rotate(90deg);
                 margin: 10px 0;
             }
+            .upgrade-weapons {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .upgrade-arrow {
+                transform: rotate(90deg);
+                margin: 5px 0;
+            }
         }
 
         @media (max-width: 768px) {
@@ -641,6 +770,13 @@
             }
             .wheel-section {
                 padding: 40px 20px;
+            }
+            .recent-upgrades {
+                padding: 20px;
+            }
+            .upgrade-item {
+                flex-direction: column;
+                align-items: flex-start;
             }
         }
 
@@ -752,6 +888,16 @@
     </section>
 </div>
 
+<section class="recent-upgrades">
+    <h2>Последние 5 апгрейдов</h2>
+    <div class="upgrades-list" id="upgradesList">
+        <div class="loading" style="text-align: center; padding: 30px;">
+            <i class="fas fa-spinner fa-spin fa-2x"></i>
+            <p>Загрузка апгрейдов...</p>
+        </div>
+    </div>
+</section>
+
 <footer>
     <div class="footer-content">
         <div class="footer-column">
@@ -801,7 +947,8 @@
         const API = {
             INVENTORY: '/account/get-data/inventory-data',
             UPGRADE_INVENTORY: '/upgrade/operation/up-inventory',
-            ROLL_UPGRADE: '/upgrade/operation/roll-upgrade'
+            ROLL_UPGRADE: '/upgrade/operation/roll-upgrade',
+            RECENT_UPGRADES: '/api/v1/up-transactions'
         };
 
         const DOM = {
@@ -814,7 +961,8 @@
             usernamePlaceholder: document.querySelector('#usernamePlaceholder'),
             chanceButtons: document.querySelectorAll('.chance-btn'),
             selectedWeaponPreview: document.querySelector('#selectedWeaponPreview'),
-            upgradeWeaponPreview: document.querySelector('#upgradeWeaponPreview')
+            upgradeWeaponPreview: document.querySelector('#upgradeWeaponPreview'),
+            upgradesList: document.querySelector('#upgradesList')
         };
 
         const state = {
@@ -824,14 +972,16 @@
             selectedChance: 60,
             isRolling: false,
             selectedWeapon: null,
-            upgradeWeapon: null
+            upgradeWeapon: null,
+            recentUpgrades: []
         };
 
-        function init() {
+        async function init() {
+            await loadRecentUpgrades(); // Загружаем последние апгрейды до рендеринга
             loadInventory();
+            showEmpty(DOM.upgradeGrid, 'Выберите предмет для апгрейда');
             setupEventListeners();
             updateWheel();
-
             DOM.chanceButtons.forEach(btn => {
                 if (parseInt(btn.dataset.chance) === state.selectedChance) {
                     btn.classList.add('active');
@@ -841,7 +991,10 @@
 
         async function loadInventory() {
             try {
-                const response = await fetch(API.INVENTORY);
+                const response = await fetch(API.INVENTORY, {
+                    method: 'GET',
+                    headers: { 'Accept': 'application/json' }
+                });
                 if (!response.ok) throw new Error(`HTTP ${response.status}`);
                 const data = await response.json();
                 state.inventory = data.inventory || [];
@@ -912,6 +1065,86 @@
             }
         }
 
+        async function loadRecentUpgrades() {
+            DOM.upgradesList.innerHTML = `
+                <div class="loading" style="text-align: center; padding: 30px;">
+                    <i class="fas fa-spinner fa-spin fa-2x"></i>
+                    <p>Загрузка апгрейдов...</p>
+                </div>`;
+
+            try {
+                const response = await fetch(API.RECENT_UPGRADES, {
+                    method: 'GET',
+                    headers: { 'Accept': 'application/json' }
+                });
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                const data = await response.json();
+                state.recentUpgrades = Array.isArray(data) ? data.slice(0, 5) : [];
+                renderRecentUpgrades();
+            } catch (error) {
+                console.error('Ошибка загрузки апгрейдов:', error);
+                DOM.upgradesList.innerHTML = `
+                    <div class="error-message" style="text-align: center; padding: 30px;">
+                        <i class="fas fa-exclamation-triangle fa-2x"></i>
+                        <p>Ошибка загрузки апгрейдов</p>
+                        <p>${error.message}</p>
+                    </div>`;
+            }
+        }
+
+        function renderRecentUpgrades() {
+            if (!state.recentUpgrades.length) {
+                DOM.upgradesList.innerHTML = `
+                    <div class="no-upgrades">
+                        <i class="fas fa-box-open fa-3x"></i>
+                        <p>У вас еще нет апгрейдов</p>
+                    </div>`;
+                return;
+            }
+
+            DOM.upgradesList.innerHTML = '';
+            state.recentUpgrades.forEach(upgrade => {
+                const item = upgrade.item || {};
+                const itemup = upgrade.itemup || {};
+                const isSuccess = upgrade.move === 1;
+
+                const upgradeElement = document.createElement('div');
+                upgradeElement.className = `upgrade-item ${isSuccess ? 'upgrade-success' : 'upgrade-fail'}`;
+                upgradeElement.innerHTML = `
+                    <div class="upgrade-icon">
+                        <i class="fas ${isSuccess ? 'fa-check' : 'fa-times'}"></i>
+                    </div>
+                    <div class="upgrade-details">
+                        <div class="upgrade-weapons">
+                            <div class="upgrade-weapon">
+                                <i class="fas ${getWeaponIcon(item.name)} upgrade-weapon-icon"></i>
+                                <span class="upgrade-weapon-name">${item.name || 'Неизвестно'}</span>
+                                <span class="upgrade-price">R${item.price || 0}</span>
+                            </div>
+                            <div class="upgrade-arrow">
+                                <i class="fas fa-arrow-right"></i>
+                            </div>
+                            <div class="upgrade-weapon">
+                                <i class="fas ${getWeaponIcon(itemup.name)} upgrade-weapon-icon"></i>
+                                <span class="upgrade-weapon-name">${itemup.name || 'Неизвестно'}</span>
+                                <span class="upgrade-price">R${itemup.price || 0}</span>
+                            </div>
+                        </div>
+                        <div class="upgrade-date">${formatDate(upgrade.date)}</div>
+                    </div>
+                    <div class="upgrade-result">
+                        ${isSuccess ? 'Успех' : 'Неудача'}
+                    </div>`;
+                DOM.upgradesList.appendChild(upgradeElement);
+            });
+        }
+
+        function formatDate(dateString) {
+            if (!dateString) return 'Дата неизвестна';
+            const date = new Date(dateString);
+            return date.toLocaleString('ru-RU');
+        }
+
         function renderInventory() {
             DOM.inventoryGrid.innerHTML = '';
             if (!state.inventory.length) {
@@ -933,11 +1166,6 @@
             }
             state.upgradeItems.forEach((item, index) => {
                 const card = createWeaponCard(item, index, 'upgrade');
-                card.addEventListener('click', () => {
-                    state.upgradeWeapon = item;
-                    updateUpgradePreview();
-                    showToast('Предмет выбран для апгрейда!', 'success');
-                });
                 DOM.upgradeGrid.appendChild(card);
             });
             DOM.upgradeCount.textContent = `${state.upgradeItems.length} предметов`;
@@ -982,7 +1210,6 @@
                     const weapon = state.inventory[card.dataset.id];
                     state.selectedWeapon = weapon;
                     loadUpgradeOptions(weapon);
-                    updateUpgradePreview();
                     inspectItem(weapon);
                 }
             });
@@ -1025,7 +1252,6 @@
 
                 const data = await response.json();
 
-                // Рассчитываем угол по статусу
                 const randomAngle = calculateLandingAngle(data.status, state.selectedChance);
                 DOM.wheel.style.transform = `rotate(${randomAngle}deg)`;
 
@@ -1039,6 +1265,7 @@
                     DOM.rollButton.disabled = true;
 
                     loadInventory();
+                    loadRecentUpgrades(); // Обновляем последние апгрейды после вращения
 
                     if (data.status === 'success') {
                         showModal('Поздравляем!', `
@@ -1239,22 +1466,6 @@
             if (state.user) {
                 DOM.usernamePlaceholder.textContent = state.user.username || 'Username';
             }
-        }
-
-        function init() {
-            loadInventory();
-            setupEventListeners();
-            updateWheel();
-            DOM.chanceButtons.forEach(btn => {
-                if (parseInt(btn.dataset.chance) === state.selectedChance) {
-                    btn.classList.add('active');
-                }
-            });
-        }
-
-        function updateWheel() {
-            const winPercent = state.selectedChance;
-            DOM.wheel.style.background = `conic-gradient(#dc3545 ${winPercent}%, #28a745 ${winPercent}% 100%)`;
         }
 
         init();
